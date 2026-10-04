@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>비즈 툴즈 (BizTools) | 소상공인·셀러 실무 유틸리티 모음</title>
+  <meta name="description" content="오픈마켓 마진 계산기, 세무 간이 계산, 텍스트 데이터 정제 등 업무와 온라인 비즈니스에 필요한 실무 도구 모음 플랫폼">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          B
+        </div>
+        <div>
+          <span class="text-lg font-black text-gray-900 tracking-tight">BizTools</span>
+          <span class="hidden sm:inline-block text-xs text-gray-500 ml-2 font-medium">비즈니스 실무 유틸리티 포털</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs font-semibold">
+        <a href="mailto:insig2268@naver.com" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition">
+          도구 추가 건의
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-6xl mx-auto px-4 py-10 flex-1 w-full space-y-10">
+
+    <!-- 히어로 안내 섹션 -->
+    <section class="text-center space-y-3 max-w-2xl mx-auto pt-2">
+      <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+        Free Business Utilities
+      </span>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        빠르고 간편한 실무 자동화 도구
+      </h1>
+      <p class="text-sm sm:text-base text-gray-600 leading-relaxed">
+        복잡한 계산과 반복 수작업을 클릭 몇 번으로 해결하세요.<br class="hidden sm:inline">
+        로그인이나 설치 없이 웹 브라우저에서 즉시 무료로 사용할 수 있습니다.
+      </p>
+    </section>
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="w-full bg-white border border-dashed border-gray-300 rounded-2xl p-4 text-center text-xs text-gray-400 min-h-[90px] flex flex-col justify-center items-center shadow-sm">
+      <span>[구글 애드센스 상단 반응형 광고 슬롯]</span>
+    </div>
+
+    <!-- 유틸리티 카드 그리드 -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-gray-900">사용 가능한 도구 모음</h2>
+        <span class="text-xs text-gray-500">지속적으로 업데이트됩니다</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- 1. 오픈마켓 마진 계산기 (경로 수정 완료) -->
+        <a href="./margin/index.html" class="group bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-500 transition-all flex flex-col justify-between">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg group-hover:bg-indigo-600 group-hover:text-white transition">
+                %
+              </span>
+              <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+                운영 중
+              </span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition">
+                오픈마켓 복합 마진 계산기
+              </h3>
+              <p class="text-xs text-gray-500 mt-1.5 leading-relaxed">
+                스마트스토어, 쿠팡 윙 등 플랫폼 수수료, 배송비 차감 및 부가세를 반영한 정밀 순수익 계산 및 목표 판매가 역산 도구.
+              </p>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-indigo-600">
+            <span>계산기 열기</span>
+            <span class="group-hover:translate-x-1 transition">→</span>
+          </div>
+        </a>
+
+        <!-- 2. 부가세 / 간이세무 계산기 (대기 카드) -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between opacity-80">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-10 h-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-lg">
+                ₩
+              </span>
+              <span class="px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 rounded-full">
+                업데이트 예정
+              </span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">
+                부가세 / 간이세무 계산기
+              </h3>
+              <p class="text-xs text-gray-500 mt-1.5 leading-relaxed">
+                공급가액과 세액 자동 분리, 일반과세자 매입세액 공제액 및 간이과세자 업종별 납부세액 간이 추산 도구.
+              </p>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-gray-400">
+            <span>곧 제공됩니다</span>
+            <span>-</span>
+          </div>
+        </div>
+
+        <!-- 3. 실무 텍스트 & 바이트 정제기 (대기 카드) -->
+        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between opacity-80">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="w-10 h-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-lg">
+                T
+              </span>
+              <span class="px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 rounded-full">
+                업데이트 예정
+              </span>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-gray-900">
+                실무 텍스트 & 데이터 정제기
+              </h3>
+              <p class="text-xs text-gray-500 mt-1.5 leading-relaxed">
+                엑셀 데이터 중복 제거, 쉼표(,) 자동 삽입, 줄바꿈 일괄 변환, 플랫폼 상품명 글자 수/바이트 실시간 검사 도구.
+              </p>
+            </div>
+          </div>
+          <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-gray-400">
+            <span>곧 제공됩니다</span>
+            <span>-</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 하단 애드센스 광고 영역 -->
+    <div class="w-full bg-white border border-dashed border-gray-300 rounded-2xl p-4 text-center text-xs text-gray-400 min-h-[90px] flex flex-col justify-center items-center shadow-sm">
+      <span>[구글 애드센스 본문 하단 광고 슬롯]</span>
+    </div>
+
+    <!-- 플랫폼 소개 -->
+    <section class="bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-900">BizTools 서비스 안내</h3>
+      <p class="text-xs sm:text-sm text-gray-600 leading-relaxed">
+        BizTools는 전자상거래 셀러, 1인 사업자, 유통 및 마케팅 실무진이 매일 겪는 반복적인 계산과 데이터 정리 과정을 효율화하기 위해 기획된 무료 웹 유틸리티 플랫폼입니다. 모든 연산은 사용자의 브라우저 내에서 안전하게 즉각 처리되며, 어떠한 입력 데이터도 서버에 전송되거나 저장되지 않습니다.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- 푸터: 문의 및 피드백 전용 섹션 -->
+  <footer class="bg-gray-900 text-gray-300 py-10 border-t border-gray-800 mt-12">
+    <div class="max-w-6xl mx-auto px-4 space-y-8">
+      
+      <!-- 피드백 카드 -->
+      <div class="bg-gray-800/80 rounded-2xl p-6 sm:p-7 border border-gray-700/80 shadow-md">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div class="space-y-1">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              도구 오류 제보 및 신규 기능 제안
+            </h3>
+            <p class="text-xs sm:text-sm text-gray-300 leading-relaxed">
+              필요하신 업무용 계산 도구나 기존 계산기의 개선점이 있다면 편하게 의견을 보내주세요.
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <a href="mailto:insig2268@naver.com" class="inline-flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs sm:text-sm font-semibold rounded-xl transition shadow active:scale-95">
+              이메일 보내기
+            </a>
+            <button type="button" onclick="copyContactEmail()" class="px-3.5 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs sm:text-sm font-medium rounded-xl transition border border-gray-600 active:scale-95">
+              이메일 복사
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-gray-400">
+          <div class="flex items-center gap-2">
+            <span>담당자 문의처:</span>
+            <span class="text-gray-100 font-mono text-sm font-semibold select-all" id="contactEmail">insig2268@naver.com</span>
+          </div>
+          <span id="copyNotice" class="text-emerald-400 font-medium hidden">이메일 주소가 클립보드에 복사되었습니다.</span>
+        </div>
+      </div>
+
+      <!-- 저작권 -->
+      <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4 border-t border-gray-800 pt-6">
+        <p>© 2026 BizTools. All rights reserved.</p>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-gray-300 transition">개인정보처리방침</a>
+          <a href="#" class="hover:text-gray-300 transition">이용약관</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <script>
+    function copyContactEmail() {
+      const email = document.getElementById('contactEmail').textContent.trim();
+      navigator.clipboard.writeText(email).then(() => {
+        const notice = document.getElementById('copyNotice');
+        notice.classList.remove('hidden');
+        setTimeout(() => {
+          notice.classList.add('hidden');
+        }, 2500);
+      });
+    }
+  </script>
+</body>
+</html>
