@@ -60,7 +60,7 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <!-- 1. 오픈마켓 마진 계산기 (경로 수정 완료) -->
+        <!-- 1. 오픈마켓 마진 계산기 -->
         <a href="./margin/index.html" class="group bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md hover:border-indigo-500 transition-all flex flex-col justify-between">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
@@ -86,19 +86,19 @@
           </div>
         </a>
 
-        <!-- 2. 부가세 / 간이세무 계산기 (대기 카드) -->
-        <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between opacity-80">
+        <!-- 2. 부가세 / 간이세무 계산기 (활성화 완료) -->
+        <a href="./vat/index.html" class="group bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-md hover:border-emerald-500 transition-all flex flex-col justify-between">
           <div class="space-y-4">
             <div class="flex items-center justify-between">
-              <span class="w-10 h-10 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center font-bold text-lg">
+              <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-lg group-hover:bg-emerald-600 group-hover:text-white transition">
                 ₩
               </span>
-              <span class="px-2.5 py-0.5 text-xs font-medium bg-gray-100 text-gray-500 rounded-full">
-                업데이트 예정
+              <span class="px-2.5 py-0.5 text-xs font-bold bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+                운영 중
               </span>
             </div>
             <div>
-              <h3 class="text-lg font-bold text-gray-900">
+              <h3 class="text-lg font-bold text-gray-900 group-hover:text-emerald-600 transition">
                 부가세 / 간이세무 계산기
               </h3>
               <p class="text-xs text-gray-500 mt-1.5 leading-relaxed">
@@ -106,11 +106,11 @@
               </p>
             </div>
           </div>
-          <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-medium text-gray-400">
-            <span>곧 제공됩니다</span>
-            <span>-</span>
+          <div class="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-emerald-600">
+            <span>계산기 열기</span>
+            <span class="group-hover:translate-x-1 transition">→</span>
           </div>
-        </div>
+        </a>
 
         <!-- 3. 실무 텍스트 & 바이트 정제기 (대기 카드) -->
         <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm flex flex-col justify-between opacity-80">
