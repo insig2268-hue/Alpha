@@ -16,4 +16,8 @@
     <loc>https://biz-tools.kr/privacy.html</loc>
     <priority>0.5</priority>
   </url>
+  <url>
+    <loc>https://biz-tools.kr/insurance/index.html</loc>
+    <priority>0.8</priority>
+  </url>
 </urlset>
