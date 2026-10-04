@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 주휴수당 & 알바 급여 계산기 | 최저시급 10,320원 반영 실질시급·월급 산출</title>
+  <meta name="description" content="2026년 법정 최저시급 10,320원 완벽 반영. 주 15시간 이상 여부에 따른 주휴수당, 주급, 월급, 실질 시급 및 4대보험/3.3% 공제 후 실수령액을 즉시 계산합니다.">
+  
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/wage/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="2026 주휴수당 & 알바 급여 계산기 | BizTools">
+  <meta property="og:description" content="2026년 최저시급 10,320원 기준 주휴시간 및 주휴수당 발생 여부 판별, 주급/월급 및 실질 체감 시급 정밀 계산기">
+  <meta property="og:url" content="https://biz-tools.kr/wage/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 네비게이션 헤더 -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="text-xs font-semibold text-gray-500 hover:text-emerald-600 transition flex items-center gap-1">
+          ← 홈으로
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">주휴수당 & 알바 급여 계산기</h1>
+      </div>
+      <span class="text-xs font-medium px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+        2026 최저시급 10,320원
+      </span>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 입력 폼 (좌측 6열) -->
+      <section class="lg:col-span-6 bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-base font-bold text-gray-900">근무 조건 입력</h2>
+          <button type="button" onclick="resetForm()" class="text-xs text-rose-500 hover:underline font-medium">초기화</button>
+        </div>
+
+        <!-- 시급 입력 -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label for="hourlyWage" class="block text-xs font-bold text-gray-700">시급 (원)</label>
+            <span class="text-[11px] text-emerald-600 font-semibold">2026 최저시급: 10,320원</span>
+          </div>
+          <div class="relative">
+            <input type="text" id="hourlyWage" inputmode="numeric" value="10,320"
+              class="w-full px-4 py-2.5 text-base font-bold text-gray-900 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:bg-white outline-none text-right pr-8"
+              oninput="handleInput(this)">
+            <span class="absolute right-3.5 top-2.5 text-gray-500 font-bold text-sm">원</span>
+          </div>
+          <!-- 빠른 시급 버튼 -->
+          <div class="grid grid-cols-4 gap-2 pt-1 text-xs">
+            <button type="button" onclick="setWage(10320)" class="py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg font-bold border border-emerald-200">최저시급</button>
+            <button type="button" onclick="addWage(500)" class="py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium">+500원</button>
+            <button type="button" onclick="addWage(1000)" class="py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium">+1,000원</button>
+            <button type="button" onclick="setWage(11000)" class="py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium">11,000원</button>
+          </div>
+        </div>
+
+        <!-- 근무 시간 및 일수 -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1.5">
+            <label for="dailyHours" class="block text-xs font-bold text-gray-700">1일 근무시간 (시간)</label>
+            <div class="relative">
+              <input type="number" step="0.5" id="dailyHours" value="8"
+                class="w-full px-3 py-2 text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-right pr-9"
+                oninput="calculate()">
+              <span class="absolute right-3 top-2 text-gray-400 text-xs">시간</span>
+            </div>
+          </div>
+          <div class="space-y-1.5">
+            <label for="weeklyDays" class="block text-xs font-bold text-gray-700">주당 근무일수 (일)</label>
+            <div class="relative">
+              <input type="number" id="weeklyDays" value="5" min="1" max="7"
+                class="w-full px-3 py-2 text-sm font-semibold text-gray-900 bg-gray-50 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none text-right pr-9"
+                oninput="calculate()">
+              <span class="absolute right-3 top-2 text-gray-400 text-xs">일</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 주당 총 근무시간 표시 바 -->
+        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 flex items-center justify-between text-xs">
+          <span class="text-gray-600 font-medium">주당 소정근로시간</span>
+          <span class="font-bold text-gray-900 text-sm" id="weeklyHoursDisplay">40시간</span>
+        </div>
+
+        <!-- 공제 유형 -->
+        <div class="space-y-1.5">
+          <label for="deductType" class="block text-xs font-bold text-gray-700">세금 및 4대보험 공제 방식</label>
+          <select id="deductType" onchange="calculate()"
+            class="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-xl text-xs font-semibold text-gray-800 focus:ring-2 focus:ring-emerald-500 outline-none">
+            <option value="none" selected>공제 없음 (세전 100% 수령)</option>
+            <option value="freelance">프리랜서 / 3.3% 원천징수 공제</option>
+            <option value="employment">고용보험만 공제 (0.9%)</option>
+            <option value="insurance">4대보험 가입 근로자 (약 9.5% 간이 공제)</option>
+          </select>
+        </div>
+
+        <!-- 수습기간 감액 여부 -->
+        <div class="p-3.5 bg-amber-50/70 rounded-xl border border-amber-200 flex items-center justify-between text-xs">
+          <div>
+            <span class="font-bold text-amber-900">수습 기간 적용 (90% 지급)</span>
+            <p class="text-[11px] text-amber-700 mt-0.5">1년 이상 계약 시 3개월 이내에만 합법 적용 가능</p>
+          </div>
+          <input type="checkbox" id="probation" onchange="calculate()" class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+        </div>
+      </section>
+
+      <!-- 결과 리포트 (우측 6열) -->
+      <section class="lg:col-span-6 space-y-5">
+        
+        <!-- 예상 월급 메인 카드 -->
+        <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-6 sm:p-7 text-white shadow-md space-y-4">
+          <div class="flex items-center justify-between text-xs text-emerald-100">
+            <span>월 예상 실수령액 (주휴수당 포함)</span>
+            <!-- 결과 복사 버튼 -->
+            <button type="button" id="copyBtn" onclick="copyResult()"
+              class="px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-lg text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+              </svg>
+              <span>결과 복사</span>
+            </button>
+          </div>
+          <div class="text-3xl sm:text-4xl font-extrabold tracking-tight" id="takeHomeMonthly">
+            2,156,880원
+          </div>
+          <div class="pt-3 border-t border-white/20 flex justify-between items-center text-xs text-emerald-100">
+            <span>주휴수당 포함 실질 체감 시급:</span>
+            <span class="font-bold text-white text-base" id="effectiveHourlyWage">12,384원</span>
+          </div>
+        </div>
+
+        <!-- 세부 내역 카드 -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-3.5 text-xs">
+          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
+            <h3 class="font-bold text-gray-900 text-sm">주휴수당 및 급여 상세 분석</h3>
+            <span id="holidayBadge" class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
+              주휴수당 발생 대상
+            </span>
+          </div>
+
+          <div class="flex justify-between py-1 border-b border-gray-50">
+            <span class="text-gray-500">주당 인정 주휴시간</span>
+            <span class="font-bold text-gray-900" id="holidayHoursDisplay">8시간</span>
+          </div>
+
+          <div class="flex justify-between py-1 border-b border-gray-50">
+            <span class="text-gray-500">주당 주휴수당 (주 1회)</span>
+            <span class="font-bold text-emerald-600" id="weeklyHolidayPayDisplay">+82,560원</span>
+          </div>
+
+          <div class="flex justify-between py-1 border-b border-gray-50">
+            <span class="text-gray-500">기본 주급 (실제 근무시간 기준)</span>
+            <span class="font-bold text-gray-800" id="baseWeeklyPayDisplay">412,800원</span>
+          </div>
+
+          <div class="flex justify-between py-1 border-b border-gray-50">
+            <span class="text-gray-500">주휴수당 포함 총 주급</span>
+            <span class="font-bold text-gray-900" id="totalWeeklyPayDisplay">495,360원</span>
+          </div>
+
+          <div class="flex justify-between py-1 border-b border-gray-50">
+            <span class="text-gray-500">월 환산 근무시간 (주휴 포함 4.345주)</span>
+            <span class="font-semibold text-gray-700" id="monthlyHoursDisplay">209시간</span>
+          </div>
+
+          <div class="flex justify-between py-1">
+            <span class="text-gray-500">예상 공제액 (<span id="deductLabel">공제 없음</span>)</span>
+            <span class="font-semibold text-rose-500" id="deductAmountDisplay">-0원</span>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- 가이드 섹션 -->
+    <section class="bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-6">
+      <h3 class="text-base font-bold text-gray-900">2026년 주휴수당 지급 기준 및 알바 실무 가이드</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-2">
+          <h4 class="font-bold text-gray-900">1. 주휴수당 법정 발생 요건 (근로기준법 제55조)</h4>
+          <p>
+            • <strong>주 15시간 이상 근무:</strong> 4주간을 평균하여 1주 동안의 소정근로시간이 <strong>15시간 이상</strong>이어야 합니다.<br>
+            • <strong>소정근로일 개근:</strong> 근로계약서상 약정한 근무일에 지각/조퇴와 무관하게 결근 없이 출근해야 발생합니다.<br>
+            • <strong>상시 근로자 수 무관:</strong> 5인 미만 사업장(편의점, 카페, 식당 등)에도 의무 적용됩니다.
+          </p>
+        </div>
+        <div class="space-y-2">
+          <h4 class="font-bold text-gray-900">2. 주휴수당 및 월 환산시간 계산 공식</h4>
+          <p>
+            • <strong>주 40시간 미만 단시간 근로자:</strong> <code>(주당 총 근무시간 ÷ 40시간) × 8시간 × 시급</code><br>
+            • <strong>주 40시간 이상 정규 근로자:</strong> 법정 상한인 <code>8시간 × 시급</code> 고정 적용.<br>
+            • <strong>2026년 최저 월급:</strong> 주 40시간 풀타임 근무 시 유급 주휴시간을 포함한 월 소정근로시간은 <strong>209시간</strong>이며, 최저 월급은 <strong>2,156,880원</strong>입니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 문의 및 제보 섹션 -->
+    <section class="bg-gray-900 text-gray-300 rounded-2xl p-6 sm:p-7 border border-gray-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+      <div class="space-y-1">
+        <h3 class="text-white font-bold text-base flex items-center gap-2">
+          노무 기준 문의 및 피드백
+        </h3>
+        <p class="text-xs text-gray-400">
+          최신 고시 기준 변경 사항이나 추가가 필요한 알바/급여 수당 항목이 있다면 의견을 보내주세요.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a href="mailto:insig2268@naver.com" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-xl transition shadow">
+          이메일 문의
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 -->
+  <footer class="bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 계산 결과는 모의 계산용이며 실제 근무 형태에 따라 차이가 있을 수 있습니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+        <a href="/privacy.html" class="text-gray-300 hover:text-white underline transition">개인정보처리방침</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 계산 스크립트 -->
+  <script>
+    let currentCalc = {};
+
+    function parseNum(val) {
+      return parseInt(String(val).replace(/[^0-9]/g, ''), 10) || 0;
+    }
+
+    function formatNum(num) {
+      return Number(Math.round(num)).toLocaleString('ko-KR');
+    }
+
+    function handleInput(el) {
+      el.value = formatNum(parseNum(el.value));
+      calculate();
+    }
+
+    function setWage(val) {
+      document.getElementById('hourlyWage').value = formatNum(val);
+      calculate();
+    }
+
+    function addWage(val) {
+      const cur = parseNum(document.getElementById('hourlyWage').value);
+      document.getElementById('hourlyWage').value = formatNum(cur + val);
+      calculate();
+    }
+
+    function resetForm() {
+      document.getElementById('hourlyWage').value = '10,320';
+      document.getElementById('dailyHours').value = '8';
+      document.getElementById('weeklyDays').value = '5';
+      document.getElementById('deductType').value = 'none';
+      document.getElementById('probation').checked = false;
+      calculate();
+    }
+
+    function calculate() {
+      let rawWage = parseNum(document.getElementById('hourlyWage').value);
+      const isProbation = document.getElementById('probation').checked;
+      
+      // 수습 90% 적용
+      const appliedWage = isProbation ? Math.floor(rawWage * 0.9) : rawWage;
+
+      const dailyHours = parseFloat(document.getElementById('dailyHours').value) || 0;
+      const weeklyDays = parseFloat(document.getElementById('weeklyDays').value) || 0;
+      const deductType = document.getElementById('deductType').value;
+
+      const weeklyHours = dailyHours * weeklyDays;
+      document.getElementById('weeklyHoursDisplay').textContent = weeklyHours + '시간';
+
+      // 주휴수당 발생 판별 (주 15시간 이상)
+      let holidayHours = 0;
+      const badge = document.getElementById('holidayBadge');
+
+      if (weeklyHours >= 15) {
+        badge.textContent = '주휴수당 발생 대상 (15시간 이상)';
+        badge.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-100';
+
+        if (weeklyHours >= 40) {
+          holidayHours = 8;
+        } else {
+          holidayHours = (weeklyHours / 40) * 8;
+        }
+      } else {
+        badge.textContent = '주휴수당 미발생 (주 15시간 미만)';
+        badge.className = 'px-2 py-0.5 rounded text-[11px] font-bold bg-gray-100 text-gray-500 border border-gray-200';
+        holidayHours = 0;
+      }
+
+      // 주급 계산
+      const baseWeeklyPay = weeklyHours * appliedWage;
+      const weeklyHolidayPay = Math.round(holidayHours * appliedWage);
+      const totalWeeklyPay = baseWeeklyPay + weeklyHolidayPay;
+
+      // 월급 환산 (주휴시간 포함 총 주당 유급시간 * 4.345238주)
+      const weeklyPaidHours = weeklyHours + holidayHours;
+      let monthlyHours = 0;
+      if (weeklyHours === 40 && holidayHours === 8) {
+        monthlyHours = 209; // 법정 표준 209시간
+      } else {
+        monthlyHours = Math.round(weeklyPaidHours * (365 / 7 / 12) * 10) / 10;
+      }
+
+      const grossMonthlyPay = Math.round(monthlyHours * appliedWage);
+
+      // 공제액 계산
+      let deductAmount = 0;
+      let deductLabel = '공제 없음';
+
+      if (deductType === 'freelance') {
+        deductAmount = Math.floor(grossMonthlyPay * 0.033 / 10) * 10;
+        deductLabel = '3.3% 사업소득세';
+      } else if (deductType === 'employment') {
+        deductAmount = Math.floor(grossMonthlyPay * 0.009 / 10) * 10;
+        deductLabel = '고용보험 0.9%';
+      } else if (deductType === 'insurance') {
+        // 간이 4대보험 근로자부담 약 9.5%
+        deductAmount = Math.floor(grossMonthlyPay * 0.095 / 10) * 10;
+        deductLabel = '4대보험 간이(약 9.5%)';
+      }
+
+      const takeHomeMonthly = Math.max(0, grossMonthlyPay - deductAmount);
+
+      // 실질 시급 (주휴수당을 포함하여 실제 일한 시간 대비 받는 실질 시급)
+      const effectiveWage = weeklyHours > 0 ? Math.round(totalWeeklyPay / weeklyHours) : appliedWage;
+
+      // 상태 저장
+      currentCalc = {
+        appliedWage,
+        weeklyHours,
+        holidayHours: Math.round(holidayHours * 100) / 100,
+        weeklyHolidayPay,
+        totalWeeklyPay,
+        monthlyHours,
+        grossMonthlyPay,
+        deductAmount,
+        takeHomeMonthly,
+        effectiveWage
+      };
+
+      // 렌더링
+      document.getElementById('takeHomeMonthly').textContent = formatNum(takeHomeMonthly) + '원';
+      document.getElementById('effectiveHourlyWage').textContent = formatNum(effectiveWage) + '원';
+      document.getElementById('holidayHoursDisplay').textContent = (Math.round(holidayHours * 100) / 100) + '시간';
+      document.getElementById('weeklyHolidayPayDisplay').textContent = '+' + formatNum(weeklyHolidayPay) + '원';
+      document.getElementById('baseWeeklyPayDisplay').textContent = formatNum(baseWeeklyPay) + '원';
+      document.getElementById('totalWeeklyPayDisplay').textContent = formatNum(totalWeeklyPay) + '원';
+      document.getElementById('monthlyHoursDisplay').textContent = monthlyHours + '시간';
+      document.getElementById('deductLabel').textContent = deductLabel;
+      document.getElementById('deductAmountDisplay').textContent = '-' + formatNum(deductAmount) + '원';
+    }
+
+    // 결과 복사 함수
+    function copyResult() {
+      const summary = `[BizTools 주휴수당 & 급여 계산 결과]
+• 적용 시급: ${formatNum(currentCalc.appliedWage)}원
+• 주당 근무시간: ${currentCalc.weeklyHours}시간 (주휴시간: ${currentCalc.holidayHours}시간)
+• 주당 주휴수당: ${formatNum(currentCalc.weeklyHolidayPay)}원
+• 총 주급: ${formatNum(currentCalc.totalWeeklyPay)}원
+• 예상 월 실수령액: ${formatNum(currentCalc.takeHomeMonthly)}원 (월 ${currentCalc.monthlyHours}시간 기준)
+• 주휴 포함 실질 시급: ${formatNum(currentCalc.effectiveWage)}원
+👉 https://biz-tools.kr/wage/index.html`;
+
+      navigator.clipboard.writeText(summary).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const org = btn.innerHTML;
+        btn.innerHTML = `<span>✓ 복사 완료!</span>`;
+        btn.classList.add('bg-emerald-500');
+        setTimeout(() => {
+          btn.innerHTML = org;
+          btn.classList.remove('bg-emerald-500');
+        }, 1500);
+      });
+    }
+
+    // 초기 실행
+    calculate();
+  </script>
+</body>
+</html>
