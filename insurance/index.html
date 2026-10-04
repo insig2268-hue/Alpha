@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2026 4대보험 계산기 | 실시간 근로자·사업주 부담금 및 실수령액 산출</title>
-  <meta name="description" content="2026년 개정 4대보험 요율 완벽 반영. 월 급여와 비과세 식대 입력 시 국민연금, 건강보험, 요양보험, 고용보험 근로자 공제액 및 사업주 부담금을 즉시 계산합니다.">
+  <title>2026 4대보험 & 실수령액 계산기 | 국세청 간이세액표 소득세 완벽 반영</title>
+  <meta name="description" content="2026년 개정 4대보험 요율 및 국세청 근로소득 간이세액표 완벽 반영. 월 급여, 비과세 식대, 부양가족 수를 입력하여 실제 통장 입금 실수령액을 즉시 계산합니다.">
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
@@ -20,15 +20,16 @@
           ← 홈으로
         </a>
         <span class="text-gray-300">|</span>
+        <!-- 우산(사회안전망) 아이콘 -->
         <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center">
-  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v2a2 2 0 104 0M3 13a9 9 0 1118 0H3z"></path>
-  </svg>
-</div>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v2a2 2 0 104 0M3 13a9 9 0 1118 0H3z"></path>
+          </svg>
+        </div>
         <h1 class="text-lg font-bold text-gray-900 tracking-tight">4대보험 & 실수령액 계산기</h1>
       </div>
       <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-        2026 최신 요율 반영
+        2026 최신 세법·요율 반영
       </span>
     </div>
   </header>
@@ -42,7 +43,7 @@
       <!-- 입력 폼 (좌측 6열) -->
       <section class="lg:col-span-6 bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-gray-200 space-y-6">
         <h2 class="text-base font-bold text-gray-900 border-b border-gray-100 pb-3 flex items-center justify-between">
-          <span>급여 정보 입력</span>
+          <span>급여 및 공제 정보 입력</span>
           <button type="button" onclick="resetForm()" class="text-xs text-rose-500 hover:underline font-medium">초기화</button>
         </h2>
 
@@ -57,7 +58,7 @@
               oninput="handlePayInput(this)">
             <span class="absolute right-3.5 top-3.5 text-gray-500 font-bold text-sm">원</span>
           </div>
-          <!-- 빠른 금액 추가 버튼 -->
+          <!-- 빠른 금액 버튼 -->
           <div class="grid grid-cols-4 gap-2 pt-1 text-xs">
             <button type="button" onclick="addPay(100000)" class="py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium">+10만</button>
             <button type="button" onclick="addPay(500000)" class="py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium">+50만</button>
@@ -72,7 +73,7 @@
             <label for="nonTaxable" class="text-xs font-bold text-gray-700">
               비과세액 (식대 등, 원)
             </label>
-            <span class="text-[11px] text-gray-500">기본 식대 한도 20만원</span>
+            <span class="text-[11px] text-gray-500">식대 한도 월 20만원</span>
           </div>
           <div class="relative">
             <input type="text" id="nonTaxable" inputmode="numeric" value="200,000"
@@ -82,9 +83,42 @@
           </div>
         </div>
 
-        <!-- 기준 과세금액 안내 바 -->
+        <!-- 부양가족 수 및 20세 이하 자녀 수 -->
+        <div class="grid grid-cols-2 gap-4 pt-1">
+          <div class="space-y-1.5">
+            <label for="familyCount" class="block text-xs font-bold text-gray-700">
+              부양가족 수 (본인 포함)
+            </label>
+            <select id="familyCount" onchange="calculate()"
+              class="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+              <option value="1" selected>1명 (본인)</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+              <option value="5">5명</option>
+              <option value="6">6명</option>
+              <option value="7">7명</option>
+            </select>
+          </div>
+
+          <div class="space-y-1.5">
+            <label for="childCount" class="block text-xs font-bold text-gray-700">
+              20세 이하 자녀 수
+            </label>
+            <select id="childCount" onchange="calculate()"
+              class="w-full px-3 py-2.5 bg-gray-50 border border-gray-300 rounded-xl text-sm font-semibold text-gray-900 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none">
+              <option value="0" selected>0명</option>
+              <option value="1">1명</option>
+              <option value="2">2명</option>
+              <option value="3">3명</option>
+              <option value="4">4명</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 기준 과세금액 바 -->
         <div class="p-3.5 bg-blue-50/70 rounded-xl border border-blue-100 flex items-center justify-between text-xs">
-          <span class="text-blue-900 font-medium">4대보험 부과 기준소득월액</span>
+          <span class="text-blue-900 font-medium">보험·세금 부과 기준소득월액</span>
           <span class="font-bold text-blue-700 text-sm" id="taxablePayDisplay">2,800,000원</span>
         </div>
 
@@ -96,92 +130,90 @@
         <!-- 예상 실수령액 메인 카드 -->
         <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-6 sm:p-7 text-white shadow-md space-y-4">
           <div class="flex items-center justify-between text-xs text-blue-100">
-            <span>월 예상 실수령액 (4대보험 공제 후)</span>
-            <span class="bg-white/20 px-2 py-0.5 rounded text-[11px]">소득세 별도</span>
+            <span>월 예상 실수령액 (통장 입금액)</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-[11px] font-medium">4대보험 + 소득세 공제</span>
           </div>
           <div class="text-3xl sm:text-4xl font-extrabold tracking-tight" id="takeHomePay">
-            2,727,880원
+            2,670,410원
           </div>
           <div class="pt-3 border-t border-white/20 flex justify-between text-xs text-blue-100">
-            <span>근로자 4대보험 총 공제액</span>
-            <span class="font-bold text-white text-sm" id="totalEmployeeDeduction">- 272,120원</span>
+            <span>총 공제액 합계 (보험료 + 세금)</span>
+            <span class="font-bold text-white text-sm" id="totalAllDeduction">- 329,590원</span>
           </div>
         </div>
 
-        <!-- 상세 내역 아코디언/카드 -->
+        <!-- 상세 내역 카드 -->
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 space-y-4 text-xs">
           <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-            <h3 class="font-bold text-gray-900 text-sm">항목별 공제 및 부담 내역 (2026년 기준)</h3>
+            <h3 class="font-bold text-gray-900 text-sm">항목별 공제 상세 내역</h3>
             <span class="text-gray-400 text-[11px]">원 단위 절사</span>
           </div>
 
-          <!-- 4대 항목 테이블 -->
-          <div class="space-y-3">
-            <!-- 국민연금 -->
-            <div class="flex items-center justify-between py-1 border-b border-gray-50">
-              <div>
-                <span class="font-bold text-gray-800">국민연금</span>
-                <span class="text-gray-400 ml-1">(4.75%)</span>
-              </div>
-              <div class="text-right">
-                <span class="font-bold text-gray-900" id="empPension">133,000원</span>
-                <div class="text-[11px] text-gray-400">회사부담 <span id="compPension">133,000원</span></div>
-              </div>
+          <!-- 4대 보험 공제 섹션 -->
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between text-gray-500 font-semibold text-[11px]">
+              <span>4대 사회보험 공제 (근로자 부담)</span>
+              <span class="text-gray-800 font-bold" id="totalInsuranceDeduction">272,200원</span>
             </div>
 
-            <!-- 건강보험 -->
-            <div class="flex items-center justify-between py-1 border-b border-gray-50">
-              <div>
-                <span class="font-bold text-gray-800">건강보험</span>
-                <span class="text-gray-400 ml-1">(3.595%)</span>
+            <div class="pl-2 space-y-2 border-l-2 border-blue-100">
+              <div class="flex items-center justify-between py-0.5">
+                <div><span class="font-semibold text-gray-700">국민연금</span> <span class="text-gray-400 text-[11px]">(4.75%)</span></div>
+                <div class="text-right">
+                  <span class="font-bold text-gray-900" id="empPension">133,000원</span>
+                  <div class="text-[10px] text-gray-400">회사부담 <span id="compPension">133,000원</span></div>
+                </div>
               </div>
-              <div class="text-right">
-                <span class="font-bold text-gray-900" id="empHealth">100,660원</span>
-                <div class="text-[11px] text-gray-400">회사부담 <span id="compHealth">100,660원</span></div>
-              </div>
-            </div>
 
-            <!-- 노인장기요양보험 -->
-            <div class="flex items-center justify-between py-1 border-b border-gray-50">
-              <div>
-                <span class="font-bold text-gray-800">장기요양보험</span>
-                <span class="text-gray-400 ml-1">(건보의 13.14%)</span>
+              <div class="flex items-center justify-between py-0.5">
+                <div><span class="font-semibold text-gray-700">건강보험</span> <span class="text-gray-400 text-[11px]">(3.595%)</span></div>
+                <div class="text-right">
+                  <span class="font-bold text-gray-900" id="empHealth">100,660원</span>
+                  <div class="text-[10px] text-gray-400">회사부담 <span id="compHealth">100,660원</span></div>
+                </div>
               </div>
-              <div class="text-right">
-                <span class="font-bold text-gray-900" id="empCare">13,220원</span>
-                <div class="text-[11px] text-gray-400">회사부담 <span id="compCare">13,220원</span></div>
-              </div>
-            </div>
 
-            <!-- 고용보험 -->
-            <div class="flex items-center justify-between py-1">
-              <div>
-                <span class="font-bold text-gray-800">고용보험</span>
-                <span class="text-gray-400 ml-1">(0.9%)</span>
+              <div class="flex items-center justify-between py-0.5">
+                <div><span class="font-semibold text-gray-700">장기요양보험</span> <span class="text-gray-400 text-[11px]">(건보의 13.14%)</span></div>
+                <div class="text-right">
+                  <span class="font-bold text-gray-900" id="empCare">13,220원</span>
+                  <div class="text-[10px] text-gray-400">회사부담 <span id="compCare">13,220원</span></div>
+                </div>
               </div>
-              <div class="text-right">
-                <span class="font-bold text-gray-900" id="empEmp">25,200원</span>
-                <div class="text-[11px] text-gray-400">회사부담(1.15%) <span id="compEmp">32,200원</span></div>
-              </div>
-            </div>
 
-            <!-- 산재보험 (회사전액) -->
-            <div class="flex items-center justify-between py-1 bg-gray-50/80 p-2.5 rounded-lg">
-              <div>
-                <span class="font-bold text-gray-700">산재보험</span>
-                <span class="text-gray-400 ml-1">(업종평균 1.47%, 사업주 전액)</span>
-              </div>
-              <div class="text-right">
-                <span class="font-bold text-gray-400">근로자 0원</span>
-                <div class="text-[11px] text-gray-600 font-medium">회사부담 <span id="compAccident">41,160원</span></div>
+              <div class="flex items-center justify-between py-0.5">
+                <div><span class="font-semibold text-gray-700">고용보험</span> <span class="text-gray-400 text-[11px]">(0.9%)</span></div>
+                <div class="text-right">
+                  <span class="font-bold text-gray-900" id="empEmp">25,200원</span>
+                  <div class="text-[10px] text-gray-400">회사부담(1.15%) <span id="compEmp">32,200원</span></div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 사업주 총 부담액 요약 -->
-          <div class="pt-3 border-t border-gray-200 flex items-center justify-between text-xs bg-blue-50/40 p-3 rounded-xl">
-            <span class="font-bold text-gray-800">사업주 총 4대보험 부담금 (예상)</span>
-            <span class="font-extrabold text-blue-700 text-sm" id="totalCompCost">320,240원</span>
+          <!-- 소득세 및 지방소득세 공제 섹션 -->
+          <div class="pt-3 border-t border-gray-100 space-y-2.5">
+            <div class="flex items-center justify-between text-gray-500 font-semibold text-[11px]">
+              <span>세금 공제 (간이세액표 기준)</span>
+              <span class="text-gray-800 font-bold" id="totalTaxDeduction">57,390원</span>
+            </div>
+
+            <div class="pl-2 space-y-1.5 border-l-2 border-emerald-200">
+              <div class="flex items-center justify-between">
+                <div><span class="font-semibold text-gray-700">근로소득세</span></div>
+                <span class="font-bold text-gray-900" id="incomeTax">52,180원</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <div><span class="font-semibold text-gray-700">지방소득세</span> <span class="text-gray-400 text-[11px]">(소득세 10%)</span></div>
+                <span class="font-bold text-gray-900" id="localTax">5,210원</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 사업주 총 인건비 부담액 요약 -->
+          <div class="pt-3 border-t border-gray-200 flex items-center justify-between text-xs bg-gray-50 p-3 rounded-xl">
+            <span class="font-bold text-gray-700">사업주 4대보험 부담금 (예상)</span>
+            <span class="font-extrabold text-blue-700 text-sm" id="totalCompCost">320,220원</span>
           </div>
         </div>
 
@@ -194,32 +226,34 @@
       <span>[구글 애드센스 본문 중간 광고 슬롯]</span>
     </div>
 
-    <!-- 가이드 섹션 (SEO & 정보성) -->
+    <!-- 가이드 섹션 -->
     <section class="bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-6">
-      <h3 class="text-base font-bold text-gray-900">2026년 4대보험 주요 개정 사항 및 실무 가이드</h3>
+      <h3 class="text-base font-bold text-gray-900">2026년 급여 공제 및 세법 개정 가이드</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
         <div class="space-y-2">
-          <h4 class="font-bold text-gray-900">1. 국민연금 및 건강보험료율 인상</h4>
+          <h4 class="font-bold text-gray-900">1. 4대보험 개정 요율 안내</h4>
           <p>
-            • <strong>국민연금:</strong> 기존 9.0%에서 <strong>9.5%</strong>로 인상되었습니다 (근로자 4.75%, 사업주 4.75%).<br>
-            • <strong>건강보험:</strong> 기존 7.09%에서 <strong>7.19%</strong>로 인상되었으며 (근로자 3.595%, 사업주 3.595%), <strong>장기요양보험료율</strong>은 건강보험료의 <strong>13.14%</strong>가 적용됩니다.
+            • <strong>국민연금:</strong> 9.5% (근로자 4.75%, 사업주 4.75%)<br>
+            • <strong>건강보험:</strong> 7.19% (근로자 3.595%, 사업주 3.595%)<br>
+            • <strong>장기요양보험:</strong> 건강보험료의 13.14%<br>
+            • <strong>고용보험:</strong> 근로자 0.9%, 사업주 1.15%(150인 미만 기업 기준)
           </p>
         </div>
         <div class="space-y-2">
-          <h4 class="font-bold text-gray-900">2. 식대 비과세 및 실수령액 유의점</h4>
+          <h4 class="font-bold text-gray-900">2. 근로소득세 및 자녀세액공제 안내</h4>
           <p>
-            • 근로자 식대 비과세 한도는 월 최대 <strong>20만 원</strong>까지 인정됩니다. 총 급여에서 비과세액을 뺀 금액(보수월액)을 기준으로 4대보험이 부과되므로 비과세 항목을 정확히 분리해야 보험료 절감이 가능합니다.<br>
-            • 실제 통장 입금액은 본 계산 결과에서 부양가족 수에 따른 <strong>근로소득세 및 지방소득세</strong>가 추가 차감된 금액입니다.
+            • 소득세는 국세청 근로소득 간이세액표 별표 산식을 기준으로 부양가족 수에 맞춰 원천징수 세액을 정밀 산출합니다.<br>
+            • 기본공제 대상 20세 이하 자녀가 있는 경우 자녀 세액공제(1인 12,500원/월, 2인 29,160원/월)가 자동으로 반영되어 소득세가 감면됩니다.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- 문의 및 제보 섹션 -->
+    <!-- 문의 및 피드백 -->
     <section class="bg-gray-900 text-gray-300 rounded-2xl p-6 sm:p-7 border border-gray-800 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
       <div class="space-y-1">
         <h3 class="text-white font-bold text-base flex items-center gap-2">
-          계산 오차 제보 및 요율 문의
+          계산 오차 제보 및 세법 문의
         </h3>
         <p class="text-xs text-gray-400">
           최신 고시 기준 변경 사항이나 추가가 필요한 급여 간이 계산 항목이 있다면 의견을 보내주세요.
@@ -245,18 +279,17 @@
     </div>
   </footer>
 
-  <!-- 계산 스크립트 -->
+  <!-- 연산 스크립트 -->
   <script>
-    // 2026년 법정 요율 정의
     const RATES = {
-      pension: 0.0475,         // 국민연금 근로자 4.75% (총 9.5%)
-      pensionMin: 410000,      // 국민연금 기준소득월액 하한액
-      pensionMax: 6590000,     // 국민연금 기준소득월액 상한액
-      health: 0.03595,         // 건강보험 근로자 3.595% (총 7.19%)
-      careRatio: 0.1314,       // 장기요양 건강보험료의 13.14%
-      employmentEmp: 0.009,    // 고용보험 근로자 0.9% (실업급여)
-      employmentComp: 0.0115,  // 고용보험 사업주 (실업급여 0.9% + 고용안정 0.25%)
-      accidentComp: 0.0147     // 산재보험 사업주 평균 1.47%
+      pension: 0.0475,
+      pensionMin: 410000,
+      pensionMax: 6590000,
+      health: 0.03595,
+      careRatio: 0.1314,
+      employmentEmp: 0.009,
+      employmentComp: 0.0115,
+      accidentComp: 0.0147
     };
 
     function parseNum(val) {
@@ -264,25 +297,27 @@
     }
 
     function formatNum(num) {
-      return num.toLocaleString('ko-KR');
+      return Number(num).toLocaleString('ko-KR');
+    }
+
+    // 부동소수점 오차 없는 10원 단위 절사 함수
+    function floor10(val) {
+      return Math.floor(Math.round(val) / 10) * 10;
     }
 
     function handlePayInput(el) {
-      const val = parseNum(el.value);
-      el.value = formatNum(val);
+      el.value = formatNum(parseNum(el.value));
       calculate();
     }
 
     function handleNonTaxInput(el) {
-      const val = parseNum(el.value);
-      el.value = formatNum(val);
+      el.value = formatNum(parseNum(el.value));
       calculate();
     }
 
     function addPay(amt) {
       const input = document.getElementById('monthlyPay');
-      const cur = parseNum(input.value);
-      input.value = formatNum(cur + amt);
+      input.value = formatNum(parseNum(input.value) + amt);
       calculate();
     }
 
@@ -295,48 +330,158 @@
     function resetForm() {
       document.getElementById('monthlyPay').value = '3,000,000';
       document.getElementById('nonTaxable').value = '200,000';
+      document.getElementById('familyCount').value = '1';
+      document.getElementById('childCount').value = '0';
       calculate();
+    }
+
+    // 국세청 근로소득 간이세액표 정밀 연산식
+    function calcIncomeTax(monthlyPay, familyCount, childCount) {
+      if (monthlyPay < 1060000) return 0; // 최저 면세점
+
+      const annualGross = monthlyPay * 12;
+
+      // 1. 근로소득공제
+      let earnedDed = 0;
+      if (annualGross <= 5000000) {
+        earnedDed = annualGross * 0.70;
+      } else if (annualGross <= 15000000) {
+        earnedDed = 3500000 + (annualGross - 5000000) * 0.40;
+      } else if (annualGross <= 45000000) {
+        earnedDed = 7500000 + (annualGross - 15000000) * 0.15;
+      } else if (annualGross <= 100000000) {
+        earnedDed = 12000000 + (annualGross - 45000000) * 0.05;
+      } else {
+        earnedDed = 14750000 + (annualGross - 100000000) * 0.02;
+      }
+      earnedDed = Math.min(earnedDed, 20000000);
+      const earnedIncome = annualGross - earnedDed;
+
+      // 2. 인적공제
+      const basicDed = familyCount * 1500000;
+
+      // 3. 특별소득공제 (간이세액표 산식 기준)
+      let specialDed = 0;
+      if (familyCount === 1) {
+        if (annualGross <= 30000000) specialDed = 3100000 + annualGross * 0.04;
+        else if (annualGross <= 45000000) specialDed = 3100000 + annualGross * 0.04 - (annualGross - 30000000) * 0.05;
+        else if (annualGross <= 70000000) specialDed = 3100000 + annualGross * 0.015;
+        else if (annualGross <= 120000000) specialDed = 3100000 + annualGross * 0.005;
+        else specialDed = 3100000;
+      } else if (familyCount === 2) {
+        if (annualGross <= 30000000) specialDed = 3600000 + annualGross * 0.04;
+        else if (annualGross <= 45000000) specialDed = 3600000 + annualGross * 0.04 - (annualGross - 30000000) * 0.05;
+        else if (annualGross <= 70000000) specialDed = 3600000 + annualGross * 0.02;
+        else if (annualGross <= 120000000) specialDed = 3600000 + annualGross * 0.01;
+        else specialDed = 3600000;
+      } else {
+        if (annualGross <= 30000000) specialDed = 5000000 + annualGross * 0.07;
+        else if (annualGross <= 45000000) specialDed = 5000000 + annualGross * 0.07 - (annualGross - 30000000) * 0.05;
+        else if (annualGross <= 70000000) specialDed = 5000000 + annualGross * 0.05;
+        else if (annualGross <= 120000000) specialDed = 5000000 + annualGross * 0.03;
+        else specialDed = 5000000;
+      }
+
+      // 연금보험료 공제 (법정 기준)
+      const pensionDed = Math.min(annualGross, RATES.pensionMax * 12) * 0.045;
+
+      // 과세표준
+      const taxBase = Math.max(0, earnedIncome - basicDed - specialDed - pensionDed);
+
+      // 4. 산출세액 (기본세율)
+      let calcTax = 0;
+      if (taxBase <= 14000000) {
+        calcTax = taxBase * 0.06;
+      } else if (taxBase <= 50000000) {
+        calcTax = 840000 + (taxBase - 14000000) * 0.15;
+      } else if (taxBase <= 88000000) {
+        calcTax = 6240000 + (taxBase - 50000000) * 0.24;
+      } else if (taxBase <= 150000000) {
+        calcTax = 15360000 + (taxBase - 88000000) * 0.35;
+      } else if (taxBase <= 300000000) {
+        calcTax = 37060000 + (taxBase - 150000000) * 0.38;
+      } else {
+        calcTax = 94060000 + (taxBase - 300000000) * 0.40;
+      }
+
+      // 5. 근로소득세액공제
+      let taxCredit = 0;
+      if (calcTax <= 500000) {
+        taxCredit = calcTax * 0.55;
+      } else {
+        taxCredit = 275000 + (calcTax - 500000) * 0.30;
+      }
+
+      let creditLimit = 660000;
+      if (annualGross > 55000000 && annualGross <= 70000000) {
+        creditLimit = Math.max(660000 - (annualGross - 55000000) * 0.005, 630000);
+      } else if (annualGross > 70000000) {
+        creditLimit = Math.max(630000 - (annualGross - 70000000) * 0.5, 500000);
+      }
+      taxCredit = Math.min(taxCredit, creditLimit);
+
+      let finalTax = Math.max(0, calcTax - taxCredit);
+      let monthlyTax = finalTax / 12;
+
+      // 자녀세액공제
+      if (childCount === 1) {
+        monthlyTax -= 12500;
+      } else if (childCount === 2) {
+        monthlyTax -= 29160;
+      } else if (childCount >= 3) {
+        monthlyTax -= (29160 + (childCount - 2) * 25000);
+      }
+
+      return Math.max(0, floor10(monthlyTax));
     }
 
     function calculate() {
       const grossPay = parseNum(document.getElementById('monthlyPay').value);
       const nonTax = parseNum(document.getElementById('nonTaxable').value);
-      const taxable = Math.max(0, grossPay - nonTax);
+      const familyCount = parseInt(document.getElementById('familyCount').value, 10) || 1;
+      const childCount = parseInt(document.getElementById('childCount').value, 10) || 0;
 
+      const taxable = Math.max(0, grossPay - nonTax);
       document.getElementById('taxablePayDisplay').textContent = formatNum(taxable) + '원';
 
-      // 1. 국민연금 (상/하한선 적용)
+      // 1. 국민연금 (상/하한 적용 + 10원 단위 절사)
       let pensionBase = taxable;
       if (pensionBase > 0) {
         if (pensionBase < RATES.pensionMin) pensionBase = RATES.pensionMin;
         if (pensionBase > RATES.pensionMax) pensionBase = RATES.pensionMax;
       }
-      const empPension = Math.floor((pensionBase * RATES.pension) / 10) * 10;
+      const empPension = floor10(pensionBase * RATES.pension);
       const compPension = empPension;
 
       // 2. 건강보험
-      const empHealth = Math.floor((taxable * RATES.health) / 10) * 10;
+      const empHealth = floor10(taxable * RATES.health);
       const compHealth = empHealth;
 
       // 3. 장기요양보험
-      const empCare = Math.floor((empHealth * RATES.careRatio) / 10) * 10;
+      const empCare = floor10(empHealth * RATES.careRatio);
       const compCare = empCare;
 
-      // 4. 고용보험
-      const empEmployment = Math.floor((taxable * RATES.employmentEmp) / 10) * 10;
-      const compEmployment = Math.floor((taxable * RATES.employmentComp) / 10) * 10;
+      // 4. 고용보험 (부동소수점 오차 보정 완료: 280만원 기준 25,200원 산출)
+      const empEmployment = floor10(taxable * RATES.employmentEmp);
+      const compEmployment = floor10(taxable * RATES.employmentComp);
 
       // 5. 산재보험 (회사부담)
-      const compAccident = Math.floor((taxable * RATES.accidentComp) / 10) * 10;
+      const compAccident = floor10(taxable * RATES.accidentComp);
 
-      // 근로자 합계
-      const totalEmpDeduction = empPension + empHealth + empCare + empEmployment;
-      const takeHome = Math.max(0, grossPay - totalEmpDeduction);
+      // 4대보험 소계
+      const totalInsurance = empPension + empHealth + empCare + empEmployment;
+      const totalCompCost = compPension + compHealth + compCare + compEmployment + compAccident;
 
-      // 사업주 합계
-      const totalCompDeduction = compPension + compHealth + compCare + compEmployment + compAccident;
+      // 6. 소득세 & 지방소득세
+      const incomeTax = calcIncomeTax(taxable, familyCount, childCount);
+      const localTax = floor10(incomeTax * 0.1);
+      const totalTax = incomeTax + localTax;
 
-      // 렌더링
+      // 총 공제 및 실수령액
+      const totalAllDeduction = totalInsurance + totalTax;
+      const takeHome = Math.max(0, grossPay - totalAllDeduction);
+
+      // 화면 업데이트
       document.getElementById('empPension').textContent = formatNum(empPension) + '원';
       document.getElementById('compPension').textContent = formatNum(compPension) + '원';
 
@@ -349,11 +494,14 @@
       document.getElementById('empEmp').textContent = formatNum(empEmployment) + '원';
       document.getElementById('compEmp').textContent = formatNum(compEmployment) + '원';
 
-      document.getElementById('compAccident').textContent = formatNum(compAccident) + '원';
+      document.getElementById('totalInsuranceDeduction').textContent = formatNum(totalInsurance) + '원';
+      document.getElementById('incomeTax').textContent = formatNum(incomeTax) + '원';
+      document.getElementById('localTax').textContent = formatNum(localTax) + '원';
+      document.getElementById('totalTaxDeduction').textContent = formatNum(totalTax) + '원';
 
-      document.getElementById('totalEmployeeDeduction').textContent = '- ' + formatNum(totalEmpDeduction) + '원';
+      document.getElementById('totalAllDeduction').textContent = '- ' + formatNum(totalAllDeduction) + '원';
       document.getElementById('takeHomePay').textContent = formatNum(takeHome) + '원';
-      document.getElementById('totalCompCost').textContent = formatNum(totalCompDeduction) + '원';
+      document.getElementById('totalCompCost').textContent = formatNum(totalCompCost) + '원';
     }
 
     // 초기 실행
