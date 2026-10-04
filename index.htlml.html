@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오픈마켓 복합 마진 계산기 | 스마트스토어·쿠팡·오픈마켓 순수익 계산</title>
+  <meta name="description" content="네이버 스마트스토어, 쿠팡 윙, 11번가, G마켓 등 오픈마켓 판매자를 위한 정밀 마진율, 순수익, 부가세 자동 계산기">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 네비게이션 헤더 -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-lg">
+          %
+        </div>
+        <h1 class="text-xl font-bold text-gray-900 tracking-tight">오픈마켓 복합 마진 계산기</h1>
+      </div>
+      <span class="text-xs font-medium px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-100">
+        2026 최신 수수료 반영
+      </span>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main class="max-w-5xl mx-auto px-4 py-8 flex-1 w-full space-y-8">
+
+    <!-- 상단 애드센스 광고 영역 -->
+    <div class="w-full bg-white border border-dashed border-gray-300 rounded-xl p-4 text-center text-xs text-gray-400 min-h-[90px] flex flex-col justify-center items-center">
+      <span>[구글 애드센스 상단 반응형 광고 슬롯]</span>
+      <!-- 실제 승인 후 애드센스 script 코드 삽입 -->
+    </div>
+
+    <!-- 계산기 메인 그리드 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 입력 폼 (좌측 7컬럼) -->
+      <section class="lg:col-span-7 bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 mb-2">1. 플랫폼 수수료 프리셋</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button type="button" onclick="setPreset('smartstore', 5.74)" class="preset-btn px-3 py-2 text-xs font-semibold rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition active:scale-95 text-center">
+              네이버 스마트스토어<br><span class="text-indigo-600 font-bold">5.74%</span>
+            </button>
+            <button type="button" onclick="setPreset('coupang', 10.8)" class="preset-btn px-3 py-2 text-xs font-semibold rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition active:scale-95 text-center">
+              쿠팡 윙 (기본 카테고리)<br><span class="text-indigo-600 font-bold">10.8%</span>
+            </button>
+            <button type="button" onclick="setPreset('openmarket', 13.0)" class="preset-btn px-3 py-2 text-xs font-semibold rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition active:scale-95 text-center">
+              11번가/G마켓<br><span class="text-indigo-600 font-bold">13.0%</span>
+            </button>
+            <button type="button" onclick="setPreset('custom', 0)" class="preset-btn px-3 py-2 text-xs font-semibold rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition active:scale-95 text-center">
+              직접 입력<br><span class="text-gray-500 font-bold">수동</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-100 pt-5 space-y-4">
+          <h2 class="text-lg font-bold text-gray-900">2. 판매 및 매입 금액 입력</h2>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">판매가 (원)</label>
+              <input type="number" id="salePrice" value="25000" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-gray-900" placeholder="0">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">사입/제조 원가 (원)</label>
+              <input type="number" id="costPrice" value="12000" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-gray-900" placeholder="0">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">고객 부담 배송비 (원)</label>
+              <input type="number" id="customerShip" value="3000" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="무료배송 시 0">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">실제 택배 발송비 (원)</label>
+              <input type="number" id="actualShip" value="2800" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="계약 택배 단가">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">포장/부자재비/기타 (원)</label>
+              <input type="number" id="packageCost" value="500" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="박스, 테이프, 뽁뽁이 등">
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">플랫폼 판매 수수료율 (%)</label>
+              <input type="number" step="0.01" id="feeRate" value="5.74" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-semibold text-indigo-600">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-600 mb-1">사업자 과세 유형</label>
+            <select id="taxType" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm bg-white">
+              <option value="general">일반과세자 (부가세 10% 정밀 공제)</option>
+              <option value="simple">간이과세자 (간이율 반영 약 1.5%~3%)</option>
+              <option value="exempt">면세사업자 / 미등록 (부가세 0%)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- 결과 분석 카드 (우측 5컬럼) -->
+      <section class="lg:col-span-5 bg-white p-6 sm:p-7 rounded-2xl shadow-sm border border-indigo-100 ring-2 ring-indigo-500/10 space-y-6 lg:sticky lg:top-24">
+        <div>
+          <h2 class="text-lg font-bold text-gray-900 mb-1">3. 최종 정산 및 마진 분석</h2>
+          <p class="text-xs text-gray-500">실시간 입력값 기준 건당 순이익 산출</p>
+        </div>
+
+        <div class="bg-indigo-50/70 p-5 rounded-xl border border-indigo-100 text-center">
+          <span class="text-xs font-semibold text-indigo-600 block mb-1">건당 최종 순이익</span>
+          <div class="text-3xl font-extrabold text-indigo-900" id="resProfit">0원</div>
+          <div class="mt-2 flex items-center justify-center gap-4 text-xs font-medium">
+            <span class="text-gray-600">순마진율: <strong class="text-indigo-600 text-sm" id="resMargin">0%</strong></span>
+            <span class="text-gray-300">|</span>
+            <span class="text-gray-600">투자수익률(ROI): <strong class="text-indigo-600 text-sm" id="resRoi">0%</strong></span>
+          </div>
+        </div>
+
+        <div class="space-y-3 text-sm">
+          <div class="flex justify-between items-center py-2 border-b border-gray-100">
+            <span class="text-gray-600">총 고객 결제금액</span>
+            <span class="font-bold text-gray-900" id="resTotalRevenue">0원</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-gray-100">
+            <span class="text-gray-600">마켓 차감 수수료</span>
+            <span class="font-semibold text-rose-500" id="resMarketFee">-0원</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-gray-100">
+            <span class="text-gray-600">정산 입금 예정액</span>
+            <span class="font-bold text-gray-900" id="resDeposit">0원</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-gray-100">
+            <span class="text-gray-600">총 지출 비용 (원가+배송+부자재)</span>
+            <span class="font-semibold text-gray-700" id="resTotalExpense">0원</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-gray-100">
+            <span class="text-gray-600">예상 부가가치세 납부액</span>
+            <span class="font-semibold text-amber-600" id="resVat">-0원</span>
+          </div>
+        </div>
+
+        <!-- 목표 마진 역계산 툴 -->
+        <div class="bg-gray-50 p-4 rounded-xl border border-gray-200">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-gray-700">목표 마진율 역계산</span>
+            <span class="text-xs text-gray-400">희망 마진율 입력</span>
+          </div>
+          <div class="flex gap-2">
+            <input type="number" id="targetMarginRate" value="25" class="w-20 px-2 py-1.5 rounded border border-gray-300 text-center text-sm font-bold" placeholder="%">
+            <button type="button" onclick="calcTargetPrice()" class="flex-1 bg-gray-900 hover:bg-black text-white text-xs font-semibold rounded px-3 py-1.5 transition">
+              권장 판매가 산출
+            </button>
+          </div>
+          <div id="targetPriceResult" class="mt-2 text-xs text-gray-600 text-right font-medium"></div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 중간 애드센스 광고 영역 -->
+    <div class="w-full bg-white border border-dashed border-gray-300 rounded-xl p-4 text-center text-xs text-gray-400 min-h-[90px] flex flex-col justify-center items-center">
+      <span>[구글 애드센스 본문 중간 광고 슬롯]</span>
+    </div>
+
+    <!-- SEO 및 실무 가이드 (애드센스 승인 필수 콘텐츠) -->
+    <section class="bg-white p-7 sm:p-9 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+      <h2 class="text-xl font-bold text-gray-900">오픈마켓 판매자 마진율 정밀 계산 가이드</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-3">
+          <h3 class="font-bold text-gray-800 text-base">1. 단순 마진과 정밀 순마진의 차이</h3>
+          <p>
+            단순 마진 계산식(판매가 - 사입가)만 믿고 가격을 책정하면 역마진이 발생하기 쉽습니다. 실제 이커머스 정산에서는 **플랫폼 카테고리 수수료, 연동 수수료, 배송비 결제 수수료, 택배 박스 및 부자재비, 납부 부가가치세**가 차례로 공제됩니다.
+          </p>
+          <ul class="list-disc list-inside space-y-1 text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
+            <li><strong>순이익</strong> = 정산 실수령액 - (사입원가 + 실제 배송비 + 포장비) - 부가세</li>
+            <li><strong>순마진율</strong> = (순이익 ÷ 고객 총 결제금액) × 100%</li>
+            <li><strong>투자수익률 (ROI)</strong> = (순이익 ÷ 총 투입비용) × 100%</li>
+          </ul>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="font-bold text-gray-800 text-base">2. 쿠팡 배송비 수수료 주의사항</h3>
+          <p>
+            네이버 스마트스토어는 유료 배송비에 대해 네이버페이 결제 수수료(약 3.74%) 수준만 차감하지만, **쿠팡 윙(Wing)은 고객이 결제한 배송비(3,000원)에도 상품 카테고리와 동일한 판매 수수료(약 10.8%)가 부과**됩니다. 따라서 무료배송과 유료배송 전환 시 실수령액 차이를 반드시 역산해야 손실을 예방할 수 있습니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터: 문의 및 피드백 전용 섹션 -->
+  <footer class="bg-gray-900 text-gray-300 py-12 border-t border-gray-800 mt-12">
+    <div class="max-w-5xl mx-auto px-4 space-y-8">
+      
+      <!-- 문의 및 피드백 카드 -->
+      <div class="bg-gray-800/80 rounded-2xl p-6 sm:p-7 border border-gray-700/80 shadow-md">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div class="space-y-1">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+              </svg>
+              문의사항 및 개선 피드백
+            </h3>
+            <p class="text-sm text-gray-300 leading-relaxed">
+              계산 오류 제보, 각 플랫폼 수수료 정책 변경사항, 추가를 희망하는 기능 건의 등 모든 피드백을 환영합니다.
+            </p>
+          </div>
+          
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <a href="mailto:insig2268@naver.com" class="inline-flex items-center justify-center px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition shadow active:scale-95">
+              이메일 보내기
+            </a>
+            <button type="button" onclick="copyContactEmail()" class="px-3.5 py-2.5 bg-gray-700 hover:bg-gray-600 text-gray-200 text-sm font-medium rounded-xl transition border border-gray-600 active:scale-95">
+              복사
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-4 border-t border-gray-700/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-gray-400">
+          <div class="flex items-center gap-2">
+            <span>담당자 문의 이메일:</span>
+            <span class="text-gray-100 font-mono text-sm font-semibold select-all" id="contactEmail">insig2268@naver.com</span>
+          </div>
+          <span id="copyNotice" class="text-emerald-400 font-medium hidden">이메일 주소가 클립보드에 복사되었습니다.</span>
+        </div>
+      </div>
+
+      <!-- 면책 조항 및 정보 -->
+      <div class="flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4 border-t border-gray-800 pt-6">
+        <p>© 2026 오픈마켓 복합 마진 계산기. 본 도구의 계산 결과는 참고용이며 실제 정산액과 소폭 상이할 수 있습니다.</p>
+        <div class="flex gap-4">
+          <a href="#" class="hover:text-gray-300 transition">개인정보처리방침</a>
+          <a href="#" class="hover:text-gray-300 transition">이용약관</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- 자바스크립트 계산 로직 -->
+  <script>
+    const inputs = ['salePrice', 'costPrice', 'customerShip', 'actualShip', 'packageCost', 'feeRate', 'taxType'];
+    inputs.forEach(id => {
+      document.getElementById(id).addEventListener('input', calculateMargin);
+      document.getElementById(id).addEventListener('change', calculateMargin);
+    });
+
+    function setPreset(type, rate) {
+      if (type !== 'custom') {
+        document.getElementById('feeRate').value = rate;
+      }
+      calculateMargin();
+    }
+
+    function calculateMargin() {
+      const salePrice = Math.max(0, Number(document.getElementById('salePrice').value) || 0);
+      const costPrice = Math.max(0, Number(document.getElementById('costPrice').value) || 0);
+      const customerShip = Math.max(0, Number(document.getElementById('customerShip').value) || 0);
+      const actualShip = Math.max(0, Number(document.getElementById('actualShip').value) || 0);
+      const packageCost = Math.max(0, Number(document.getElementById('packageCost').value) || 0);
+      const feeRate = Math.max(0, Number(document.getElementById('feeRate').value) || 0);
+      const taxType = document.getElementById('taxType').value;
+
+      const totalRevenue = salePrice + customerShip;
+      const marketFee = Math.round(totalRevenue * (feeRate / 100));
+      const depositAmount = totalRevenue - marketFee;
+      const totalExpense = costPrice + actualShip + packageCost;
+
+      // 부가세 산출 (일반과세 10% 기준)
+      let vat = 0;
+      if (taxType === 'general') {
+        const salesVat = Math.round(totalRevenue - (totalRevenue / 1.1));
+        const purchaseVat = Math.round(totalExpense - (totalExpense / 1.1));
+        const feeVat = Math.round(marketFee - (marketFee / 1.1));
+        vat = Math.max(0, salesVat - purchaseVat - feeVat);
+      } else if (taxType === 'simple') {
+        vat = Math.round(totalRevenue * 0.015);
+      }
+
+      const netProfit = depositAmount - totalExpense - vat;
+      const marginRate = totalRevenue > 0 ? ((netProfit / totalRevenue) * 100).toFixed(1) : 0;
+      const roi = (totalExpense + marketFee) > 0 ? ((netProfit / (totalExpense + marketFee)) * 100).toFixed(1) : 0;
+
+      // UI 바인딩
+      document.getElementById('resProfit').textContent = netProfit.toLocaleString() + '원';
+      document.getElementById('resProfit').className = netProfit >= 0 
+        ? 'text-3xl font-extrabold text-indigo-900' 
+        : 'text-3xl font-extrabold text-rose-600';
+
+      document.getElementById('resMargin').textContent = marginRate + '%';
+      document.getElementById('resRoi').textContent = roi + '%';
+      document.getElementById('resTotalRevenue').textContent = totalRevenue.toLocaleString() + '원';
+      document.getElementById('resMarketFee').textContent = '-' + marketFee.toLocaleString() + '원';
+      document.getElementById('resDeposit').textContent = depositAmount.toLocaleString() + '원';
+      document.getElementById('resTotalExpense').textContent = totalExpense.toLocaleString() + '원';
+      document.getElementById('resVat').textContent = '-' + vat.toLocaleString() + '원';
+    }
+
+    function calcTargetPrice() {
+      const targetRate = Number(document.getElementById('targetMarginRate').value) || 0;
+      const costPrice = Number(document.getElementById('costPrice').value) || 0;
+      const actualShip = Number(document.getElementById('actualShip').value) || 0;
+      const packageCost = Number(document.getElementById('packageCost').value) || 0;
+      const customerShip = Number(document.getElementById('customerShip').value) || 0;
+      const feeRate = Number(document.getElementById('feeRate').value) || 0;
+
+      const totalDirectCost = costPrice + actualShip + packageCost;
+      const decimalMargin = targetRate / 100;
+      const decimalFee = feeRate / 100;
+
+      const divisor = 1 - decimalFee - decimalMargin;
+      if (divisor <= 0) {
+        document.getElementById('targetPriceResult').textContent = '해당 마진율은 수수료 한도로 인해 설정할 수 없습니다.';
+        return;
+      }
+
+      const requiredTotalRev = totalDirectCost / divisor;
+      const targetSale = Math.max(0, Math.round(requiredTotalRev - customerShip));
+
+      document.getElementById('targetPriceResult').innerHTML = 
+        `목표 마진 <strong>${targetRate}%</strong> 달성 권장 판매가: <span class="text-indigo-600 font-bold">${targetSale.toLocaleString()}원</span>`;
+    }
+
+    function copyContactEmail() {
+      const email = document.getElementById('contactEmail').textContent.trim();
+      navigator.clipboard.writeText(email).then(() => {
+        const notice = document.getElementById('copyNotice');
+        notice.classList.remove('hidden');
+        setTimeout(() => {
+          notice.classList.add('hidden');
+        }, 2500);
+      });
+    }
+
+    // 초기 실행
+    calculateMargin();
+  </script>
+</body>
+</html>
