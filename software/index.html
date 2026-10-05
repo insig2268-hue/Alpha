@@ -19,7 +19,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
   <link rel="canonical" href="https://biz-tools.kr/software/index.html">
 
-  <!-- Open Graph (SNS / 메신저 공유) -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BizTools">
   <meta property="og:title" content="업무용 필수 소프트웨어 자료실 | BizTools">
@@ -86,12 +86,12 @@
       <div class="flex items-center justify-between">
         <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
           <span>등록된 유틸리티 목록</span>
-          <span id="softwareCount" class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">0개</span>
+          <span id="softwareCount" class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">8개</span>
         </h3>
       </div>
 
       <div id="softwareGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- 자바스크립트로 자료 카드 렌더링 -->
+        <!-- 자바스크립트로 8개 자료 카드 렌더링 -->
       </div>
     </section>
 
@@ -133,7 +133,7 @@
   <div id="adminModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-200 space-y-4">
       
-      <!-- 1단계: 비밀번호 잠금 화면 -->
+      <!-- 1단계: 비밀번호 인증 -->
       <div id="adminAuthBox" class="space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
           <h3 class="text-sm font-bold text-gray-900">관리자 인증</h3>
@@ -148,7 +148,7 @@
         </div>
       </div>
 
-      <!-- 2단계: 실제 파일 업로드/등록 폼 (인증 성공 시 표시) -->
+      <!-- 2단계: 파일 등록 폼 -->
       <div id="adminUploadBox" class="hidden space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
           <h3 class="text-sm font-bold text-gray-900">신규 소프트웨어 등록</h3>
@@ -158,7 +158,7 @@
         <form id="uploadForm" onsubmit="handleUploadSoftware(event)" class="space-y-3">
           <div>
             <label class="block text-[11px] font-bold text-gray-600 mb-1">소프트웨어 명칭</label>
-            <input type="text" id="swTitle" placeholder="예: 반디집 (Bandizip)" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-bold">
+            <input type="text" id="swTitle" placeholder="예: 알약 / 7-Zip" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-bold">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
@@ -166,13 +166,14 @@
               <select id="swCategory" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none bg-white font-semibold">
                 <option value="압축/뷰어">압축 / 뷰어</option>
                 <option value="화면캡처">화면 캡처 / 그래픽</option>
+                <option value="그래픽/편집">그래픽 / 편집</option>
                 <option value="업무유틸">업무 유틸리티</option>
                 <option value="문서오피스">문서 / 오피스</option>
               </select>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-gray-600 mb-1">버전 또는 용량</label>
-              <input type="text" id="swVersion" placeholder="예: v7.32 (8.4MB)" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
+              <input type="text" id="swVersion" placeholder="예: v1.0 (5.2MB)" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
             </div>
           </div>
           <div>
@@ -216,8 +217,14 @@
 
   <!-- 로직 스크립트 -->
   <script>
-    const ADMIN_SECRET_KEY = "1234";
+    // ==========================================
+    // 1. 관리자 전용 비밀번호 (0309 설정 완료)
+    // ==========================================
+    const ADMIN_SECRET_KEY = "0309";
 
+    // ==========================================
+    // 2. Firebase 환경설정
+    // ==========================================
     const firebaseConfig = {
       apiKey: "",
       authDomain: "",
@@ -242,6 +249,9 @@
       }
     }
 
+    // ==========================================
+    // 3. 필수 소프트웨어 총 8종 기본 데이터
+    // ==========================================
     const defaultSoftwareList = [
       {
         id: "sw_1",
@@ -274,6 +284,38 @@
         version: "v11.15 (100% 무료 무제한)",
         desc: "PDF 병합, 페이지 분할, 압축, 변환, 서명 기능을 오프라인에서 워터마크 없이 무료 제공.",
         url: "https://ko.pdf24.org/"
+      },
+      {
+        id: "sw_5",
+        title: "포토스케이프 X (PhotoScape X)",
+        category: "그래픽/편집",
+        version: "v4.2.8 (무료 에디션)",
+        desc: "상품 상세페이지 일괄 리사이징, 워터마크 삽입, 누끼 따기 및 사진 보정용 필수 그래픽 도구.",
+        url: "https://x.photoscape.org/"
+      },
+      {
+        id: "sw_6",
+        title: "다뷰 인디 (DaView Indy)",
+        category: "문서오피스",
+        version: "v10.0 (기업/개인 100% 무료)",
+        desc: "한글(HWP), 엑셀, 파워포인트, PDF, 도면(CAD) 등 250여 가지 파일을 프로그램 설치 없이 즉시 여는 통합 뷰어.",
+        url: "https://www.datools.kr/"
+      },
+      {
+        id: "sw_7",
+        title: "꿀뷰 (Honeyview)",
+        category: "압축/뷰어",
+        version: "v5.53 (상업용 무료)",
+        desc: "대용량 고화질 이미지와 압축 파일 내 사진들을 압축 풀지 않고 즉시 초고속 로딩하는 이미지 뷰어.",
+        url: "https://kr.bandisoft.com/honeyview/"
+      },
+      {
+        id: "sw_8",
+        title: "Notepad++ (노트패드++)",
+        category: "업무유틸",
+        version: "v8.6 (오픈소스 무료)",
+        desc: "수십만 행 대용량 CSV/텍스트 데이터 정제, 정규식 일괄 치환, 깨진 문자열 복구용 강력한 에디터.",
+        url: "https://notepad-plus-plus.org/"
       }
     ];
 
@@ -287,12 +329,13 @@
     });
 
     function loadSoftware() {
-      const cached = localStorage.getItem("biz_software_list");
+      const cached = localStorage.getItem("biz_software_list_v2");
       if (cached) {
         softwareList = JSON.parse(cached);
       } else {
+        // 기존 4개 캐시를 덮어쓰고 8개 신규 목록 자동 장착
         softwareList = [...defaultSoftwareList];
-        localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+        localStorage.setItem("biz_software_list_v2", JSON.stringify(softwareList));
       }
       renderSoftware();
     }
@@ -317,7 +360,7 @@
             <p class="text-xs text-gray-500 leading-relaxed mb-4">${sw.desc}</p>
           </div>
           <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
-            <a href="${sw.url}" target="_blank" download class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 active:scale-95">
+            <a href="${sw.url}" target="_blank" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 active:scale-95">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
               </svg>
@@ -405,7 +448,7 @@
       };
 
       softwareList.unshift(newSW);
-      localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+      localStorage.setItem("biz_software_list_v2", JSON.stringify(softwareList));
 
       alert("신규 소프트웨어가 성공적으로 등록되었습니다.");
       document.getElementById("uploadForm").reset();
@@ -416,7 +459,7 @@
     function deleteSoftware(idx) {
       if (!confirm("해당 소프트웨어를 자료실에서 삭제하시겠습니까?")) return;
       softwareList.splice(idx, 1);
-      localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+      localStorage.setItem("biz_software_list_v2", JSON.stringify(softwareList));
       renderSoftware();
     }
 
