@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>무료 거래명세서 & 물품 인수증 웹 작성 및 A4 2단 인쇄기 | BizTools</title>
+  <meta name="description" content="설치 없이 웹에서 바로 품목과 금액을 입력하고 A4 한 장에 공급자용/공급받는자용 2단으로 즉시 출력하는 무료 거래명세서 발급기.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/invoice/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="무료 거래명세서 & 물품 인수증 웹 작성 및 A4 2단 인쇄기 | BizTools">
+  <meta property="og:description" content="공급자/공급받는자 2단 동시 출력, 공급가액 및 부가세 10% 자동 계산, 인수자 서명란 지원">
+  <meta property="og:url" content="https://biz-tools.kr/invoice/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .print-page {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 10mm 12mm;
+      }
+    }
+    .inv-table th, .inv-table td {
+      border: 1px solid #4b5563;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 (인쇄 시 숨김) -->
+  <header class="no-print bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../templates/index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 서식 자료실
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">
+          명세
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">거래명세서 & 물품 인수증 작성기</h1>
+      </div>
+      <button type="button" onclick="window.print()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        <span>A4 2단 인쇄하기</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-sm font-bold text-gray-900">거래 정보 입력</h2>
+          <span class="text-[11px] text-emerald-600 font-semibold bg-emerald-50 px-2 py-0.5 rounded">A4 1장 2부(공급자/받는자) 동시출력</span>
+        </div>
+
+        <!-- 공급자 정보 -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">1. 공급자 (내 사업자 정보)</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">등록번호</label>
+              <input type="text" id="inBizNum" placeholder="123-45-67890" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">상호 (상호명)</label>
+              <input type="text" id="inBizName" placeholder="공급사 상호" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">대표자명</label>
+              <input type="text" id="inCeoName" placeholder="대표자명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">연락처 / 전화번호</label>
+              <input type="text" id="inBizTel" placeholder="054-000-0000" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-0.5">사업장 소재지 (주소)</label>
+            <input type="text" id="inBizAddr" placeholder="사업장 주소" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+          </div>
+        </div>
+
+        <!-- 공급받는 자 정보 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">2. 공급받는 자 (납품처/거래처)</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">거래처 상호</label>
+              <input type="text" id="inClientName" value="행복마트" placeholder="납품처 상호" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">담당자 / 인수자 성명</label>
+              <input type="text" id="inReceiverName" placeholder="인수자 성명" value="김철수" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" oninput="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">거래 일자</label>
+              <input type="date" id="inDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500" onchange="updateInvoice()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">과세 구분</label>
+              <select id="inTaxType" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-emerald-500 bg-white" onchange="updateInvoice()">
+                <option value="tax" selected>과세 (부가세 10% 별도)</option>
+                <option value="tax_included">과세 (부가세 포함)</option>
+                <option value="exempt">면세 (부가세 없음)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 품목 리스트 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">3. 납품 품목 리스트</h3>
+            <button type="button" onclick="addItemRow()" class="text-[11px] font-bold text-emerald-600 hover:underline">+ 품목 추가</button>
+          </div>
+          <div id="itemList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- 자바스크립트로 동적 렌더링 -->
+          </div>
+        </div>
+
+        <button type="button" onclick="window.print()" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow flex items-center justify-center gap-2 active:scale-98">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 2단 거래명세서 인쇄하기</span>
+        </button>
+      </section>
+
+      <!-- 우측 A4 인쇄 프리뷰 (실제 인쇄되는 2단 용지) -->
+      <section class="lg:col-span-7 flex flex-col items-center print-wrapper w-full">
+        <div class="no-print w-full flex items-center justify-between mb-2 text-xs text-gray-500 px-1">
+          <span>A4 1장 2분할(상/하단 절취선) 인쇄 미리보기</span>
+          <span class="text-emerald-600 font-semibold">인수자 확인 서명란 지원</span>
+        </div>
+
+        <!-- A4 출력 용지 영역 -->
+        <div class="print-page w-full max-w-[650px] bg-white p-5 rounded-xl shadow-md border border-gray-300 text-gray-900 text-[11px] leading-tight space-y-4">
+          
+          <!-- [상단] 1단: 공급자 보관용 -->
+          <div id="sectionSupplier" class="space-y-2">
+            <!-- 템플릿 렌더링 영역 -->
+          </div>
+
+          <!-- 절취선 (A4 중앙) -->
+          <div class="relative py-2 text-center text-[10px] text-gray-400 font-mono select-none">
+            <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-dashed border-gray-400"></div></div>
+            <span class="relative bg-white px-2 text-gray-500 font-sans">✂ 절 취 선 (A4 분할선) ✂</span>
+          </div>
+
+          <!-- [하단] 2단: 공급받는자 보관용 -->
+          <div id="sectionCustomer" class="space-y-2">
+            <!-- 템플릿 렌더링 영역 -->
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- 푸터 (인쇄 시 숨김) -->
+  <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 거래명세표는 실무 편의를 위한 서식이며 세무상 세금계산서의 법적 효력을 대신하지 않습니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+        <a href="/privacy.html" class="text-gray-300 hover:text-white underline transition">개인정보처리방침</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    let items = [
+      { name: '신선란 30구 (특란)', spec: '1판', qty: 20, price: 5800 },
+      { name: '국내산 양파', spec: '15kg/망', qty: 10, price: 18000 },
+      { name: '식용유 업소용', spec: '18L/캔', qty: 5, price: 42000 }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inDate').value = today;
+
+      // 사업자 정보 불러오기 (간이영수증 캐시 연동)
+      const cached = localStorage.getItem('biz_invoice_info') || localStorage.getItem('biz_receipt_info');
+      if (cached) {
+        try {
+          const info = JSON.parse(cached);
+          if (info.num) document.getElementById('inBizNum').value = info.num;
+          if (info.name) document.getElementById('inBizName').value = info.name;
+          if (info.ceo) document.getElementById('inCeoName').value = info.ceo;
+          if (info.addr) document.getElementById('inBizAddr').value = info.addr;
+          if (info.tel) document.getElementById('inBizTel').value = info.tel;
+        } catch(e) {}
+      }
+
+      renderItemInputs();
+      updateInvoice();
+    });
+
+    function renderItemInputs() {
+      const list = document.getElementById('itemList');
+      list.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1.5 text-xs bg-gray-50 p-2 rounded-lg border border-gray-200 items-center';
+        row.innerHTML = `
+          <input type="text" value="${item.name}" placeholder="품목명" class="col-span-5 px-2 py-1 border rounded bg-white text-xs" oninput="items[${idx}].name = this.value; updateInvoice();">
+          <input type="text" value="${item.spec}" placeholder="규격" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-center" oninput="items[${idx}].spec = this.value; updateInvoice();">
+          <input type="number" value="${item.qty}" min="1" placeholder="수량" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-right" oninput="items[${idx}].qty = Number(this.value) || 0; updateInvoice();">
+          <input type="number" value="${item.price}" min="0" step="100" placeholder="단가" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-right" oninput="items[${idx}].price = Number(this.value) || 0; updateInvoice();">
+          <button type="button" onclick="removeItemRow(${idx})" class="col-span-1 text-rose-500 font-bold text-center text-sm">×</button>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function addItemRow() {
+      if (items.length >= 5) {
+        alert('A4 2단 규격상 1장에 상/하단 동시 출력을 위해 최대 5개 품목까지 권장됩니다.');
+        return;
+      }
+      items.push({ name: '', spec: '', qty: 1, price: 0 });
+      renderItemInputs();
+      updateInvoice();
+    }
+
+    function removeItemRow(idx) {
+      if (items.length <= 1) {
+        alert('최소 1개 품목은 있어야 합니다.');
+        return;
+      }
+      items.splice(idx, 1);
+      renderItemInputs();
+      updateInvoice();
+    }
+
+    function buildStatementHTML(roleText, subColor) {
+      const bizNum = document.getElementById('inBizNum').value.trim() || '123-45-67890';
+      const bizName = document.getElementById('inBizName').value.trim() || '공급자 상호';
+      const ceoName = document.getElementById('inCeoName').value.trim() || '대표자';
+      const bizAddr = document.getElementById('inBizAddr').value.trim() || '사업장 주소';
+      const bizTel = document.getElementById('inBizTel').value.trim() || '-';
+      const clientName = document.getElementById('inClientName').value.trim() || '귀하';
+      const receiverName = document.getElementById('inReceiverName').value.trim() || '';
+      const dateVal = document.getElementById('inDate').value;
+      const taxType = document.getElementById('inTaxType').value;
+
+      let totalSupply = 0;
+      let totalVat = 0;
+
+      let rowsHTML = '';
+      for (let i = 0; i < 5; i++) {
+        if (i < items.length) {
+          const it = items[i];
+          let supply = it.qty * it.price;
+          let vat = 0;
+
+          if (taxType === 'tax') {
+            vat = Math.round(supply * 0.1);
+          } else if (taxType === 'tax_included') {
+            supply = Math.round((it.qty * it.price) / 1.1);
+            vat = (it.qty * it.price) - supply;
+          }
+
+          totalSupply += supply;
+          totalVat += vat;
+
+          rowsHTML += `
+            <tr class="h-6">
+              <td>${i + 1}</td>
+              <td class="text-left pl-1.5 font-semibold">${it.name || ''}</td>
+              <td>${it.spec || ''}</td>
+              <td class="font-mono">${it.qty ? it.qty.toLocaleString() : ''}</td>
+              <td class="text-right pr-1 font-mono">${it.price ? it.price.toLocaleString() : ''}</td>
+              <td class="text-right pr-1 font-mono">${supply ? supply.toLocaleString() : ''}</td>
+              <td class="text-right pr-1 font-mono">${taxType !== 'exempt' && vat ? vat.toLocaleString() : (taxType === 'exempt' ? '면세' : '0')}</td>
+            </tr>
+          `;
+        } else {
+          rowsHTML += `
+            <tr class="h-6">
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+          `;
+        }
+      }
+
+      const grandTotal = totalSupply + totalVat;
+
+      return `
+        <div class="border border-gray-800 p-2.5 rounded">
+          <div class="flex items-center justify-between border-b-2 border-gray-800 pb-1.5 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-base font-black tracking-wider text-gray-900">거 래 명 세 서</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.2 rounded border ${subColor}">${roleText}</span>
+            </div>
+            <div class="text-[10px] text-right">
+              <div>일자: <span class="font-bold">${dateVal}</span></div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-12 gap-1.5 text-[10px] mb-2">
+            <div class="col-span-5 border border-gray-800 p-1.5 flex flex-col justify-between">
+              <div>
+                <span class="text-gray-500">공급받는 자:</span>
+                <div class="text-xs font-black mt-1 text-gray-900">${clientName} 귀하</div>
+              </div>
+              <div class="pt-1 border-t border-gray-200 mt-1 flex justify-between items-center text-[10px]">
+                <span>인수자: <strong>${receiverName || '______'}</strong></span>
+                <span class="text-gray-400">(서명 또는 날인)</span>
+              </div>
+            </div>
+
+            <div class="col-span-7">
+              <table class="inv-table w-full text-left border-collapse text-[10px]">
+                <tr>
+                  <th rowspan="3" class="w-4 text-center bg-gray-100 p-0.5">공<br>급<br>자</th>
+                  <th class="w-12 bg-gray-50 p-0.5 text-gray-600">등록번호</th>
+                  <td colspan="3" class="p-0.5 font-bold font-mono">${bizNum}</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-0.5 text-gray-600">상호(명)</th>
+                  <td class="p-0.5 font-bold">${bizName}</td>
+                  <th class="w-8 bg-gray-50 p-0.5 text-gray-600">성명</th>
+                  <td class="p-0.5">${ceoName} (인)</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-0.5 text-gray-600">사업장</th>
+                  <td class="p-0.5 text-[9px] truncate max-w-[120px]">${bizAddr}</td>
+                  <th class="bg-gray-50 p-0.5 text-gray-600">연락처</th>
+                  <td class="p-0.5 font-mono text-[9px]">${bizTel}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <table class="inv-table w-full text-center border-collapse text-[10px]">
+            <thead>
+              <tr class="bg-gray-100 text-[10px]">
+                <th class="w-6 py-0.5">No</th>
+                <th class="py-0.5">품목명</th>
+                <th class="w-12 py-0.5">규격</th>
+                <th class="w-10 py-0.5">수량</th>
+                <th class="w-14 py-0.5">단가</th>
+                <th class="w-16 py-0.5">공급가액</th>
+                <th class="w-12 py-0.5">세액</th>
+              </tr>
+            </thead>
+            <tbody class="font-sans">
+              ${rowsHTML}
+            </tbody>
+            <tfoot>
+              <tr class="bg-gray-50 font-bold">
+                <td colspan="3" class="py-1">합 계</td>
+                <td colspan="2" class="text-right pr-1 font-mono text-gray-700">공급: ${totalSupply.toLocaleString()}</td>
+                <td class="text-right pr-1 font-mono text-gray-700">세액: ${totalVat.toLocaleString()}</td>
+                <td class="text-right pr-1 font-mono text-xs font-black text-gray-900">${grandTotal.toLocaleString()}원</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      `;
+    }
+
+    function updateInvoice() {
+      // 캐시 저장
+      localStorage.setItem('biz_invoice_info', JSON.stringify({
+        num: document.getElementById('inBizNum').value.trim(),
+        name: document.getElementById('inBizName').value.trim(),
+        ceo: document.getElementById('inCeoName').value.trim(),
+        addr: document.getElementById('inBizAddr').value.trim(),
+        tel: document.getElementById('inBizTel').value.trim()
+      }));
+
+      document.getElementById('sectionSupplier').innerHTML = buildStatementHTML('공급자 보관용 (적색)', 'border-rose-300 text-rose-700 bg-rose-50');
+      document.getElementById('sectionCustomer').innerHTML = buildStatementHTML('공급받는자 보관용 (청색)', 'border-blue-300 text-blue-700 bg-blue-50');
+    }
+  </script>
+</body>
+</html>
