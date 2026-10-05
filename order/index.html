@@ -531,6 +531,88 @@
       document.getElementById('outGrandTotal').textContent = grandTotal.toLocaleString();
       document.getElementById('outKoreanTotal').textContent = numToKorean(grandTotal);
     }
+    // 발주서 엑셀(.xlsx) 파일 생성 및 다운로드
+    function exportToExcel() {
+      const orderDate = document.getElementById('inOrderDate').value || new Date().toISOString().split('T')[0];
+      const myName = document.getElementById('inMyName').value.trim() || '발주처';
+      const myManager = document.getElementById('inMyManager').value.trim() || '-';
+      const myTel = document.getElementById('inMyTel').value.trim() || '-';
+      const deliveryAddr = document.getElementById('inDeliveryAddr').value.trim() || '-';
+      const vendorName = document.getElementById('inVendorName').value.trim() || '공급업체';
+      const dueDate = document.getElementById('inDueDate').value || '-';
+      const paymentTerm = document.getElementById('inPaymentTerm').value.trim() || '-';
+      const taxType = document.getElementById('inTaxType').value;
+
+      // 시트 데이터 구조화
+      const wsData = [
+        ['발 주 서 (Purchase Order)'],
+        [],
+        ['발주번호', `PO-${orderDate.replace(/-/g, '')}-01`, '', '발주일자', orderDate],
+        ['발주처', myName, '', '공급업체', vendorName],
+        ['담당자', myManager, '', '납품희망일', dueDate],
+        ['연락처', myTel, '', '결제조건', paymentTerm],
+        ['납품장소', deliveryAddr, '', '', ''],
+        [],
+        ['No', '품목명', '규격', '수량', '단가', '공급가액', '세액', '합계금액']
+      ];
+
+      let totQty = 0;
+      let totSupply = 0;
+      let totVat = 0;
+
+      items.forEach((it, idx) => {
+        let supply = it.qty * it.price;
+        let vat = 0;
+
+        if (taxType === 'tax') {
+          vat = Math.round(supply * 0.1);
+        } else if (taxType === 'tax_included') {
+          supply = Math.round((it.qty * it.price) / 1.1);
+          vat = (it.qty * it.price) - supply;
+        }
+
+        const lineTotal = supply + vat;
+        totQty += it.qty;
+        totSupply += supply;
+        totVat += vat;
+
+        wsData.push([
+          idx + 1,
+          it.name || '-',
+          it.spec || '-',
+          it.qty,
+          it.price,
+          supply,
+          taxType === 'exempt' ? 0 : vat,
+          lineTotal
+        ]);
+      });
+
+      // 합계 행 추가
+      wsData.push([]);
+      wsData.push([
+        '합계', '', '', totQty, '', totSupply, totVat, totSupply + totVat
+      ]);
+
+      // 워크북 생성
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+      // 열 너비(컬럼 폭) 자동 조절
+      ws['!cols'] = [
+        { wch: 6 },   // No
+        { wch: 26 },  // 품목명
+        { wch: 12 },  // 규격
+        { wch: 10 },  // 수량
+        { wch: 12 },  // 단가
+        { wch: 14 },  // 공급가액
+        { wch: 12 },  // 세액
+        { wch: 14 }   // 합계금액
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws, '발주서');
+      XLSX.writeFile(wb, `발주서_${myName}_${orderDate}.xlsx`);
+    }
   </script>
 </body>
 </html>
