@@ -15,10 +15,22 @@
     gtag('config', 'G-VX0NK93J6K');
   </script>
 
+  <!-- 파비콘 및 표준 URL -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
   <link rel="canonical" href="https://biz-tools.kr/software/index.html">
 
+  <!-- Open Graph (SNS / 메신저 공유) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="업무용 필수 소프트웨어 자료실 | BizTools">
+  <meta property="og:description" content="PC 세팅 필수 무료 압축기, 화면 캡처, 초고속 검색, 오피스 유틸리티 모음 및 실시간 다운로드">
+  <meta property="og:url" content="https://biz-tools.kr/software/index.html">
+
   <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
 
   <!-- Firebase SDK (무료 DB 및 파일 스토리지) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -40,7 +52,6 @@
         </div>
         <h1 class="text-lg font-bold text-gray-900 tracking-tight">업무용 소프트웨어 자료실</h1>
       </div>
-      <!-- 관리자 모드 버튼 -->
       <div>
         <button type="button" onclick="openAdminModal()" class="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 active:scale-95">
           <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +180,6 @@
             <input type="text" id="swDesc" placeholder="프로그램 주요 용도 및 장점" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
           </div>
           
-          <!-- 직접 파일 업로드 or 외부 다운로드 URL 선택 -->
           <div class="space-y-2 pt-2 border-t border-gray-100">
             <label class="block text-[11px] font-bold text-gray-700">파일 등록 방식</label>
             <div class="space-y-2">
@@ -206,16 +216,8 @@
 
   <!-- 로직 스크립트 -->
   <script>
-    // ==========================================
-    // 1. 관리자 전용 비밀번호 설정 (원하는 비밀번호로 변경)
-    // ==========================================
-    const ADMIN_SECRET_KEY = "1234"; // ← 여기에 사용할 관리자 비밀번호를 지정하세요.
+    const ADMIN_SECRET_KEY = "1234";
 
-    // ==========================================
-    // 2. Firebase 환경설정 (선택 사항)
-    // Firebase 콘솔 생성 후 발급된 키를 넣으면 전 세계 유저와 실시간 DB/파일 공유가 활성화됩니다.
-    // 미입력 시 브라우저 로컬 DB(localStorage)로 자동 구동됩니다.
-    // ==========================================
     const firebaseConfig = {
       apiKey: "",
       authDomain: "",
@@ -240,7 +242,6 @@
       }
     }
 
-    // 기본 추천 소프트웨어 초기 데이터
     const defaultSoftwareList = [
       {
         id: "sw_1",
@@ -285,7 +286,6 @@
       loadComments();
     });
 
-    // --- 소프트웨어 데이터 불러오기 ---
     function loadSoftware() {
       const cached = localStorage.getItem("biz_software_list");
       if (cached) {
@@ -330,7 +330,6 @@
       });
     }
 
-    // --- 관리자 인증 및 업로드 처리 ---
     function openAdminModal() {
       document.getElementById("adminModal").classList.remove("hidden");
       if (isAdminUnlocked) {
@@ -371,7 +370,6 @@
 
       let finalDownloadUrl = directUrl;
 
-      // 파일이 첨부된 경우 (Firebase 연동 또는 Object URL 생성)
       if (fileInput.files.length > 0) {
         const file = fileInput.files[0];
         if (isFirebaseReady && storage) {
@@ -388,7 +386,6 @@
             return;
           }
         } else {
-          // 로컬 브라우저 다운로드 링크 생성
           finalDownloadUrl = URL.createObjectURL(file);
         }
       }
@@ -423,7 +420,6 @@
       renderSoftware();
     }
 
-    // --- 방문자 댓글 시스템 ---
     function loadComments() {
       const cached = localStorage.getItem("biz_software_comments");
       if (cached) {
