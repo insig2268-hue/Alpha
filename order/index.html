@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>무료 도소매 자동계산 발주서(PO) 작성 및 A4 인쇄기 | BizTools</title>
+  <meta name="description" content="공급가액, 부가세, 합계금액이 실시간 자동 계산되는 무료 온라인 발주서 작성 도구. 납기일자 및 배송조건 설정 후 A4 정식 서식으로 즉시 인쇄.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/order/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="무료 도소매 자동계산 발주서(PO) 작성 및 A4 인쇄기 | BizTools">
+  <meta property="og:description" content="단가·수량 입력 즉시 부가세 및 합계 자동 산출, A4 표준 규격 발주서 즉시 출력">
+  <meta property="og:url" content="https://biz-tools.kr/order/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .po-paper {
+        border: 2px solid #111827 !important;
+        box-shadow: none !important;
+        padding: 12mm 10mm !important;
+        width: 100% !important;
+        page-break-inside: avoid;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 10mm 10mm;
+      }
+    }
+    .po-table th, .po-table td {
+      border: 1px solid #374151;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 (인쇄 시 숨김) -->
+  <header class="no-print bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../templates/index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 서식 자료실
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+          PO
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">도소매 자동계산 발주서 (PO)</h1>
+      </div>
+      <button type="button" onclick="window.print()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        <span>A4 발주서 인쇄하기</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-sm font-bold text-gray-900">발주 조건 및 품목 입력</h2>
+          <span class="text-[11px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded">수식 자동계산</span>
+        </div>
+
+        <!-- 1. 발주처 (주문자 - 내 사업장) -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">1. 발주처 (주문하는 곳)</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">상호 (발주처명)</label>
+              <input type="text" id="inMyName" placeholder="발주처 상호" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">담당자 / 직급</label>
+              <input type="text" id="inMyManager" placeholder="홍길동 과장" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">연락처 (전화번호)</label>
+              <input type="text" id="inMyTel" placeholder="010-0000-0000" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">이메일</label>
+              <input type="text" id="inMyEmail" placeholder="order@biz.com" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-0.5">납품 장소 (배송지 주소)</label>
+            <input type="text" id="inDeliveryAddr" placeholder="상품 입고 창고 및 매장 주소" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+          </div>
+        </div>
+
+        <!-- 2. 수신처 (공급처 - 공급업체) -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">2. 수신처 (납품 공급업체)</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">공급업체 상호</label>
+              <input type="text" id="inVendorName" value="(주)한국농수산유통" placeholder="공급사명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">수신 담당자 (귀하)</label>
+              <input type="text" id="inVendorManager" value="영업관리팀 귀하" placeholder="담당자명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">발주일자</label>
+              <input type="date" id="inOrderDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" onchange="updatePO()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">납기 희망일자</label>
+              <input type="date" id="inDueDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" onchange="updatePO()">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">과세 구분</label>
+              <select id="inTaxType" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500 bg-white" onchange="updatePO()">
+                <option value="tax" selected>과세 (부가세 10% 별도)</option>
+                <option value="tax_included">과세 (부가세 포함)</option>
+                <option value="exempt">면세 (부가세 0%)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">결제 조건</label>
+              <input type="text" id="inPaymentTerm" value="물품 검수 완료 후 익월 10일 정산" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updatePO()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 발주 품목 리스트 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">3. 발주 품목 목록</h3>
+            <button type="button" onclick="addItemRow()" class="text-[11px] font-bold text-blue-600 hover:underline">+ 품목 추가</button>
+          </div>
+          <div id="itemList" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <!-- 행 항목 동적 삽입 -->
+          </div>
+        </div>
+
+        <button type="button" onclick="window.print()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow flex items-center justify-center gap-2 active:scale-98">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 표준 발주서 인쇄하기</span>
+        </button>
+      </section>
+
+      <!-- 우측 A4 인쇄 프리뷰 -->
+      <section class="lg:col-span-7 flex flex-col items-center print-wrapper w-full">
+        <div class="no-print w-full flex items-center justify-between mb-2 text-xs text-gray-500 px-1">
+          <span>A4 표준 발주서 인쇄 미리보기</span>
+          <span class="text-blue-600 font-semibold">자동 수식 연산 지원</span>
+        </div>
+
+        <!-- 실제 발주서 A4 출력 용지 -->
+        <div class="po-paper w-full max-w-[650px] bg-white p-6 sm:p-8 rounded-xl shadow-md border-2 border-gray-900 text-gray-900 font-serif leading-tight">
+          
+          <!-- 상단 타이틀 & 발주 번호 -->
+          <div class="flex items-center justify-between border-b-2 border-gray-900 pb-3">
+            <div>
+              <h1 class="text-2xl font-black tracking-widest text-gray-900">발 주 서</h1>
+              <span class="text-[10px] text-gray-500 font-sans tracking-normal">( PURCHASE ORDER )</span>
+            </div>
+            <div class="text-right text-[11px] font-sans">
+              <div>발주번호: <span id="outPoNo" class="font-mono font-bold">PO-20261005-01</span></div>
+              <div class="text-gray-600 mt-0.5">발주일자: <span id="outOrderDate" class="font-bold">2026년 10월 05일</span></div>
+            </div>
+          </div>
+
+          <!-- 발주처 / 수신처 정보 블록 -->
+          <div class="grid grid-cols-12 gap-2 border-b-2 border-gray-900 py-3 text-xs font-sans">
+            <!-- 수신처 (공급업체) -->
+            <div class="col-span-5 p-2 bg-gray-50 border border-gray-400 rounded flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] text-gray-500 block">수신 (공급업체)</span>
+                <div class="text-sm font-black text-gray-900 mt-1" id="outVendorName">(주)한국농수산유통</div>
+                <div class="text-xs text-gray-700 mt-0.5" id="outVendorManager">영업관리팀 귀하</div>
+              </div>
+              <div class="text-[11px] text-gray-600 pt-2 border-t border-gray-200 mt-2">
+                아래 조건으로 물품을 발주하오니 기일 내 납품 바랍니다.
+              </div>
+            </div>
+
+            <!-- 발주처 (주문자) -->
+            <div class="col-span-7">
+              <table class="po-table w-full text-left border-collapse text-[10px]">
+                <tr>
+                  <th rowspan="4" class="w-4 text-center bg-gray-100 p-0.5 font-bold">발<br>주<br>처</th>
+                  <th class="w-14 bg-gray-50 p-1 text-gray-600">상호(명)</th>
+                  <td class="p-1 font-bold" id="outMyName">비즈도매유통</td>
+                  <th class="w-10 bg-gray-50 p-1 text-gray-600">담당자</th>
+                  <td class="p-1 font-bold relative" id="outMyManager">
+                    홍길동
+                    <span class="absolute right-1 top-0.5 text-rose-500 text-[10px] border border-rose-400 rounded-full px-1">(인)</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 text-gray-600">연락처</th>
+                  <td class="p-1 font-mono" id="outMyTel">010-0000-0000</td>
+                  <th class="bg-gray-50 p-1 text-gray-600">이메일</th>
+                  <td class="p-1 font-mono text-[9px]" id="outMyEmail">order@biz.com</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 text-gray-600">납품기한</th>
+                  <td colspan="3" class="p-1 font-bold text-blue-700" id="outDueDate">2026년 10월 08일까지</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 text-gray-600">납품장소</th>
+                  <td colspan="3" class="p-1 text-[9px] truncate max-w-[150px]" id="outDeliveryAddr">경상북도 칠곡군 왜관읍 물류센터</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- 총 발주금액 표기란 -->
+          <div class="border-b-2 border-gray-900 py-2.5 px-3 bg-gray-50 flex items-center justify-between text-xs mt-1">
+            <div class="font-bold text-gray-700">
+              총 발주금액 (일금 <span id="outKoreanTotal" class="text-sm font-black text-gray-900 underline underline-offset-4 ml-1">이백 삼십만 원정</span>)
+            </div>
+            <div class="text-base font-black font-mono text-gray-900">
+              ₩ <span id="outGrandTotal">2,300,000</span> (VAT 포함)
+            </div>
+          </div>
+
+          <!-- 품목 명세 테이블 -->
+          <table class="po-table w-full text-center border-collapse text-xs mt-3">
+            <thead>
+              <tr class="bg-gray-100 font-bold text-[11px]">
+                <th class="w-7 py-1.5">No</th>
+                <th class="py-1.5">품 목 명</th>
+                <th class="w-14 py-1.5">규격</th>
+                <th class="w-12 py-1.5">수량</th>
+                <th class="w-20 py-1.5">단가</th>
+                <th class="w-24 py-1.5">공급가액</th>
+                <th class="w-16 py-1.5">세액</th>
+              </tr>
+            </thead>
+            <tbody id="outTableBody" class="font-sans text-[11px]">
+              <!-- 자바스크립트로 7개 라인 렌더링 -->
+            </tbody>
+            <tfoot class="font-sans">
+              <tr class="bg-gray-50 font-bold text-[11px]">
+                <td colspan="3" class="py-1.5 text-center font-serif">합 계</td>
+                <td class="font-mono text-right pr-1" id="outTotalQty">0</td>
+                <td class="text-right pr-1 text-gray-400">-</td>
+                <td class="text-right pr-2 font-mono" id="outTotalSupply">0</td>
+                <td class="text-right pr-2 font-mono" id="outTotalVat">0</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- 하단 특약사항 및 서명 -->
+          <div class="mt-4 pt-3 border-t border-gray-300 grid grid-cols-12 gap-3 text-[10px] font-sans">
+            <div class="col-span-8 space-y-1 text-gray-600">
+              <div><strong>[결제조건]</strong> <span id="outPaymentTerm">물품 검수 완료 후 익월 10일 정산</span></div>
+              <div><strong>[특약사항]</strong> 1. 파손 및 규격 미달품은 전량 반품 또는 교환 처리함.</div>
+              <div class="pl-14">2. 납품 시 본 발주서 사본 및 거래명세표를 필히 동봉 바랍니다.</div>
+            </div>
+            <div class="col-span-4 border border-gray-400 p-2 rounded text-center flex flex-col justify-between">
+              <span class="text-gray-500 text-[9px]">발주 확인 서명</span>
+              <div class="text-xs font-bold text-gray-800 py-1">발주자: (인)</div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 가이드 (인쇄 시 숨김) -->
+    <section class="no-print bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-900">발주서(Purchase Order) 작성 및 실무 유의사항</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">1. 발주서의 법적 효력과 계약 성립</h4>
+          <p>
+            발주서는 구매자가 공급자에게 계약 체결을 요청하는 '청약'의 성격을 가집니다. 공급업체가 이를 수락(납품 약속 또는 수주 확인)하면 법적으로 매매 계약이 성립하므로, 단가, 규격, 납기일을 정확하게 명시해야 분쟁을 예방할 수 있습니다.
+          </p>
+        </div>
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">2. 검수 기준 및 하자 반품 명시</h4>
+          <p>
+            식자재, 농수산물, 공산품 등 신선도와 규격이 중요한 품목은 '물품 입고 후 검수 완료 시점'을 납품 인정 기준으로 잡아야 불량 제품 입고 시 지체상금 청구 또는 즉각 반품 조치가 용이합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (인쇄 시 숨김) -->
+  <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 발주서 인쇄 서식은 실무 편의용 표준 참고 양식입니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../invoice/index.html" class="hover:text-white transition">거래명세서 발급기</a>
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    let items = [
+      { name: '신선란 30구 (특란)', spec: '1판', qty: 100, price: 5800 },
+      { name: '국내산 양파', spec: '15kg/망', qty: 30, price: 18000 },
+      { name: '식용유 업소용', spec: '18L/캔', qty: 20, price: 42000 }
+    ];
+
+    function numToKorean(num) {
+      if (num === 0) return '영';
+      const units = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+      const small = ['', '십', '백', '천'];
+      const big = ['', '만', '억', '조'];
+      let result = '';
+      let unitIdx = 0;
+
+      while (num > 0) {
+        let chunk = num % 10000;
+        if (chunk > 0) {
+          let chunkStr = '';
+          for (let i = 0; i < 4; i++) {
+            let digit = chunk % 10;
+            if (digit > 0) chunkStr = units[digit] + small[i] + chunkStr;
+            chunk = Math.floor(chunk / 10);
+          }
+          result = chunkStr + big[unitIdx] + ' ' + result;
+        }
+        num = Math.floor(num / 10000);
+        unitIdx++;
+      }
+      return result.trim() + ' 원정';
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inOrderDate').value = today;
+
+      // 3일 뒤를 기본 납기일로 지정
+      const d = new Date();
+      d.setDate(d.getDate() + 3);
+      document.getElementById('inDueDate').value = d.toISOString().split('T')[0];
+
+      // 이전 서식에서 저장된 내 사업자 정보 불러오기
+      const cached = localStorage.getItem('biz_order_info') || localStorage.getItem('biz_invoice_info') || localStorage.getItem('biz_receipt_info');
+      if (cached) {
+        try {
+          const info = JSON.parse(cached);
+          if (info.name) document.getElementById('inMyName').value = info.name;
+          if (info.ceo) document.getElementById('inMyManager').value = info.ceo;
+          if (info.tel) document.getElementById('inMyTel').value = info.tel;
+          if (info.addr) document.getElementById('inDeliveryAddr').value = info.addr;
+        } catch(e) {}
+      }
+
+      renderItemInputs();
+      updatePO();
+    });
+
+    function renderItemInputs() {
+      const list = document.getElementById('itemList');
+      list.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-12 gap-1.5 text-xs bg-gray-50 p-2 rounded-lg border border-gray-200 items-center';
+        row.innerHTML = `
+          <input type="text" value="${item.name}" placeholder="품목명" class="col-span-5 px-2 py-1 border rounded bg-white text-xs" oninput="items[${idx}].name = this.value; updatePO();">
+          <input type="text" value="${item.spec}" placeholder="규격" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-center" oninput="items[${idx}].spec = this.value; updatePO();">
+          <input type="number" value="${item.qty}" min="1" placeholder="수량" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-right" oninput="items[${idx}].qty = Number(this.value) || 0; updatePO();">
+          <input type="number" value="${item.price}" min="0" step="100" placeholder="단가" class="col-span-2 px-1.5 py-1 border rounded bg-white text-xs text-right" oninput="items[${idx}].price = Number(this.value) || 0; updatePO();">
+          <button type="button" onclick="removeItemRow(${idx})" class="col-span-1 text-rose-500 font-bold text-center text-sm">×</button>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function addItemRow() {
+      if (items.length >= 7) {
+        alert('A4 단일 용지 레이아웃 유지상 최대 7개 품목까지 작성을 권장합니다.');
+        return;
+      }
+      items.push({ name: '', spec: '', qty: 1, price: 0 });
+      renderItemInputs();
+      updatePO();
+    }
+
+    function removeItemRow(idx) {
+      if (items.length <= 1) {
+        alert('최소 1개 품목은 있어야 합니다.');
+        return;
+      }
+      items.splice(idx, 1);
+      renderItemInputs();
+      updatePO();
+    }
+
+    function updatePO() {
+      const myName = document.getElementById('inMyName').value.trim() || '발주처 상호';
+      const myManager = document.getElementById('inMyManager').value.trim() || '담당자';
+      const myTel = document.getElementById('inMyTel').value.trim() || '-';
+      const myEmail = document.getElementById('inMyEmail').value.trim() || '-';
+      const deliveryAddr = document.getElementById('inDeliveryAddr').value.trim() || '-';
+      const vendorName = document.getElementById('inVendorName').value.trim() || '공급업체 귀하';
+      const vendorManager = document.getElementById('inVendorManager').value.trim() || '담당자 귀하';
+      const orderDate = document.getElementById('inOrderDate').value;
+      const dueDate = document.getElementById('inDueDate').value;
+      const taxType = document.getElementById('inTaxType').value;
+      const paymentTerm = document.getElementById('inPaymentTerm').value.trim();
+
+      // 로컬 캐시 저장
+      localStorage.setItem('biz_order_info', JSON.stringify({
+        name: myName, ceo: myManager, tel: myTel, addr: deliveryAddr
+      }));
+
+      // 날짜 포맷
+      if (orderDate) {
+        const [y, m, d] = orderDate.split('-');
+        document.getElementById('outOrderDate').textContent = `${y}년 ${m}월 ${d}일`;
+        document.getElementById('outPoNo').textContent = `PO-${y}${m}${d}-01`;
+      }
+      if (dueDate) {
+        const [y, m, d] = dueDate.split('-');
+        document.getElementById('outDueDate').textContent = `${y}년 ${m}월 ${d}일 납품 희망`;
+      }
+
+      document.getElementById('outMyName').textContent = myName;
+      document.getElementById('outMyManager').innerHTML = `${myManager} <span class="absolute right-1 top-0.5 text-rose-500 text-[10px] border border-rose-400 rounded-full px-1">(인)</span>`;
+      document.getElementById('outMyTel').textContent = myTel;
+      document.getElementById('outMyEmail').textContent = myEmail;
+      document.getElementById('outDeliveryAddr').textContent = deliveryAddr;
+      document.getElementById('outVendorName').textContent = vendorName;
+      document.getElementById('outVendorManager').textContent = vendorManager;
+      document.getElementById('outPaymentTerm').textContent = paymentTerm;
+
+      // 품목 테이블 연산
+      let totalQty = 0;
+      let totalSupply = 0;
+      let totalVat = 0;
+      const tbody = document.getElementById('outTableBody');
+      tbody.innerHTML = '';
+
+      for (let i = 0; i < 7; i++) {
+        const tr = document.createElement('tr');
+        tr.className = 'h-6';
+        if (i < items.length) {
+          const it = items[i];
+          let supply = it.qty * it.price;
+          let vat = 0;
+
+          if (taxType === 'tax') {
+            vat = Math.round(supply * 0.1);
+          } else if (taxType === 'tax_included') {
+            supply = Math.round((it.qty * it.price) / 1.1);
+            vat = (it.qty * it.price) - supply;
+          }
+
+          totalQty += it.qty;
+          totalSupply += supply;
+          totalVat += vat;
+
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td class="text-left pl-2 font-semibold">${it.name || ''}</td>
+            <td>${it.spec || ''}</td>
+            <td class="font-mono text-right pr-2">${it.qty ? it.qty.toLocaleString() : ''}</td>
+            <td class="font-mono text-right pr-2">${it.price ? it.price.toLocaleString() : ''}</td>
+            <td class="font-mono text-right pr-2 font-bold">${supply ? supply.toLocaleString() : ''}</td>
+            <td class="font-mono text-right pr-2">${taxType !== 'exempt' && vat ? vat.toLocaleString() : (taxType === 'exempt' ? '면세' : '0')}</td>
+          `;
+        } else {
+          tr.innerHTML = `<td></td><td></td><td></td><td></td><td></td><td></td><td></td>`;
+        }
+        tbody.appendChild(tr);
+      }
+
+      const grandTotal = totalSupply + totalVat;
+      document.getElementById('outTotalQty').textContent = totalQty.toLocaleString();
+      document.getElementById('outTotalSupply').textContent = totalSupply.toLocaleString();
+      document.getElementById('outTotalVat').textContent = totalVat.toLocaleString();
+      document.getElementById('outGrandTotal').textContent = grandTotal.toLocaleString();
+      document.getElementById('outKoreanTotal').textContent = numToKorean(grandTotal);
+    }
+  </script>
+</body>
+</html>
