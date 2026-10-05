@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>무료 거래명세서 & 물품 인수증 웹 작성 및 A4 2단 인쇄기 | BizTools</title>
-  <meta name="description" content="설치 없이 웹에서 바로 품목과 금액을 입력하고 A4 한 장에 공급자용/공급받는자용 2단으로 즉시 출력하는 무료 거래명세서 발급기.">
+  <meta name="description" content="품목별 개별 과세/면세 설정 지원. 설치 없이 웹에서 바로 품목과 금액을 입력하고 A4 한 장에 공급자용/공급받는자용 2단으로 즉시 출력 및 서식 유지 엑셀 다운로드.">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
@@ -24,7 +24,7 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="BizTools">
   <meta property="og:title" content="무료 거래명세서 & 물품 인수증 웹 작성 및 A4 2단 인쇄기 | BizTools">
-  <meta property="og:description" content="공급자/공급받는자 2단 동시 출력, 품목별 과세·면세 개별 설정, 인수자 서명란 지원 및 엑셀 다운로드">
+  <meta property="og:description" content="공급자/공급받는자 2단 동시 출력, 품목별 과세·면세 개별 설정, 인수자 서명란 지원 및 2단 엑셀 다운로드">
   <meta property="og:url" content="https://biz-tools.kr/invoice/index.html">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -87,7 +87,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
           </svg>
-          <span>엑셀 다운로드 (.xlsx)</span>
+          <span>A4 2단 엑셀 다운로드 (.xlsx)</span>
         </button>
         <button type="button" onclick="window.print()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -104,7 +104,7 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
       
-      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <!-- 좌측 입력 패널 -->
       <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
         <div class="flex items-center justify-between border-b border-gray-100 pb-3">
           <h2 class="text-sm font-bold text-gray-900">거래 정보 입력</h2>
@@ -164,7 +164,7 @@
             <button type="button" onclick="addItemRow()" class="text-[11px] font-bold text-emerald-600 hover:underline">+ 품목 추가</button>
           </div>
           <div id="itemList" class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
-            <!-- 자바스크립트로 동적 렌더링 -->
+            <!-- 행 항목 동적 삽입 -->
           </div>
         </div>
 
@@ -176,7 +176,7 @@
         </button>
       </section>
 
-      <!-- 우측 A4 인쇄 프리뷰 (실제 인쇄되는 2단 용지) -->
+      <!-- 우측 A4 인쇄 프리뷰 -->
       <section class="lg:col-span-7 flex flex-col items-center print-wrapper w-full">
         <div class="no-print w-full flex items-center justify-between mb-2 text-xs text-gray-500 px-1">
           <span>A4 1장 2분할(상/하단 절취선) 인쇄 미리보기</span>
@@ -187,20 +187,16 @@
         <div class="print-page w-full max-w-[650px] bg-white p-5 rounded-xl shadow-md border border-gray-300 text-gray-900 text-[11px] leading-tight space-y-4">
           
           <!-- [상단] 1단: 공급자 보관용 -->
-          <div id="sectionSupplier" class="space-y-2">
-            <!-- 템플릿 렌더링 영역 -->
-          </div>
+          <div id="sectionSupplier" class="space-y-2"></div>
 
-          <!-- 절취선 (A4 중앙) -->
+          <!-- 절취선 -->
           <div class="relative py-2 text-center text-[10px] text-gray-400 font-mono select-none">
             <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-dashed border-gray-400"></div></div>
             <span class="relative bg-white px-2 text-gray-500 font-sans">✂ 절 취 선 (A4 분할선) ✂</span>
           </div>
 
           <!-- [하단] 2단: 공급받는자 보관용 -->
-          <div id="sectionCustomer" class="space-y-2">
-            <!-- 템플릿 렌더링 영역 -->
-          </div>
+          <div id="sectionCustomer" class="space-y-2"></div>
 
         </div>
       </section>
@@ -208,14 +204,14 @@
     </div>
   </main>
 
-  <!-- 푸터 (인쇄 시 숨김) -->
+  <!-- 푸터 -->
   <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
     <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p>© 2026 BizTools. 본 거래명세표는 실무 편의를 위한 서식이며 세무상 세금계산서의 법적 효력을 대신하지 않습니다.</p>
       <div class="flex items-center gap-4">
         <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../order/index.html" class="hover:text-white transition">발주서 작성기</a>
         <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
-        <a href="/privacy.html" class="text-gray-300 hover:text-white underline transition">개인정보처리방침</a>
       </div>
     </div>
   </footer>
@@ -232,7 +228,6 @@
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('inDate').value = today;
 
-      // 사업자 정보 불러오기 (간이영수증/발주서 캐시 연동)
       const cached = localStorage.getItem('biz_invoice_info') || localStorage.getItem('biz_order_info') || localStorage.getItem('biz_receipt_info');
       if (cached) {
         try {
@@ -249,7 +244,7 @@
       updateInvoice();
     });
 
-    // 2줄 카드형 품목 입력 (글자 짤림 방지 및 개별 과세/면세 선택)
+    // 2줄 카드형 품목 입력
     function renderItemInputs() {
       const list = document.getElementById('itemList');
       list.innerHTML = '';
@@ -414,9 +409,11 @@
             </tbody>
             <tfoot>
               <tr class="bg-gray-50 font-bold">
-                <td colspan="3" class="py-1">합 계</td>
-                <td colspan="2" class="text-right pr-1 font-mono text-gray-700">공급: ${totalSupply.toLocaleString()}</td>
-                <td class="text-right pr-1 font-mono text-gray-700">세액: ${totalVat.toLocaleString()}</td>
+                <td colspan="5" class="py-1 text-center font-serif">합 계</td>
+                <td class="text-right pr-1 font-mono text-gray-700 text-[9px]">
+                  공급: ${totalSupply.toLocaleString()}<br>
+                  세액: ${totalVat.toLocaleString()}
+                </td>
                 <td class="text-right pr-1 font-mono text-xs font-black text-gray-900">${grandTotal.toLocaleString()}원</td>
               </tr>
             </tfoot>
@@ -426,7 +423,6 @@
     }
 
     function updateInvoice() {
-      // 캐시 저장
       localStorage.setItem('biz_invoice_info', JSON.stringify({
         num: document.getElementById('inBizNum').value.trim(),
         name: document.getElementById('inBizName').value.trim(),
@@ -439,7 +435,7 @@
       document.getElementById('sectionCustomer').innerHTML = buildStatementHTML('공급받는자 보관용 (청색)', 'border-blue-300 text-blue-700 bg-blue-50');
     }
 
-    // 웹 서식과 1:1 완벽 일치하는 거래명세서 ExcelJS 엑셀 변환 함수
+    // 웹 서식과 100% 일치하는 A4 2단(상/하단 절취선) ExcelJS 엑셀 변환 함수
     async function exportToExcel() {
       const bizNum = document.getElementById('inBizNum').value.trim() || '123-45-67890';
       const bizName = document.getElementById('inBizName').value.trim() || '공급자 상호';
@@ -450,12 +446,23 @@
       const receiverName = document.getElementById('inReceiverName').value.trim() || '';
       const dateVal = document.getElementById('inDate').value || new Date().toISOString().split('T')[0];
 
+      // 합계 금액 미리 연산
+      let totalSupply = 0;
+      let totalVat = 0;
+      items.forEach(it => {
+        const supply = it.qty * it.price;
+        const vat = it.isFree ? 0 : Math.round(supply * 0.1);
+        totalSupply += supply;
+        totalVat += vat;
+      });
+      const grandTotal = totalSupply + totalVat;
+
       const wb = new ExcelJS.Workbook();
       const ws = wb.addWorksheet('거래명세서', {
         views: [{ showGridLines: true }]
       });
 
-      // 열 너비 설정 (A ~ G열)
+      // 7개 컬럼 너비 설정 (A~G)
       ws.columns = [
         { width: 7 },   // A: No
         { width: 26 },  // B: 품목명
@@ -463,7 +470,7 @@
         { width: 10 },  // D: 수량
         { width: 14 },  // E: 단가
         { width: 16 },  // F: 공급가액
-        { width: 14 }   // G: 세액
+        { width: 15 }   // G: 세액
       ];
 
       const fontDefault = { name: '맑은 고딕', size: 9 };
@@ -476,208 +483,212 @@
         right: { style: 'thin', color: { argb: 'FF9CA3AF' } }
       };
 
-      // 1. 타이틀 & 발행일자 (1~2행)
-      ws.mergeCells('A1:E2');
-      const titleCell = ws.getCell('A1');
-      titleCell.value = '거  래  명  세  서';
-      titleCell.font = { name: '맑은 고딕', size: 16, bold: true, color: { argb: 'FF111827' } };
-      titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+      // 1부(상단 또는 하단)를 엑셀 행에 그리는 공통 함수
+      function renderOneStatement(startRow, roleText, badgeTextColor, badgeBgColor, badgeBorderColor) {
+        // 1. 헤더: 타이틀 + 배지 + 일자
+        ws.mergeCells(`A${startRow}:C${startRow+1}`);
+        const titleCell = ws.getCell(`A${startRow}`);
+        titleCell.value = '거  래  명  세  서';
+        titleCell.font = { name: '맑은 고딕', size: 14, bold: true, color: { argb: 'FF111827' } };
+        titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
 
-      ws.getCell('F1').value = '발행구분:';
-      ws.getCell('F1').font = fontDefault;
-      ws.getCell('G1').value = '공급자/받는자용';
-      ws.getCell('G1').font = fontBold;
+        ws.mergeCells(`D${startRow}:E${startRow}`);
+        const badgeCell = ws.getCell(`D${startRow}`);
+        badgeCell.value = roleText;
+        badgeCell.font = { name: '맑은 고딕', size: 8.5, bold: true, color: { argb: badgeTextColor } };
+        badgeCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: badgeBgColor } };
+        badgeCell.alignment = { vertical: 'middle', horizontal: 'center' };
+        const badgeBorder = {
+          top: { style: 'thin', color: { argb: badgeBorderColor } },
+          left: { style: 'thin', color: { argb: badgeBorderColor } },
+          bottom: { style: 'thin', color: { argb: badgeBorderColor } },
+          right: { style: 'thin', color: { argb: badgeBorderColor } }
+        };
+        badgeCell.border = badgeBorder;
+        ws.getCell(`E${startRow}`).border = badgeBorder;
 
-      ws.getCell('F2').value = '거래일자:';
-      ws.getCell('F2').font = fontDefault;
-      ws.getCell('G2').value = dateVal;
-      ws.getCell('G2').font = fontBold;
+        ws.mergeCells(`F${startRow}:G${startRow}`);
+        const dateCell = ws.getCell(`F${startRow}`);
+        dateCell.value = `일자: ${dateVal}`;
+        dateCell.font = fontBold;
+        dateCell.alignment = { vertical: 'middle', horizontal: 'right' };
 
-      // 2. 공급받는 자 (A4:C7)
-      ws.mergeCells('A4:C4');
-      ws.getCell('A4').value = '공급받는 자 (납품처)';
-      ws.getCell('A4').font = { name: '맑은 고딕', size: 8, color: { argb: 'FF6B7280' } };
-      ws.getCell('A4').fill = fillGray;
+        // 2. 공급받는 자(A~C) & 공급자(D~G) 박스
+        const boxR = startRow + 2;
 
-      ws.mergeCells('A5:C5');
-      ws.getCell('A5').value = `${clientName} 귀하`;
-      ws.getCell('A5').font = { name: '맑은 고딕', size: 11, bold: true };
+        // 공급받는 자
+        ws.mergeCells(`A${boxR}:C${boxR}`);
+        const lblClient = ws.getCell(`A${boxR}`);
+        lblClient.value = '공급받는 자:';
+        lblClient.font = { name: '맑은 고딕', size: 8, color: { argb: 'FF6B7280' } };
+        lblClient.alignment = { vertical: 'middle', indent: 1 };
 
-      ws.mergeCells('A6:C7');
-      ws.getCell('A6').value = `물품 인수자: ${receiverName || '______'} (서명 또는 날인)\n위와 같이 정히 영수(인수)함.`;
-      ws.getCell('A6').font = { name: '맑은 고딕', size: 8, color: { argb: 'FF4B5563' } };
-      ws.getCell('A6').alignment = { wrapText: true, vertical: 'middle' };
+        ws.mergeCells(`A${boxR+1}:C${boxR+1}`);
+        const nameClient = ws.getCell(`A${boxR+1}`);
+        nameClient.value = `${clientName} 귀하`;
+        nameClient.font = { name: '맑은 고딕', size: 11, bold: true };
+        nameClient.alignment = { vertical: 'middle', indent: 1 };
 
-      // 3. 공급자 정보 (D4:G7)
-      ws.getCell('D4').value = '등록번호';
-      ws.getCell('D4').fill = fillGray;
-      ws.getCell('D4').font = fontBold;
-      ws.mergeCells('E4:G4');
-      ws.getCell('E4').value = bizNum;
-      ws.getCell('E4').font = fontBold;
+        ws.mergeCells(`A${boxR+2}:C${boxR+3}`);
+        const signClient = ws.getCell(`A${boxR+2}`);
+        signClient.value = `인수자: ${receiverName || '______'}    (서명 또는 날인)\n위와 같이 물품을 정히 영수(인수)함.`;
+        signClient.font = { name: '맑은 고딕', size: 8, color: { argb: 'FF4B5563' } };
+        signClient.alignment = { vertical: 'middle', indent: 1, wrapText: true };
 
-      ws.getCell('D5').value = '상호(명)';
-      ws.getCell('D5').fill = fillGray;
-      ws.getCell('D5').font = fontBold;
-      ws.getCell('E5').value = bizName;
-      ws.getCell('E5').font = fontBold;
-      ws.getCell('F5').value = '성명';
-      ws.getCell('F5').fill = fillGray;
-      ws.getCell('F5').font = fontBold;
-      ws.getCell('G5').value = `${ceoName} (인)`;
-      ws.getCell('G5').font = fontBold;
-
-      ws.getCell('D6').value = '사업장';
-      ws.getCell('D6').fill = fillGray;
-      ws.getCell('D6').font = fontBold;
-      ws.mergeCells('E6:G6');
-      ws.getCell('E6').value = bizAddr;
-      ws.getCell('E6').font = fontDefault;
-
-      ws.getCell('D7').value = '연락처';
-      ws.getCell('D7').fill = fillGray;
-      ws.getCell('D7').font = fontBold;
-      ws.mergeCells('E7:G7');
-      ws.getCell('E7').value = bizTel;
-      ws.getCell('E7').font = fontDefault;
-
-      for (let r = 4; r <= 7; r++) {
-        for (let c = 1; c <= 7; c++) {
-          ws.getRow(r).getCell(c).border = borderThin;
-        }
-      }
-
-      // 4. 품목 헤더 (9행)
-      const headers = ['No', '품 목 명', '규격', '수량', '단가', '공급가액', '세액'];
-      const hRow = ws.getRow(9);
-      headers.forEach((h, idx) => {
-        const cell = hRow.getCell(idx + 1);
-        cell.value = h;
-        cell.font = fontBold;
-        cell.fill = fillGray;
-        cell.alignment = { horizontal: 'center', vertical: 'middle' };
-        cell.border = borderThin;
-      });
-
-      // 5. 품목 데이터 행 (최소 5행)
-      let startRow = 10;
-      const maxRows = Math.max(items.length, 5);
-      let totQty = 0, totSupply = 0, totVat = 0;
-
-      for (let i = 0; i < maxRows; i++) {
-        const rowNum = startRow + i;
-        const row = ws.getRow(rowNum);
-
-        if (i < items.length) {
-          const it = items[i];
-          const supply = it.qty * it.price;
-          const vat = it.isFree ? 0 : Math.round(supply * 0.1);
-
-          totQty += it.qty;
-          totSupply += supply;
-          totVat += vat;
-
-          row.getCell(1).value = i + 1;
-          row.getCell(1).alignment = { horizontal: 'center' };
-
-          row.getCell(2).value = it.name;
-          row.getCell(2).alignment = { horizontal: 'left', indent: 1 };
-
-          row.getCell(3).value = it.spec || '-';
-          row.getCell(3).alignment = { horizontal: 'center' };
-
-          row.getCell(4).value = it.qty;
-          row.getCell(4).numFmt = '#,##0';
-          row.getCell(4).alignment = { horizontal: 'right' };
-
-          row.getCell(5).value = it.price;
-          row.getCell(5).numFmt = '#,##0';
-          row.getCell(5).alignment = { horizontal: 'right' };
-
-          row.getCell(6).value = supply;
-          row.getCell(6).numFmt = '#,##0';
-          row.getCell(6).alignment = { horizontal: 'right' };
-
-          if (it.isFree) {
-            row.getCell(7).value = '면세';
-            row.getCell(7).alignment = { horizontal: 'center' };
-          } else {
-            row.getCell(7).value = vat;
-            row.getCell(7).numFmt = '#,##0';
-            row.getCell(7).alignment = { horizontal: 'right' };
+        for (let r = boxR; r <= boxR + 3; r++) {
+          for (let c = 1; c <= 3; c++) {
+            ws.getRow(r).getCell(c).border = borderThin;
           }
-        } else {
-          row.getCell(1).value = '';
         }
+
+        // 공급자 정보
+        ws.getCell(`D${boxR}`).value = '등록번호';
+        ws.getCell(`D${boxR}`).fill = fillGray;
+        ws.getCell(`D${boxR}`).font = fontBold;
+        ws.mergeCells(`E${boxR}:G${boxR}`);
+        ws.getCell(`E${boxR}`).value = bizNum;
+        ws.getCell(`E${boxR}`).font = fontBold;
+
+        ws.getCell(`D${boxR+1}`).value = '상호(명)';
+        ws.getCell(`D${boxR+1}`).fill = fillGray;
+        ws.getCell(`D${boxR+1}`).font = fontBold;
+        ws.getCell(`E${boxR+1}`).value = bizName;
+        ws.getCell(`E${boxR+1}`).font = fontBold;
+        ws.getCell(`F${boxR+1}`).value = '성명';
+        ws.getCell(`F${boxR+1}`).fill = fillGray;
+        ws.getCell(`F${boxR+1}`).font = fontBold;
+        ws.getCell(`G${boxR+1}`).value = `${ceoName} (인)`;
+        ws.getCell(`G${boxR+1}`).font = fontBold;
+
+        ws.getCell(`D${boxR+2}`).value = '사업장';
+        ws.getCell(`D${boxR+2}`).fill = fillGray;
+        ws.getCell(`D${boxR+2}`).font = fontBold;
+        ws.mergeCells(`E${boxR+2}:G${boxR+2}`);
+        ws.getCell(`E${boxR+2}`).value = bizAddr;
+        ws.getCell(`E${boxR+2}`).font = fontDefault;
+
+        ws.getCell(`D${boxR+3}`).value = '연락처';
+        ws.getCell(`D${boxR+3}`).fill = fillGray;
+        ws.getCell(`D${boxR+3}`).font = fontBold;
+        ws.mergeCells(`E${boxR+3}:G${boxR+3}`);
+        ws.getCell(`E${boxR+3}`).value = bizTel;
+        ws.getCell(`E${boxR+3}`).font = fontDefault;
+
+        for (let r = boxR; r <= boxR + 3; r++) {
+          for (let c = 4; c <= 7; c++) {
+            ws.getRow(r).getCell(c).border = borderThin;
+          }
+        }
+
+        // 3. 품목 테이블 헤더
+        const hR = startRow + 6;
+        const headers = ['No', '품 목 명', '규격', '수량', '단가', '공급가액', '세액'];
+        headers.forEach((h, idx) => {
+          const cell = ws.getRow(hR).getCell(idx + 1);
+          cell.value = h;
+          cell.font = fontBold;
+          cell.fill = fillGray;
+          cell.alignment = { horizontal: 'center', vertical: 'middle' };
+          cell.border = borderThin;
+        });
+
+        // 4. 품목 행 (5행 고정)
+        const itStart = startRow + 7;
+        for (let i = 0; i < 5; i++) {
+          const rowNum = itStart + i;
+          const row = ws.getRow(rowNum);
+
+          if (i < items.length) {
+            const it = items[i];
+            const supply = it.qty * it.price;
+            const vat = it.isFree ? 0 : Math.round(supply * 0.1);
+
+            row.getCell(1).value = i + 1;
+            row.getCell(1).alignment = { horizontal: 'center' };
+
+            row.getCell(2).value = it.name;
+            row.getCell(2).alignment = { horizontal: 'left', indent: 1 };
+
+            row.getCell(3).value = it.spec || '-';
+            row.getCell(3).alignment = { horizontal: 'center' };
+
+            row.getCell(4).value = it.qty;
+            row.getCell(4).numFmt = '#,##0';
+            row.getCell(4).alignment = { horizontal: 'right' };
+
+            row.getCell(5).value = it.price;
+            row.getCell(5).numFmt = '#,##0';
+            row.getCell(5).alignment = { horizontal: 'right' };
+
+            row.getCell(6).value = supply;
+            row.getCell(6).numFmt = '#,##0';
+            row.getCell(6).alignment = { horizontal: 'right' };
+
+            if (it.isFree) {
+              row.getCell(7).value = '면세';
+              row.getCell(7).font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF059669' } };
+              row.getCell(7).alignment = { horizontal: 'center' };
+            } else {
+              row.getCell(7).value = vat;
+              row.getCell(7).numFmt = '#,##0';
+              row.getCell(7).alignment = { horizontal: 'right' };
+            }
+          } else {
+            row.getCell(1).value = '';
+          }
+
+          for (let c = 1; c <= 7; c++) {
+            if (!row.getCell(c).font) row.getCell(c).font = fontDefault;
+            row.getCell(c).border = borderThin;
+          }
+        }
+
+        // 5. 합계 행
+        const totR = startRow + 12;
+        ws.mergeCells(`A${totR}:E${totR}`);
+        const totCell = ws.getCell(`A${totR}`);
+        totCell.value = '합    계';
+        totCell.font = fontBold;
+        totCell.fill = fillGray;
+        totCell.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        const fCell = ws.getCell(`F${totR}`);
+        fCell.value = `공급: ${totalSupply.toLocaleString()}\n세액: ${totalVat.toLocaleString()}`;
+        fCell.font = { name: '맑은 고딕', size: 8, bold: true, color: { argb: 'FF374151' } };
+        fCell.fill = fillGray;
+        fCell.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+
+        const gCell = ws.getCell(`G${totR}`);
+        gCell.value = `${grandTotal.toLocaleString()}원`;
+        gCell.font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+        gCell.fill = fillGray;
+        gCell.alignment = { horizontal: 'right', vertical: 'middle' };
 
         for (let c = 1; c <= 7; c++) {
-          row.getCell(c).font = fontDefault;
-          row.getCell(c).border = borderThin;
+          ws.getRow(totR).getCell(c).border = borderThin;
         }
       }
 
-      // 6. 합계 행
-      const totRowNum = startRow + maxRows;
-      ws.mergeCells(`A${totRowNum}:C${totRowNum}`);
-      const totLabel = ws.getCell(`A${totRowNum}`);
-      totLabel.value = '합  계';
-      totLabel.font = fontBold;
-      totLabel.fill = fillGray;
-      totLabel.alignment = { horizontal: 'center' };
+      // [1단] 상단: 공급자 보관용 (적색) 생성
+      renderOneStatement(1, '공급자 보관용 (적색)', 'FFE11D48', 'FFFFF1F2', 'FFFCA5A5');
 
-      const cellTotQty = ws.getCell(`D${totRowNum}`);
-      cellTotQty.value = totQty;
-      cellTotQty.numFmt = '#,##0';
-      cellTotQty.font = fontBold;
-      cellTotQty.alignment = { horizontal: 'right' };
+      // [중간] A4 절취선 (15행)
+      ws.mergeCells('A15:G15');
+      const cutLine = ws.getCell('A15');
+      cutLine.value = '✂  - - - - - - - - - - - - - - - - - -  절  취  선 (A4 분할선)  - - - - - - - - - - - - - - - - - -  ✂';
+      cutLine.font = { name: '맑은 고딕', size: 8, color: { argb: 'FF9CA3AF' } };
+      cutLine.alignment = { horizontal: 'center', vertical: 'middle' };
 
-      const cellBlank = ws.getCell(`E${totRowNum}`);
-      cellBlank.value = '-';
-      cellBlank.alignment = { horizontal: 'center' };
+      // [2단] 하단: 공급받는자 보관용 (청색) 생성
+      renderOneStatement(17, '공급받는자 보관용 (청색)', 'FF2563EB', 'FFEFF6FF', 'FF93C5FD');
 
-      const cellTotSupply = ws.getCell(`F${totRowNum}`);
-      cellTotSupply.value = totSupply;
-      cellTotSupply.numFmt = '#,##0';
-      cellTotSupply.font = fontBold;
-      cellTotSupply.alignment = { horizontal: 'right' };
-
-      const cellTotVat = ws.getCell(`G${totRowNum}`);
-      cellTotVat.value = totVat;
-      cellTotVat.numFmt = '#,##0';
-      cellTotVat.font = fontBold;
-      cellTotVat.alignment = { horizontal: 'right' };
-
-      for (let c = 1; c <= 7; c++) {
-        const cell = ws.getRow(totRowNum).getCell(c);
-        cell.border = borderThin;
-        cell.fill = fillGray;
-      }
-
-      // 7. 총 청구/인수 합계금액 바
-      const grandTotal = totSupply + totVat;
-      const bottomRow = totRowNum + 2;
-      ws.mergeCells(`A${bottomRow}:D${bottomRow}`);
-      ws.getCell(`A${bottomRow}`).value = '총 합계금액 (공급가액 + 부가세)';
-      ws.getCell(`A${bottomRow}`).font = fontBold;
-      ws.getCell(`A${bottomRow}`).fill = fillGray;
-
-      ws.mergeCells(`E${bottomRow}:G${bottomRow}`);
-      ws.getCell(`E${bottomRow}`).value = `₩ ${grandTotal.toLocaleString()}원`;
-      ws.getCell(`E${bottomRow}`).font = { name: '맑은 고딕', size: 11, bold: true, color: { argb: 'FF111827' } };
-      ws.getCell(`E${bottomRow}`).alignment = { horizontal: 'right' };
-      ws.getCell(`E${bottomRow}`).fill = fillGray;
-
-      for (let c = 1; c <= 7; c++) {
-        ws.getRow(bottomRow).getCell(c).border = borderThin;
-      }
-
-      // 8. 브라우저 즉시 다운로드 실행
+      // 다운로드 트리거
       const buffer = await wb.xlsx.writeBuffer();
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `거래명세서_${clientName}_${dateVal}.xlsx`;
+      a.download = `거래명세서(2단)_${clientName}_${dateVal}.xlsx`;
       a.click();
       window.URL.revokeObjectURL(url);
     }
