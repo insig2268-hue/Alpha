@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 표준근로계약서 웹 작성 및 A4 즉시 인쇄기 | BizTools</title>
+  <meta name="description" content="2026 최저임금(10,320원) 반영 고용노동부 법정 표준근로계약서 작성 도구. 정규직, 기간제, 단시간 파트타임(알바) 서식 완벽 지원 및 A4 규격 즉시 출력.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/contract/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="2026 표준근로계약서 웹 작성 및 A4 인쇄기 | BizTools">
+  <meta property="og:description" content="고용노동부 최신 표준 서식 준수, 정규직·알바 단시간 계약서 실시간 생성 및 A4 1장 즉시 인쇄">
+  <meta property="og:url" content="https://biz-tools.kr/contract/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .contract-paper {
+        border: 2px solid #111827 !important;
+        box-shadow: none !important;
+        padding: 10mm 12mm !important;
+        width: 100% !important;
+        page-break-inside: avoid;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 8mm 10mm;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 (인쇄 시 숨김) -->
+  <header class="no-print bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../templates/index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 서식 자료실
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
+          노무
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">표준근로계약서 작성기</h1>
+      </div>
+      <button type="button" onclick="window.print()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        <span>A4 계약서 인쇄하기</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-sm font-bold text-gray-900">근로 계약 정보 입력</h2>
+          <span class="text-[11px] text-blue-600 font-semibold bg-blue-50 px-2 py-0.5 rounded">고용노동부 서식 준수</span>
+        </div>
+
+        <!-- 1. 계약 유형 -->
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-gray-700">계약서 유형 선택</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btnTypeStandard" onclick="setContractType('standard')"
+              class="py-2 text-xs font-bold rounded-xl border border-blue-600 bg-blue-50 text-blue-700 transition">
+              일반 (정규직 / 기간제)
+            </button>
+            <button type="button" id="btnTypePart" onclick="setContractType('part')"
+              class="py-2 text-xs font-bold rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 transition">
+              단시간 (알바 / 파트타임)
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. 사업주 (사용자) 정보 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">1. 사업주 (사용자)</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">사업체명 (상호)</label>
+              <input type="text" id="inBizName" placeholder="상호명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">대표자 성명</label>
+              <input type="text" id="inCeoName" placeholder="대표자명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">연락처</label>
+              <input type="text" id="inBizTel" placeholder="010-0000-0000" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">사업장 주소</label>
+              <input type="text" id="inBizAddr" placeholder="사업장 소재지" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 근로자 정보 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">2. 근로자</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근로자 성명</label>
+              <input type="text" id="inWorkerName" value="김근로" placeholder="근로자 이름" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">생년월일</label>
+              <input type="text" id="inWorkerBirth" value="2000년 01월 01일" placeholder="예: 2000.01.01" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div class="col-span-2">
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근로자 주소 및 연락처</label>
+              <input type="text" id="inWorkerContact" value="경상북도 칠곡군 왜관읍 / 010-1234-5678" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. 근로 조건 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">3. 근무 조건</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근로개시일</label>
+              <input type="date" id="inStartDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" onchange="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">종료일 (기간제만 입력)</label>
+              <input type="date" id="inEndDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" onchange="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근무 장소</label>
+              <input type="text" id="inWorkPlace" value="사업장 내 (매장 및 창고)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">담당 업무</label>
+              <input type="text" id="inWorkDuty" value="상품 진열, 매장 관리 및 판매 업무" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근무 시간</label>
+              <input type="text" id="inWorkTime" value="09:00 ~ 18:00 (휴게 1시간)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">근무일 및 주휴일</label>
+              <input type="text" id="inWorkDays" value="주 5일 (매주 일요일 주휴일)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+          </div>
+
+          <!-- 임금 형태 -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">임금 지급 형태</label>
+              <select id="inWageType" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500 bg-white" onchange="handleWageTypeChange()">
+                <option value="hourly">시급 (2026 최저 10,320원)</option>
+                <option value="monthly" selected>월급 (2026 기준 2,156,880원)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">임금액 (원)</label>
+              <input type="text" id="inWageAmount" value="2,156,880" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500 font-bold" oninput="updateContract()">
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">임금 지급일</label>
+              <input type="text" id="inPayDate" value="매월 10일 (휴일인 경우 전일 지급)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">지급 방법</label>
+              <input type="text" id="inPayMethod" value="근로자 명의 은행계좌로 이체" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-blue-500" oninput="updateContract()">
+            </div>
+          </div>
+        </div>
+
+        <button type="button" onclick="window.print()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-sm transition shadow flex items-center justify-center gap-2 active:scale-98">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 표준근로계약서 인쇄하기</span>
+        </button>
+      </section>
+
+      <!-- 우측 A4 인쇄 프리뷰 -->
+      <section class="lg:col-span-7 flex flex-col items-center print-wrapper w-full">
+        <div class="no-print w-full flex items-center justify-between mb-2 text-xs text-gray-500 px-1">
+          <span>A4 표준 1장 규격 인쇄 미리보기</span>
+          <span class="text-blue-600 font-semibold" id="previewBadge">정규직/기간제 표준서식</span>
+        </div>
+
+        <!-- 실제 계약서 A4 출력 용지 -->
+        <div class="contract-paper w-full max-w-[650px] bg-white p-6 sm:p-8 rounded-xl shadow-md border-2 border-gray-900 text-gray-900 font-serif leading-tight">
+          
+          <!-- 타이틀 -->
+          <div class="text-center border-b-2 border-gray-900 pb-2 mb-3">
+            <h1 class="text-xl sm:text-2xl font-black tracking-widest text-gray-900" id="outTitle">표 준 근 로 계 약 서</h1>
+            <p class="text-[10px] text-gray-500 font-sans mt-0.5" id="outSubTitle">(근로기준법 제17조 등에 따른 표준 근로계약)</p>
+          </div>
+
+          <!-- 전문 -->
+          <p class="text-[11px] leading-relaxed mb-3 font-sans">
+            <strong id="outBizNameLead">사업주명</strong> (이하 "사업주"라 함)과 근로자 <strong id="outWorkerNameLead">근로자명</strong> (이하 "근로자"라 함)은 다음과 같이 근로계약을 체결하고 이를 성실히 이행할 것을 서약한다.
+          </p>
+
+          <!-- 본문 계약 조항 -->
+          <div class="space-y-2 text-[10.5px] leading-relaxed font-sans border-t border-b border-gray-300 py-3">
+            
+            <!-- 1조. 근로계약기간 -->
+            <div>
+              <strong>1. 근로계약기간 :</strong> <span id="outPeriod" class="font-bold">2026년 10월 05일부터 근로계약 만료일의 정함이 없음</span>
+            </div>
+
+            <!-- 2조. 근무장소 및 업무내용 -->
+            <div>
+              <strong>2. 근무장소 및 업무내용 :</strong>
+              <div class="pl-4 text-[10px] text-gray-700">
+                • 근무장소 : <span id="outWorkPlace">사업장 내</span><br>
+                • 담당업무 : <span id="outWorkDuty">상품 진열 및 매장 관리</span>
+              </div>
+            </div>
+
+            <!-- 3조. 근로시간 및 휴게시간 -->
+            <div>
+              <strong>3. 근로시간 및 휴게시간 :</strong>
+              <div class="pl-4 text-[10px] text-gray-700">
+                • 근로시간 : <span id="outWorkTime">09:00 ~ 18:00 (휴게 1시간)</span>
+              </div>
+            </div>
+
+            <!-- 4조. 근무일 및 주휴일 -->
+            <div>
+              <strong>4. 근무일 및 주휴일 :</strong>
+              <span id="outWorkDays">주 5일 근무, 매주 일요일을 주휴일로 정함.</span>
+              <span id="outPartTimeNotice" class="text-[9.5px] text-gray-500 block pl-4">* 주 15시간 이상 근무 시 근로기준법 제55조에 따른 주휴수당 발생.</span>
+            </div>
+
+            <!-- 5조. 임금 -->
+            <div>
+              <strong>5. 임 금 :</strong>
+              <div class="pl-4 text-[10px] text-gray-700">
+                • 임금형태 및 금액 : <strong id="outWage">월급 2,156,880원</strong> (2026 최저임금 기준 준수)<br>
+                • 임금지급일 : <span id="outPayDate">매월 10일</span> (휴일인 경우 전일 지급)<br>
+                • 지급방법 : <span id="outPayMethod">근로자 명의 예금계좌로 입금</span>
+              </div>
+            </div>
+
+            <!-- 6조. 연차유급휴가 -->
+            <div>
+              <strong>6. 연차유급휴가 :</strong>
+              <span>근로기준법 제60조에서 정하는 바에 따라 연차유급휴가를 부여함.</span>
+            </div>
+
+            <!-- 7조. 사회보험 적용 -->
+            <div>
+              <strong>7. 사회보험 적용여부 :</strong>
+              <span class="font-bold">국민연금, 건강보험, 고용보험, 산재보험</span> 관계 법령에 따라 해당 시 의무 가입함.
+            </div>
+
+            <!-- 8조. 근로계약서 교부 -->
+            <div>
+              <strong>8. 근로계약서 교부 :</strong>
+              <span>사업주는 본 근로계약을 체결함과 동시에 본 계약서 1부를 근로자에게 교부함. (근로기준법 제17조)</span>
+            </div>
+
+            <!-- 9조. 기타 -->
+            <div>
+              <strong>9. 기 타 :</strong>
+              <span>이 계약서에 명시되지 않은 사항은 근로기준법 및 관련 노동관계법령에 따름.</span>
+            </div>
+
+          </div>
+
+          <!-- 서명일자 -->
+          <div class="text-center font-sans font-bold text-xs my-3" id="outSignDate">
+            2026년 10월 05일
+          </div>
+
+          <!-- 서명란 -->
+          <div class="grid grid-cols-2 gap-3 text-[10px] font-sans pt-1">
+            <!-- 사업주 서명 -->
+            <div class="border border-gray-400 p-2 rounded relative flex flex-col justify-between h-20">
+              <div>
+                <span class="text-gray-500 block font-bold">[사업주 (사용자)]</span>
+                <div>상호 : <span id="outSignBizName">비즈도매유통</span></div>
+                <div>주소 : <span id="outSignBizAddr" class="truncate block max-w-[190px]">사업장 주소</span></div>
+              </div>
+              <div class="font-bold text-right pr-6">
+                대표자 : <span id="outSignCeo">홍길동</span>
+                <span class="absolute right-2 bottom-2 text-rose-500 text-[10px] border border-rose-400 rounded-full px-1">(인)</span>
+              </div>
+            </div>
+
+            <!-- 근로자 서명 -->
+            <div class="border border-gray-400 p-2 rounded relative flex flex-col justify-between h-20">
+              <div>
+                <span class="text-gray-500 block font-bold">[근로자]</span>
+                <div>성명 : <span id="outSignWorkerName" class="font-bold">김근로</span></div>
+                <div>생년월일 : <span id="outSignWorkerBirth">2000.01.01</span></div>
+              </div>
+              <div class="font-bold text-right pr-6">
+                근로자 : <span id="outSignWorkerSign">김근로</span>
+                <span class="absolute right-2 bottom-2 text-gray-400 text-[10px] border border-gray-300 rounded-full px-1">(서명)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 가이드 (인쇄 시 숨김) -->
+    <section class="no-print bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-900">근로계약서 작성 및 교부 실무 핵심 수칙</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">1. 반드시 출근 첫날 작성 및 1부 교부</h4>
+          <p>
+            근로계약서는 반드시 첫 출근 당일, 업무 시작 전에 체결해야 합니다. 작성 후 1부는 사업주가 보관하고 <strong>반드시 1부를 근로자에게 즉시 직접 교부</strong>해야 합니다. 위반 시 최대 500만 원 이하의 과태료 및 벌금이 부과됩니다.
+          </p>
+        </div>
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">2. 2026년 최저시급(10,320원) 준수</h4>
+          <p>
+            2026년 법정 최저시급은 <strong>10,320원</strong>이며, 주 40시간 통상 근무 기준 월급은 <strong>2,156,880원(209시간)</strong> 이상이어야 합니다. 근로자가 동의하여 계약했더라도 법정 최저임금 미만 계약은 무효 처리됩니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (인쇄 시 숨김) -->
+  <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 근로계약서는 고용노동부 표준안 기준의 참고 양식입니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../wage/index.html" class="hover:text-white transition">주휴수당 계산기</a>
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    let contractType = 'standard';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inStartDate').value = today;
+
+      // 이전 서식에서 저장된 사업자 정보 캐시 연동
+      const cached = localStorage.getItem('biz_contract_info') || localStorage.getItem('biz_order_info') || localStorage.getItem('biz_receipt_info');
+      if (cached) {
+        try {
+          const info = JSON.parse(cached);
+          if (info.name) document.getElementById('inBizName').value = info.name;
+          if (info.ceo) document.getElementById('inCeoName').value = info.ceo;
+          if (info.tel) document.getElementById('inBizTel').value = info.tel;
+          if (info.addr) document.getElementById('inBizAddr').value = info.addr;
+        } catch(e) {}
+      }
+
+      updateContract();
+    });
+
+    function setContractType(type) {
+      contractType = type;
+      const btnStandard = document.getElementById('btnTypeStandard');
+      const btnPart = document.getElementById('btnTypePart');
+      const previewBadge = document.getElementById('previewBadge');
+
+      if (type === 'standard') {
+        btnStandard.className = 'py-2 text-xs font-bold rounded-xl border border-blue-600 bg-blue-50 text-blue-700 transition';
+        btnPart.className = 'py-2 text-xs font-bold rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 transition';
+        previewBadge.textContent = '정규직/기간제 표준서식';
+
+        document.getElementById('inWageType').value = 'monthly';
+        document.getElementById('inWageAmount').value = '2,156,880';
+        document.getElementById('inWorkTime').value = '09:00 ~ 18:00 (휴게 1시간)';
+        document.getElementById('inWorkDays').value = '주 5일 (매주 일요일 주휴일)';
+      } else {
+        btnPart.className = 'py-2 text-xs font-bold rounded-xl border border-blue-600 bg-blue-50 text-blue-700 transition';
+        btnStandard.className = 'py-2 text-xs font-bold rounded-xl border border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100 transition';
+        previewBadge.textContent = '단시간(알바/파트타임) 표준서식';
+
+        document.getElementById('inWageType').value = 'hourly';
+        document.getElementById('inWageAmount').value = '10,320';
+        document.getElementById('inWorkTime').value = '매주 화, 목 09:00 ~ 14:00 (일 5시간)';
+        document.getElementById('inWorkDays').value = '주 2일 근무 (소정근로시간 주 10시간)';
+      }
+      updateContract();
+    }
+
+    function handleWageTypeChange() {
+      const type = document.getElementById('inWageType').value;
+      if (type === 'hourly') {
+        document.getElementById('inWageAmount').value = '10,320';
+      } else {
+        document.getElementById('inWageAmount').value = '2,156,880';
+      }
+      updateContract();
+    }
+
+    function updateContract() {
+      const bizName = document.getElementById('inBizName').value.trim() || '사업장 상호';
+      const ceoName = document.getElementById('inCeoName').value.trim() || '대표자';
+      const bizTel = document.getElementById('inBizTel').value.trim() || '-';
+      const bizAddr = document.getElementById('inBizAddr').value.trim() || '-';
+
+      const workerName = document.getElementById('inWorkerName').value.trim() || '근로자명';
+      const workerBirth = document.getElementById('inWorkerBirth').value.trim() || '-';
+      const startDate = document.getElementById('inStartDate').value;
+      const endDate = document.getElementById('inEndDate').value;
+
+      const workPlace = document.getElementById('inWorkPlace').value.trim();
+      const workDuty = document.getElementById('inWorkDuty').value.trim();
+      const workTime = document.getElementById('inWorkTime').value.trim();
+      const workDays = document.getElementById('inWorkDays').value.trim();
+
+      const wageType = document.getElementById('inWageType').value;
+      const wageAmount = document.getElementById('inWageAmount').value.trim();
+      const payDate = document.getElementById('inPayDate').value.trim();
+      const payMethod = document.getElementById('inPayMethod').value.trim();
+
+      // 캐시 저장
+      localStorage.setItem('biz_contract_info', JSON.stringify({
+        name: bizName, ceo: ceoName, tel: bizTel, addr: bizAddr
+      }));
+
+      // 서식 타이틀
+      if (contractType === 'standard') {
+        document.getElementById('outTitle').textContent = '표 준 근 로 계 약 서';
+        document.getElementById('outSubTitle').textContent = '(정규직 및 기간제 근로자용)';
+        document.getElementById('outPartTimeNotice').classList.add('hidden');
+      } else {
+        document.getElementById('outTitle').textContent = '단시간근로자 표준근로계약서';
+        document.getElementById('outSubTitle').textContent = '(파트타임 및 아르바이트용)';
+        document.getElementById('outPartTimeNotice').classList.remove('hidden');
+      }
+
+      // 인적사항 반영
+      document.getElementById('outBizNameLead').textContent = bizName;
+      document.getElementById('outWorkerNameLead').textContent = workerName;
+      document.getElementById('outSignBizName').textContent = bizName;
+      document.getElementById('outSignBizAddr').textContent = bizAddr;
+      document.getElementById('outSignCeo').textContent = ceoName;
+      document.getElementById('outSignWorkerName').textContent = workerName;
+      document.getElementById('outSignWorkerBirth').textContent = workerBirth;
+      document.getElementById('outSignWorkerSign').textContent = workerName;
+
+      // 계약기간
+      if (startDate) {
+        const [y, m, d] = startDate.split('-');
+        let periodText = `${y}년 ${m}월 ${d}일부터 `;
+        if (endDate) {
+          const [ey, em, ed] = endDate.split('-');
+          periodText += `${ey}년 ${em}월 ${ed}일까지`;
+        } else {
+          periodText += `근로계약 만료일의 정함이 없음`;
+        }
+        document.getElementById('outPeriod').textContent = periodText;
+        document.getElementById('outSignDate').textContent = `${y}년 ${m}월 ${d}일`;
+      }
+
+      // 세부 조건
+      document.getElementById('outWorkPlace').textContent = workPlace;
+      document.getElementById('outWorkDuty').textContent = workDuty;
+      document.getElementById('outWorkTime').textContent = workTime;
+      document.getElementById('outWorkDays').textContent = workDays;
+
+      const wageLabel = wageType === 'hourly' ? '시급' : '월급';
+      document.getElementById('outWage').textContent = `${wageLabel} ${wageAmount}원`;
+      document.getElementById('outPayDate').textContent = payDate;
+      document.getElementById('outPayMethod').textContent = payMethod;
+    }
+  </script>
+</body>
+</html>
