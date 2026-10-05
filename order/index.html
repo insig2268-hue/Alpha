@@ -28,8 +28,8 @@
   <meta property="og:url" content="https://biz-tools.kr/order/index.html">
 
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- SheetJS 엑셀 변환 라이브러리 -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- ExcelJS 완벽 서식 지원 엑셀 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
        crossorigin="anonymous"></script>
@@ -531,114 +531,282 @@
       document.getElementById('outGrandTotal').textContent = grandTotal.toLocaleString();
       document.getElementById('outKoreanTotal').textContent = numToKorean(grandTotal);
     }
-    // 웹 서식과 1:1 일치하는 발주서 엑셀 변환 함수
-    function exportToExcel() {
+    // 웹 서식과 1:1 완벽 일치하는 고품질 엑셀 변환 (ExcelJS)
+    async function exportToExcel() {
       const orderDate = document.getElementById('inOrderDate').value || new Date().toISOString().split('T')[0];
       const poNo = document.getElementById('outPoNo').textContent;
-      const myName = document.getElementById('inMyName').value.trim() || '발주처';
-      const myManager = document.getElementById('inMyManager').value.trim() || '-';
+      const myName = document.getElementById('inMyName').value.trim() || '발주처 상호';
+      const myManager = document.getElementById('inMyManager').value.trim() || '담당자';
       const myTel = document.getElementById('inMyTel').value.trim() || '-';
       const myEmail = document.getElementById('inMyEmail').value.trim() || '-';
       const deliveryAddr = document.getElementById('inDeliveryAddr').value.trim() || '-';
-      const vendorName = document.getElementById('inVendorName').value.trim() || '공급업체';
+      const vendorName = document.getElementById('inVendorName').value.trim() || '공급업체 상호';
       const vendorManager = document.getElementById('inVendorManager').value.trim() || '영업관리팀 귀하';
       const dueDate = document.getElementById('inDueDate').value || '-';
       const paymentTerm = document.getElementById('inPaymentTerm').value.trim() || '-';
       const taxType = document.getElementById('inTaxType').value;
       const koreanTotal = document.getElementById('outKoreanTotal').textContent;
 
-      // 1. 웹 서식 구조와 동일한 7개 컬럼 기준 데이터 구성
-      const wsData = [
-        ['발 주 서 ( PURCHASE ORDER )', '', '', '', '', '발주번호:', poNo],
-        ['', '', '', '', '', '발주일자:', orderDate],
-        [],
-        ['[수신 (공급업체)]', '', '', '[발주처]', '', '', ''],
-        ['상호', vendorName, '', '상호(명)', myName, '담당자', myManager],
-        ['수신담당', vendorManager, '', '연락처', myTel, '이메일', myEmail],
-        ['', '', '', '납품기한', dueDate + ' 납품 희망', '', ''],
-        ['', '', '', '납품장소', deliveryAddr, '', ''],
-        [],
-        [`총 발주금액 (일금 ${koreanTotal})`, '', '', '', '', '', ''],
-        [],
-        ['No', '품 목 명', '규격', '수량', '단가', '공급가액', '세액']
-      ];
-
-      let totQty = 0;
-      let totSupply = 0;
-      let totVat = 0;
-
-      items.forEach((it, idx) => {
-        let supply = it.qty * it.price;
-        let vat = 0;
-
-        if (taxType === 'tax') {
-          vat = Math.round(supply * 0.1);
-        } else if (taxType === 'tax_included') {
-          supply = Math.round((it.qty * it.price) / 1.1);
-          vat = (it.qty * it.price) - supply;
-        }
-
-        totQty += it.qty;
-        totSupply += supply;
-        totVat += vat;
-
-        wsData.push([
-          idx + 1,
-          it.name || '-',
-          it.spec || '-',
-          it.qty,
-          it.price,
-          supply,
-          taxType === 'exempt' ? 0 : vat
-        ]);
+      // 1. 워크북 및 시트 초기화
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('발주서', {
+        views: [{ showGridLines: true }]
       });
 
-      // 합계 행 (웹 미리보기와 동일하게 7열 매칭)
-      wsData.push([
-        '합 계', '', '', totQty, '-', totSupply, totVat
-      ]);
-      wsData.push([]);
-      wsData.push(['[결제조건]', paymentTerm, '', '', '', '', '']);
-      wsData.push(['[특약사항]', '1. 파손 및 규격 미달품은 전량 반품 또는 교환 처리함.', '', '', '', '', '']);
-      wsData.push(['', '2. 납품 시 본 발주서 사본 및 거래명세표를 필히 동봉 바랍니다.', '', '', '', '', '']);
-
-      // 2. 총 발주금액 텍스트 삽입 (VAT 포함 총액)
-      const grandTotal = totSupply + totVat;
-      wsData[9][0] = `총 발주금액 (일금 ${koreanTotal}) :  ₩ ${grandTotal.toLocaleString()} (VAT 포함)`;
-
-      // 워크북 생성
-      const wb = XLSX.utils.book_new();
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-
-      // 셀 병합 (헤더 및 상단 블록)
-      ws['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, // 타이틀
-        { s: { r: 9, c: 0 }, e: { r: 9, c: 6 } }, // 총 발주금액 바
-        { s: { r: 12 + items.length, c: 0 }, e: { r: 12 + items.length, c: 2 } } // 합계 No~규격 병합
+      // 열 너비(Width) 넉넉하게 설정 (A ~ G열)
+      ws.columns = [
+        { width: 7 },   // A: No
+        { width: 26 },  // B: 품목명
+        { width: 12 },  // C: 규격
+        { width: 10 },  // D: 수량
+        { width: 14 },  // E: 단가
+        { width: 16 },  // F: 공급가액
+        { width: 14 }   // G: 세액
       ];
 
-      // 컬럼 너비 설정 (7개 컬럼)
-      ws['!cols'] = [
-        { wch: 8 },   // No
-        { wch: 28 },  // 품목명
-        { wch: 14 },  // 규격
-        { wch: 10 },  // 수량
-        { wch: 14 },  // 단가
-        { wch: 16 },  // 공급가액
-        { wch: 14 }   // 세액
-      ];
+      // 공통 스타일 규격
+      const fontDefault = { name: '맑은 고딕', size: 9 };
+      const fontBold = { name: '맑은 고딕', size: 9, bold: true };
+      const fillGray = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+      const borderThin = {
+        top: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        left: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        bottom: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        right: { style: 'thin', color: { argb: 'FF9CA3AF' } }
+      };
 
-      // 3. 숫자 셀에 천단위 쉼표(#,##0) 서식 일괄 적용
-      for (let cellKey in ws) {
-        if (cellKey[0] === '!') continue;
-        const cell = ws[cellKey];
-        if (typeof cell.v === 'number') {
-          cell.z = '#,##0';
+      // 2. 타이틀 & 발주정보 (1~2행)
+      ws.mergeCells('A1:D2');
+      const titleCell = ws.getCell('A1');
+      titleCell.value = '발  주  서 ( PURCHASE ORDER )';
+      titleCell.font = { name: '맑은 고딕', size: 15, bold: true, color: { argb: 'FF111827' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      ws.getCell('F1').value = '발주번호:';
+      ws.getCell('F1').font = fontDefault;
+      ws.getCell('G1').value = poNo;
+      ws.getCell('G1').font = fontBold;
+
+      ws.getCell('F2').value = '발주일자:';
+      ws.getCell('F2').font = fontDefault;
+      ws.getCell('G2').value = orderDate;
+      ws.getCell('G2').font = fontBold;
+
+      // 3. 수신처 & 발주처 박스 (4~8행)
+      // [수신처] A4:C8
+      ws.mergeCells('A4:C4');
+      ws.getCell('A4').value = '수신 (공급업체)';
+      ws.getCell('A4').font = { name: '맑은 고딕', size: 8, color: { argb: 'FF6B7280' } };
+      ws.getCell('A4').fill = fillGray;
+
+      ws.mergeCells('A5:C5');
+      ws.getCell('A5').value = vendorName;
+      ws.getCell('A5').font = { name: '맑은 고딕', size: 11, bold: true };
+
+      ws.mergeCells('A6:C6');
+      ws.getCell('A6').value = vendorManager;
+      ws.getCell('A6').font = fontDefault;
+
+      ws.mergeCells('A7:C8');
+      ws.getCell('A7').value = '아래 조건으로 물품을 발주하오니\n기일 내 납품 바랍니다.';
+      ws.getCell('A7').font = { name: '맑은 고딕', size: 8, color: { argb: 'FF4B5563' } };
+      ws.getCell('A7').alignment = { wrapText: true, vertical: 'middle' };
+
+      // [발주처] D4:G8
+      ws.getCell('D4').value = '발주처 상호';
+      ws.getCell('D4').fill = fillGray;
+      ws.getCell('D4').font = fontBold;
+      ws.getCell('E4').value = myName;
+      ws.getCell('E4').font = fontBold;
+      ws.getCell('F4').value = '담당자';
+      ws.getCell('F4').fill = fillGray;
+      ws.getCell('F4').font = fontBold;
+      ws.getCell('G4').value = myManager + ' (인)';
+      ws.getCell('G4').font = fontBold;
+
+      ws.getCell('D5').value = '연락처';
+      ws.getCell('D5').fill = fillGray;
+      ws.getCell('D5').font = fontBold;
+      ws.getCell('E5').value = myTel;
+      ws.getCell('F5').value = '이메일';
+      ws.getCell('F5').fill = fillGray;
+      ws.getCell('F5').font = fontBold;
+      ws.getCell('G5').value = myEmail;
+
+      ws.getCell('D6').value = '납기기한';
+      ws.getCell('D6').fill = fillGray;
+      ws.getCell('D6').font = fontBold;
+      ws.mergeCells('E6:G6');
+      ws.getCell('E6').value = dueDate + ' 납품 희망';
+      ws.getCell('E6').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF1D4ED8' } };
+
+      ws.getCell('D7').value = '납품장소';
+      ws.getCell('D7').fill = fillGray;
+      ws.getCell('D7').font = fontBold;
+      ws.mergeCells('E7:G8');
+      ws.getCell('E7').value = deliveryAddr;
+      ws.getCell('E7').font = fontDefault;
+      ws.getCell('E7').alignment = { wrapText: true, vertical: 'middle' };
+
+      // 발주처/수신처 테두리 적용
+      for (let r = 4; r <= 8; r++) {
+        for (let c = 1; c <= 7; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
         }
       }
 
-      XLSX.utils.book_append_sheet(wb, ws, '발주서');
-      XLSX.writeFile(wb, `발주서_${myName}_${orderDate}.xlsx`);
+      // 4. 총 발주금액 배너 (10행)
+      let totQty = 0, totSupply = 0, totVat = 0;
+      items.forEach(it => {
+        let supply = it.qty * it.price;
+        let vat = 0;
+        if (taxType === 'tax') vat = Math.round(supply * 0.1);
+        else if (taxType === 'tax_included') {
+          supply = Math.round((it.qty * it.price) / 1.1);
+          vat = (it.qty * it.price) - supply;
+        }
+        totQty += it.qty;
+        totSupply += supply;
+        totVat += vat;
+      });
+      const grandTotal = totSupply + totVat;
+
+      ws.mergeCells('A10:D10');
+      ws.getCell('A10').value = `총 발주금액 (일금 ${koreanTotal})`;
+      ws.getCell('A10').font = { name: '맑은 고딕', size: 10, bold: true };
+      ws.getCell('A10').fill = fillGray;
+      ws.getCell('A10').alignment = { vertical: 'middle', indent: 1 };
+
+      ws.mergeCells('E10:G10');
+      ws.getCell('E10').value = `₩ ${grandTotal.toLocaleString()} (VAT 포함)`;
+      ws.getCell('E10').font = { name: '맑은 고딕', size: 11, bold: true, color: { argb: 'FF111827' } };
+      ws.getCell('E10').fill = fillGray;
+      ws.getCell('E10').alignment = { vertical: 'middle', horizontal: 'right' };
+
+      for (let c = 1; c <= 7; c++) ws.getRow(10).getCell(c).border = borderThin;
+
+      // 5. 품목 테이블 헤더 (12행)
+      const headers = ['No', '품 목 명', '규격', '수량', '단가', '공급가액', '세액'];
+      const hRow = ws.getRow(12);
+      headers.forEach((h, idx) => {
+        const cell = hRow.getCell(idx + 1);
+        cell.value = h;
+        cell.font = fontBold;
+        cell.fill = fillGray;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = borderThin;
+      });
+
+      // 6. 품목 데이터 행 (최소 6행 유지)
+      let startRow = 13;
+      const maxRows = Math.max(items.length, 6);
+
+      for (let i = 0; i < maxRows; i++) {
+        const rowNum = startRow + i;
+        const row = ws.getRow(rowNum);
+
+        if (i < items.length) {
+          const it = items[i];
+          let supply = it.qty * it.price;
+          let vat = 0;
+          if (taxType === 'tax') vat = Math.round(supply * 0.1);
+          else if (taxType === 'tax_included') {
+            supply = Math.round((it.qty * it.price) / 1.1);
+            vat = (it.qty * it.price) - supply;
+          }
+
+          row.getCell(1).value = i + 1;
+          row.getCell(1).alignment = { horizontal: 'center' };
+
+          row.getCell(2).value = it.name;
+          row.getCell(2).alignment = { horizontal: 'left', indent: 1 };
+
+          row.getCell(3).value = it.spec || '-';
+          row.getCell(3).alignment = { horizontal: 'center' };
+
+          row.getCell(4).value = it.qty;
+          row.getCell(4).numFmt = '#,##0';
+          row.getCell(4).alignment = { horizontal: 'right' };
+
+          row.getCell(5).value = it.price;
+          row.getCell(5).numFmt = '#,##0';
+          row.getCell(5).alignment = { horizontal: 'right' };
+
+          row.getCell(6).value = supply;
+          row.getCell(6).numFmt = '#,##0';
+          row.getCell(6).alignment = { horizontal: 'right' };
+
+          row.getCell(7).value = (taxType === 'exempt') ? 0 : vat;
+          row.getCell(7).numFmt = '#,##0';
+          row.getCell(7).alignment = { horizontal: 'right' };
+        } else {
+          // 빈 줄도 테두리 유지
+          row.getCell(1).value = '';
+        }
+
+        for (let c = 1; c <= 7; c++) {
+          row.getCell(c).font = fontDefault;
+          row.getCell(c).border = borderThin;
+        }
+      }
+
+      // 7. 품목 합계 행
+      const totRowNum = startRow + maxRows;
+      ws.mergeCells(`A${totRowNum}:C${totRowNum}`);
+      const totLabel = ws.getCell(`A${totRowNum}`);
+      totLabel.value = '합  계';
+      totLabel.font = fontBold;
+      totLabel.fill = fillGray;
+      totLabel.alignment = { horizontal: 'center' };
+
+      const cellTotQty = ws.getCell(`D${totRowNum}`);
+      cellTotQty.value = totQty;
+      cellTotQty.numFmt = '#,##0';
+      cellTotQty.font = fontBold;
+      cellTotQty.alignment = { horizontal: 'right' };
+
+      const cellBlank = ws.getCell(`E${totRowNum}`);
+      cellBlank.value = '-';
+      cellBlank.alignment = { horizontal: 'center' };
+
+      const cellTotSupply = ws.getCell(`F${totRowNum}`);
+      cellTotSupply.value = totSupply;
+      cellTotSupply.numFmt = '#,##0';
+      cellTotSupply.font = fontBold;
+      cellTotSupply.alignment = { horizontal: 'right' };
+
+      const cellTotVat = ws.getCell(`G${totRowNum}`);
+      cellTotVat.value = totVat;
+      cellTotVat.numFmt = '#,##0';
+      cellTotVat.font = fontBold;
+      cellTotVat.alignment = { horizontal: 'right' };
+
+      for (let c = 1; c <= 7; c++) {
+        const cell = ws.getRow(totRowNum).getCell(c);
+        cell.border = borderThin;
+        cell.fill = fillGray;
+      }
+
+      // 8. 하단 특약사항 & 결재
+      const bottomRow = totRowNum + 2;
+      ws.getCell(`A${bottomRow}`).value = '[결제조건] ' + paymentTerm;
+      ws.getCell(`A${bottomRow}`).font = fontDefault;
+
+      ws.getCell(`A${bottomRow + 1}`).value = '[특약사항] 1. 파손 및 규격 미달품은 전량 반품 또는 교환 처리함.';
+      ws.getCell(`A${bottomRow + 1}`).font = fontDefault;
+
+      ws.getCell(`A${bottomRow + 2}`).value = '            2. 납품 시 본 발주서 사본 및 거래명세표를 필히 동봉 바랍니다.';
+      ws.getCell(`A${bottomRow + 2}`).font = fontDefault;
+
+      // 9. 엑셀 파일 즉시 브라우저 다운로드
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `발주서_${myName}_${orderDate}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   </script>
 </body>
