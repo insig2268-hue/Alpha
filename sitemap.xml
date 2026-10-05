@@ -1,56 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- 메인 홈 -->
   <url>
     <loc>https://biz-tools.kr/</loc>
+    <lastmod>2026-10-05</lastmod>
     <priority>1.0</priority>
   </url>
-  <url>
-    <loc>https://biz-tools.kr/margin/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/vat/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/privacy.html</loc>
-    <priority>0.5</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/insurance/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/wage/index.html</loc>
-    <priority>0.8</priority>
-  </url>
 
+  <!-- 서식 허브 자료실 -->
   <url>
     <loc>https://biz-tools.kr/templates/index.html</loc>
-    <priority>0.8</priority>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.9</priority>
   </url>
+
+  <!-- 신규 업무 서식 6종 -->
   <url>
-    <loc>https://biz-tools.kr/receipt/index.html</loc>
+    <loc>https://biz-tools.kr/order/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://biz-tools.kr/invoice/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/order/index.html</loc>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://biz-tools.kr/contract/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://biz-tools.kr/inventory/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://biz-tools.kr/payroll/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
     <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://biz-tools.kr/receipt/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://biz-tools.kr/contract/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 기존 계산기 도구 4종 -->
+  <url>
+    <loc>https://biz-tools.kr/margin/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://biz-tools.kr/vat/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://biz-tools.kr/wage/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://biz-tools.kr/insurance/index.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 개인정보처리방침 -->
+  <url>
+    <loc>https://biz-tools.kr/privacy.html</loc>
+    <lastmod>2026-10-05</lastmod>
+    <priority>0.3</priority>
   </url>
 </urlset>
