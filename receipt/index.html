@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>무료 간이영수증 양식 및 A4 즉시 인쇄기 | BizTools</title>
+  <meta name="description" content="별도 프로그램 설치 없이 웹에서 공급자 정보와 품목을 입력하고 즉시 A4 규격으로 출력하는 무료 간이영수증 인쇄 도구. 3만원 이하 소액 지출증빙 완벽 지원.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/receipt/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="무료 간이영수증 웹 작성 및 A4 즉시 인쇄기 | BizTools">
+  <meta property="og:description" content="공급자 정보와 품목 입력 즉시 한글 금액 및 합계 자동 환산, A4 2분할 표준 규격 즉시 출력">
+  <meta property="og:url" content="https://biz-tools.kr/receipt/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .receipt-paper {
+        border: 2px solid #1f2937 !important;
+        page-break-inside: avoid;
+        box-shadow: none !important;
+        margin-bottom: 20mm;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 15mm 12mm;
+      }
+    }
+    .receipt-table th, .receipt-table td {
+      border: 1px solid #374151;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 네비게이션 헤더 (인쇄 시 숨김) -->
+  <header class="no-print bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../templates/index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 서식 자료실
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">간이영수증 웹 작성 & A4 인쇄기</h1>
+      </div>
+      <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        <span>지금 인쇄하기 (A4)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+            <span>영수증 내용 입력</span>
+          </h2>
+          <span class="text-[11px] text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded">사업자 정보 자동저장</span>
+        </div>
+
+        <!-- 공급자 정보 입력 -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">공급자 (발행자) 정보</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">사업자등록번호</label>
+              <input type="text" id="inBizNum" placeholder="123-45-67890" value="123-45-67890" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">상호 (상호명)</label>
+              <input type="text" id="inBizName" placeholder="비즈스토어" value="비즈스토어" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">대표자 성명</label>
+              <input type="text" id="inCeoName" placeholder="홍길동" value="홍길동" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">업태 / 종목</label>
+              <input type="text" id="inBizType" placeholder="도소매 / 전자상거래" value="도소매 / 식품유통" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">사업장 소재지 (주소)</label>
+            <input type="text" id="inBizAddr" placeholder="경상북도 칠곡군 ..." value="경상북도 칠곡군 왜관읍 123" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+          </div>
+        </div>
+
+        <!-- 발행 기본 정보 -->
+        <div class="space-y-3 pt-3 border-t border-gray-100">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">발행 기본 정보</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">작성 일자</label>
+              <input type="date" id="inDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" onchange="updateReceipt()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">공급받는 자 (고객명)</label>
+              <input type="text" id="inCustomer" placeholder="고객명 (또는 귀하)" value="귀하" class="w-full px-2.5 py-1.5 text-xs border rounded-lg focus:ring-1 focus:ring-indigo-500 outline-none" oninput="updateReceipt()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 품목 리스트 입력 -->
+        <div class="space-y-3 pt-3 border-t border-gray-100">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">품목 및 금액 입력</h3>
+            <button type="button" onclick="addItemRow()" class="text-[11px] font-bold text-indigo-600 hover:underline">+ 품목 추가</button>
+          </div>
+          
+          <div id="itemList" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+            <!-- 행 항목 동적 삽입 -->
+          </div>
+        </div>
+
+        <!-- 인쇄 실행 버튼 -->
+        <div class="pt-4 border-t border-gray-100 space-y-2">
+          <button type="button" onclick="window.print()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2 active:scale-98">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            <span>A4 간이영수증 인쇄하기</span>
+          </button>
+          <p class="text-[11px] text-gray-400 text-center">인쇄 설정에서 <strong>'배경 그래픽 포함'</strong>을 켜주시면 테두리가 선명하게 출력됩니다.</p>
+        </div>
+      </section>
+
+      <!-- 우측 A4 인쇄 프리뷰 (인쇄 영역) -->
+      <section class="lg:col-span-7 flex flex-col items-center print-wrapper">
+        <div class="no-print w-full flex items-center justify-between mb-3 text-xs text-gray-500 px-1">
+          <span>인쇄 미리보기 (실제 A4 출력 화면)</span>
+          <span class="text-indigo-600 font-semibold">소액 경비 지출증빙 규격</span>
+        </div>
+
+        <!-- 실제 간이영수증 서식 (A4 인쇄 용지) -->
+        <div class="receipt-paper w-full max-w-[620px] bg-white p-6 sm:p-8 rounded-xl shadow-md border-2 border-gray-800 text-gray-900 font-serif leading-tight">
+          
+          <!-- 상단 헤더 -->
+          <div class="flex items-center justify-between border-b-2 border-gray-900 pb-3">
+            <div class="space-y-1">
+              <div class="text-2xl font-black tracking-widest text-gray-900">영 수 증</div>
+              <div class="text-[11px] text-gray-600">(공급받는자 보관용)</div>
+            </div>
+            <div class="text-right text-xs">
+              <div class="font-bold">No. <span id="outReceiptNo" class="font-mono">2026-001</span></div>
+              <div class="text-gray-600 mt-1">작성일자: <span id="outDate" class="font-sans font-bold">2026년 10월 05일</span></div>
+            </div>
+          </div>
+
+          <!-- 받는 자 & 공급자 테이블 -->
+          <div class="grid grid-cols-12 gap-0 border-b-2 border-gray-900 text-xs mt-3">
+            <!-- 공급받는 자 -->
+            <div class="col-span-4 p-3 border-r border-gray-800 flex flex-col justify-center items-center text-center">
+              <div class="text-sm font-bold underline underline-offset-4 mb-2 tracking-wide" id="outCustomer">귀하</div>
+              <p class="text-[11px] text-gray-600">아래와 같이 영수(청구)함</p>
+            </div>
+
+            <!-- 공급자 테이블 -->
+            <div class="col-span-8">
+              <table class="receipt-table w-full text-left border-collapse text-[11px]">
+                <tr>
+                  <th rowspan="4" class="w-6 text-center bg-gray-100 font-bold p-1 border-r border-gray-800">공<br>급<br>자</th>
+                  <th class="w-16 bg-gray-50 p-1 border-b border-gray-800 text-gray-700">등록번호</th>
+                  <td colspan="3" class="p-1 border-b border-gray-800 font-bold font-mono tracking-wider text-xs" id="outBizNum">123-45-67890</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 border-b border-gray-800 text-gray-700">상호(법인)</th>
+                  <td class="p-1 border-b border-gray-800 font-bold" id="outBizName">비즈스토어</td>
+                  <th class="w-12 bg-gray-50 p-1 border-b border-gray-800 text-gray-700">성명</th>
+                  <td class="p-1 border-b border-gray-800 font-bold relative" id="outCeoName">
+                    홍길동
+                    <span class="absolute right-2 top-0.5 text-rose-500 font-sans text-[10px] border border-rose-400 rounded-full px-1">(인)</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 border-b border-gray-800 text-gray-700">사업장소재</th>
+                  <td colspan="3" class="p-1 border-b border-gray-800 text-[10px]" id="outBizAddr">경상북도 칠곡군 왜관읍 123</td>
+                </tr>
+                <tr>
+                  <th class="bg-gray-50 p-1 text-gray-700">업태</th>
+                  <td class="p-1" id="outBizType1">도소매</td>
+                  <th class="bg-gray-50 p-1 text-gray-700">종목</th>
+                  <td class="p-1" id="outBizType2">식품유통</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- 합계 금액란 -->
+          <div class="border-b-2 border-gray-900 py-2.5 px-3 bg-gray-50 flex items-center justify-between text-xs mt-0.5">
+            <div class="font-bold text-gray-700">
+              합계금액 (일금 <span id="outKoreanAmount" class="text-sm font-black text-gray-900 underline underline-offset-4 ml-1">삼만 오천 원정</span>)
+            </div>
+            <div class="text-base font-black font-mono text-gray-900 tracking-tight">
+              ₩ <span id="outTotalAmount">35,000</span>
+            </div>
+          </div>
+
+          <!-- 품목 명세 테이블 -->
+          <table class="receipt-table w-full text-center border-collapse text-xs mt-3">
+            <thead>
+              <tr class="bg-gray-100 font-bold text-[11px]">
+                <th class="py-1.5 w-16">월 / 일</th>
+                <th class="py-1.5">품 목 / 규 격</th>
+                <th class="py-1.5 w-14">수량</th>
+                <th class="py-1.5 w-20">단가</th>
+                <th class="py-1.5 w-24">금액</th>
+              </tr>
+            </thead>
+            <tbody id="outTableBody" class="font-sans text-[11px]">
+              <!-- 자바스크립트로 최대 6개 라인 렌더링 -->
+            </tbody>
+            <tfoot>
+              <tr class="bg-gray-50 font-bold font-sans">
+                <td colspan="4" class="py-1.5 text-center font-serif text-xs">총 합 계</td>
+                <td class="py-1.5 text-right pr-2 text-xs font-mono font-black" id="outFootTotal">35,000</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- 하단 안내 문구 -->
+          <div class="mt-4 pt-3 border-t border-gray-300 flex justify-between text-[10px] text-gray-500 font-sans">
+            <span>* 소득세법 제160조의2에 따른 건당 3만원 이하 정규 영수증</span>
+            <span>BizTools 간이영수증 발급기</span>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 가이드 및 안내문 (인쇄 시 숨김) -->
+    <section class="no-print bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-900">간이영수증 작성 및 세법상 지출증빙 유의사항</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">1. 건당 3만 원 이하 적격증빙 인정</h4>
+          <p>
+            세법상 사업 관련 경비 지출 시 세금계산서, 계산서, 신용카드 매출전표, 현금영수증을 수취해야 하지만, **건당 3만 원(부가가치세 포함) 이하의 소액 거래**는 간이영수증으로도 가산세 없이 전액 필요경비(손금)로 인정받을 수 있습니다.
+          </p>
+        </div>
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">2. 3만 원 초과 시 증빙불비 가산세</h4>
+          <p>
+            3만 원을 초과하는 지출에 대해 적격증빙 없이 간이영수증만 수취하는 경우, 비용 처리는 가능하더라도 지출 금액의 **2%에 해당하는 '증빙불비가산세'**가 부과되므로 3만 원 초과 거래는 반드시 세금계산서 또는 카드를 사용해야 합니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (인쇄 시 숨김) -->
+  <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 영수증 인쇄 도구는 사용자 편의용이며 세무상 신고 증빙 책임은 사용자에게 있습니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+        <a href="/privacy.html" class="text-gray-300 hover:text-white underline transition">개인정보처리방침</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    // 기본 품목 데이터
+    let items = [
+      { name: '사무용품 및 비품', qty: 1, price: 20000 },
+      { name: '복사용지 (A4)', qty: 3, price: 5000 }
+    ];
+
+    // 한글 금액 변환 함수
+    function numToKorean(num) {
+      if (num === 0) return '영';
+      const units = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+      const small = ['', '십', '백', '천'];
+      const big = ['', '만', '억', '조'];
+      let result = '';
+      let unitIdx = 0;
+
+      while (num > 0) {
+        let chunk = num % 10000;
+        if (chunk > 0) {
+          let chunkStr = '';
+          for (let i = 0; i < 4; i++) {
+            let digit = chunk % 10;
+            if (digit > 0) {
+              chunkStr = units[digit] + small[i] + chunkStr;
+            }
+            chunk = Math.floor(chunk / 10);
+          }
+          result = chunkStr + big[unitIdx] + ' ' + result;
+        }
+        num = Math.floor(num / 10000);
+        unitIdx++;
+      }
+      return result.trim() + ' 원정';
+    }
+
+    // 초기화 및 로컬스토리지 불러오기
+    window.addEventListener('DOMContentLoaded', () => {
+      // 오늘 날짜 세팅
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('inDate').value = today;
+
+      // 사업자 정보 캐시 불러오기
+      const cachedBiz = localStorage.getItem('biz_receipt_info');
+      if (cachedBiz) {
+        try {
+          const info = JSON.parse(cachedBiz);
+          if (info.num) document.getElementById('inBizNum').value = info.num;
+          if (info.name) document.getElementById('inBizName').value = info.name;
+          if (info.ceo) document.getElementById('inCeoName').value = info.ceo;
+          if (info.addr) document.getElementById('inBizAddr').value = info.addr;
+          if (info.type) document.getElementById('inBizType').value = info.type;
+        } catch(e) {}
+      }
+
+      renderItemInputs();
+      updateReceipt();
+    });
+
+    // 품목 행 입력 폼 렌더링
+    function renderItemInputs() {
+      const list = document.getElementById('itemList');
+      list.innerHTML = '';
+
+      items.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2 text-xs bg-gray-50 p-2 rounded-lg border border-gray-200';
+        row.innerHTML = `
+          <input type="text" value="${item.name}" placeholder="품목명" class="flex-1 px-2 py-1 border rounded bg-white" oninput="items[${idx}].name = this.value; updateReceipt();">
+          <input type="number" value="${item.qty}" min="1" placeholder="수량" class="w-12 px-1.5 py-1 border rounded bg-white text-right" oninput="items[${idx}].qty = Number(this.value) || 0; updateReceipt();">
+          <input type="number" value="${item.price}" min="0" step="100" placeholder="단가" class="w-20 px-1.5 py-1 border rounded bg-white text-right" oninput="items[${idx}].price = Number(this.value) || 0; updateReceipt();">
+          <button type="button" onclick="removeItemRow(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-1 text-sm">×</button>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function addItemRow() {
+      if (items.length >= 6) {
+        alert('영수증 규격상 최대 6개 품목까지 입력 가능합니다.');
+        return;
+      }
+      items.push({ name: '', qty: 1, price: 0 });
+      renderItemInputs();
+      updateReceipt();
+    }
+
+    function removeItemRow(idx) {
+      if (items.length <= 1) {
+        alert('최소 1개 품목은 유지되어야 합니다.');
+        return;
+      }
+      items.splice(idx, 1);
+      renderItemInputs();
+      updateReceipt();
+    }
+
+    // 영수증 서식 실시간 업데이트
+    function updateReceipt() {
+      const bizNum = document.getElementById('inBizNum').value.trim();
+      const bizName = document.getElementById('inBizName').value.trim();
+      const ceoName = document.getElementById('inCeoName').value.trim();
+      const bizAddr = document.getElementById('inBizAddr').value.trim();
+      const bizType = document.getElementById('inBizType').value.trim();
+      const dateVal = document.getElementById('inDate').value;
+      const customer = document.getElementById('inCustomer').value.trim() || '귀하';
+
+      // 로컬스토리지 저장
+      localStorage.setItem('biz_receipt_info', JSON.stringify({
+        num: bizNum, name: bizName, ceo: ceoName, addr: bizAddr, type: bizType
+      }));
+
+      // 날짜 포맷
+      if (dateVal) {
+        const [y, m, d] = dateVal.split('-');
+        document.getElementById('outDate').textContent = `${y}년 ${m}월 ${d}일`;
+        document.getElementById('outReceiptNo').textContent = `${y.slice(2)}${m}${d}-01`;
+      }
+
+      document.getElementById('outCustomer').textContent = customer;
+      document.getElementById('outBizNum').textContent = bizNum;
+      document.getElementById('outBizName').textContent = bizName;
+      document.getElementById('outCeoName').innerHTML = `${ceoName} <span class="absolute right-2 top-0.5 text-rose-500 font-sans text-[10px] border border-rose-400 rounded-full px-1">(인)</span>`;
+      document.getElementById('outBizAddr').textContent = bizAddr;
+
+      // 업태 / 종목 분리
+      const typeParts = bizType.split('/');
+      document.getElementById('outBizType1').textContent = typeParts[0] ? typeParts[0].trim() : '-';
+      document.getElementById('outBizType2').textContent = typeParts[1] ? typeParts[1].trim() : (typeParts[0] || '-');
+
+      // 품목 및 금액 테이블 갱신
+      let total = 0;
+      const tbody = document.getElementById('outTableBody');
+      tbody.innerHTML = '';
+
+      const dateShort = dateVal ? dateVal.slice(5).replace('-', ' / ') : '-';
+
+      for (let i = 0; i < 6; i++) {
+        const tr = document.createElement('tr');
+        tr.className = 'h-7';
+        if (i < items.length) {
+          const item = items[i];
+          const lineTotal = item.qty * item.price;
+          total += lineTotal;
+          tr.innerHTML = `
+            <td class="border border-gray-800">${dateShort}</td>
+            <td class="border border-gray-800 text-left pl-2">${item.name || '-'}</td>
+            <td class="border border-gray-800 font-mono">${item.qty ? item.qty.toLocaleString() : ''}</td>
+            <td class="border border-gray-800 text-right pr-2 font-mono">${item.price ? item.price.toLocaleString() : ''}</td>
+            <td class="border border-gray-800 text-right pr-2 font-mono font-bold">${lineTotal ? lineTotal.toLocaleString() : ''}</td>
+          `;
+        } else {
+          // 빈 줄 채우기
+          tr.innerHTML = `
+            <td class="border border-gray-800"></td>
+            <td class="border border-gray-800"></td>
+            <td class="border border-gray-800"></td>
+            <td class="border border-gray-800"></td>
+            <td class="border border-gray-800"></td>
+          `;
+        }
+        tbody.appendChild(tr);
+      }
+
+      document.getElementById('outTotalAmount').textContent = total.toLocaleString();
+      document.getElementById('outFootTotal').textContent = total.toLocaleString();
+      document.getElementById('outKoreanAmount').textContent = numToKorean(total);
+    }
+  </script>
+</body>
+</html>
