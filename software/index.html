@@ -86,12 +86,12 @@
       <div class="flex items-center justify-between">
         <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
           <span>등록된 유틸리티 목록</span>
-          <span id="softwareCount" class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">8개</span>
+          <span id="softwareCount" class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">12개</span>
         </h3>
       </div>
 
       <div id="softwareGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <!-- 자바스크립트로 렌더링 -->
+        <!-- 자바스크립트로 12개 렌더링 -->
       </div>
     </section>
 
@@ -129,7 +129,7 @@
 
   </main>
 
-  <!-- 관리자 전용 모달창 -->
+  <!-- 관리자 전용 모달창 (등록 및 수정 공용) -->
   <div id="adminModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-200 space-y-4">
       
@@ -139,7 +139,7 @@
           <h3 class="text-sm font-bold text-gray-900">관리자 인증</h3>
           <button type="button" onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">×</button>
         </div>
-        <p class="text-xs text-gray-500">파일 등록 및 링크 점검 관리는 관리자만 가능합니다.</p>
+        <p class="text-xs text-gray-500">파일 등록 및 링크 수정 권한은 관리자 전용입니다.</p>
         <div class="space-y-2">
           <input type="password" id="adminPasswordInput" placeholder="관리자 비밀번호 입력" class="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-1 focus:ring-purple-600">
           <button type="button" onclick="checkAdminPassword()" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-xl transition">
@@ -148,17 +148,20 @@
         </div>
       </div>
 
-      <!-- 2단계: 신규 등록 폼 -->
+      <!-- 2단계: 신규 등록 및 수정 폼 -->
       <div id="adminUploadBox" class="hidden space-y-4">
         <div class="flex items-center justify-between border-b pb-3">
-          <h3 class="text-sm font-bold text-gray-900">신규 소프트웨어 등록</h3>
+          <h3 id="modalTitle" class="text-sm font-bold text-gray-900">신규 소프트웨어 등록</h3>
           <button type="button" onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">×</button>
         </div>
         
         <form id="uploadForm" onsubmit="handleUploadSoftware(event)" class="space-y-3">
+          <!-- 수정 시 식별용 hidden 필드 (-1: 신규, 0 이상: 수정 대상 인덱스) -->
+          <input type="hidden" id="editIndex" value="-1">
+
           <div>
             <label class="block text-[11px] font-bold text-gray-600 mb-1">소프트웨어 명칭</label>
-            <input type="text" id="swTitle" placeholder="예: 알약 / 7-Zip" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-bold">
+            <input type="text" id="swTitle" placeholder="예: 반디집 / 7-Zip" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-bold">
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
@@ -167,6 +170,7 @@
                 <option value="압축/뷰어">압축 / 뷰어</option>
                 <option value="화면캡처">화면 캡처 / 그래픽</option>
                 <option value="그래픽/편집">그래픽 / 편집</option>
+                <option value="미디어/인코딩">미디어 / 인코딩</option>
                 <option value="업무유틸">업무 유틸리티</option>
                 <option value="문서오피스">문서 / 오피스</option>
               </select>
@@ -182,9 +186,9 @@
           </div>
           
           <div class="space-y-2 pt-2 border-t border-gray-100">
-            <label class="block text-[11px] font-bold text-gray-700">다운로드 링크 또는 파일</label>
-            <input type="url" id="swDirectUrl" placeholder="https://... (공식 다운로드 링크)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
-            <span class="text-[10px] text-gray-400 block text-center">- 또는 직접 파일 업로드 -</span>
+            <label class="block text-[11px] font-bold text-gray-700">다운로드 링크 주소 변경 / 입력</label>
+            <input type="url" id="swDirectUrl" placeholder="https://... (공식 다운로드 링크 URL)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-mono">
+            <span class="text-[10px] text-gray-400 block text-center">- 또는 새 파일 교체 업로드 -</span>
             <input type="file" id="swFileInput" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
           </div>
 
@@ -215,10 +219,10 @@
 
   <!-- 로직 스크립트 -->
   <script>
-    // 1. 관리자 전용 비밀번호 0309 설정
+    // 1. 관리자 비밀번호
     const ADMIN_SECRET_KEY = "0309";
 
-    // 2. 8종 데이터 (포토스케이프 X 공식 마이크로소프트 스토어 링크 수정 및 status 속성 부여)
+    // 2. 전체 12종 필수 소프트웨어 데이터
     const defaultSoftwareList = [
       {
         id: "sw_1",
@@ -262,7 +266,6 @@
         category: "그래픽/편집",
         version: "v4.2.8 (Windows 10/11)",
         desc: "상품 상세페이지 일괄 리사이징, 워터마크 삽입, 누끼 따기 및 사진 보정용 필수 그래픽 도구.",
-        // 마이크로소프트 스토어 공식 다운로드 링크 적용
         url: "https://apps.microsoft.com/detail/9nblggh4twwg?hl=ko-kr&gl=KR",
         status: "active"
       },
@@ -292,6 +295,42 @@
         desc: "수십만 행 대용량 CSV/텍스트 데이터 정제, 정규식 일괄 치환, 깨진 문자열 복구용 강력한 에디터.",
         url: "https://notepad-plus-plus.org/",
         status: "active"
+      },
+      {
+        id: "sw_9",
+        title: "ScreenToGif (스크린투지프)",
+        category: "화면캡처",
+        version: "v2.41 (무설치 포터블)",
+        desc: "컴퓨터 화면을 지정해 초고화질 움짤(GIF)로 즉시 녹화·편집. 쇼핑몰 상품 시연 상세페이지 제작 필수 도구.",
+        url: "https://www.screentogif.com/",
+        status: "active"
+      },
+      {
+        id: "sw_10",
+        title: "샤나인코더 (ShanaEncoder)",
+        category: "미디어/인코딩",
+        version: "v6.0.1 (국내 1위 무료)",
+        desc: "쇼핑몰 상세페이지 비디오 용량 압축 및 규격 변환, 자막 합치기 및 무손실 초고속 동영상 변환 인코더.",
+        url: "https://shana.pe.kr/shanaencoder_download",
+        status: "active"
+      },
+      {
+        id: "sw_11",
+        title: "AnyDesk (애니데스크)",
+        category: "업무유틸",
+        version: "v8.0 (초경량 5MB)",
+        desc: "매장 포스기(POS), 재택근무 PC, 창고 관리용 PC에 프로그램 설치 없이 즉시 연결하는 초고속 원격 제어.",
+        url: "https://anydesk.com/ko",
+        status: "active"
+      },
+      {
+        id: "sw_12",
+        title: "DeepL 번역기 (DeepL for Windows)",
+        category: "업무유틸",
+        version: "v24.x (AI 번역 1위)",
+        desc: "알리바바·1688·타오바오 해외 소싱 및 무역 실무용 AI 번역기. 단축키(Ctrl+C+C)로 화면 텍스트 즉시 번역.",
+        url: "https://www.deepl.com/ko/app/",
+        status: "active"
       }
     ];
 
@@ -305,13 +344,12 @@
     });
 
     function loadSoftware() {
-      // 신규 링크 반영을 위해 v3 키 사용
-      const cached = localStorage.getItem("biz_software_list_v3");
+      const cached = localStorage.getItem("biz_software_list_v4");
       if (cached) {
         softwareList = JSON.parse(cached);
       } else {
         softwareList = [...defaultSoftwareList];
-        localStorage.setItem("biz_software_list_v3", JSON.stringify(softwareList));
+        localStorage.setItem("biz_software_list_v4", JSON.stringify(softwareList));
       }
       renderSoftware();
     }
@@ -346,7 +384,6 @@
           </div>
           <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
             ${isMaintenance ? `
-              <!-- 점검중일 때 비활성화 버튼 -->
               <button type="button" onclick="alert('현재 해당 프로그램의 다운로드 링크를 점검 중입니다. 빠른 시일 내에 정상화하겠습니다.');" class="px-3.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold text-xs rounded-xl transition flex items-center gap-1.5 cursor-not-allowed">
                 <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -354,7 +391,6 @@
                 <span>점검중</span>
               </button>
             ` : `
-              <!-- 정상 작동 다운로드 버튼 -->
               <a href="${sw.url}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 active:scale-95">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -364,13 +400,19 @@
             `}
             
             ${isAdminUnlocked ? `
-              <!-- 관리자 전용 점검 토글 및 삭제 기능 -->
+              <!-- 관리자 모드: 상태 토글 / 수정 / 삭제 -->
               <div class="flex items-center gap-2">
                 <button type="button" onclick="toggleStatus(${idx})" class="text-[11px] font-bold ${isMaintenance ? 'text-emerald-600 hover:underline' : 'text-amber-600 hover:underline'}">
-                  ${isMaintenance ? '정상 전환' : '점검 처리'}
+                  ${isMaintenance ? '정상' : '점검'}
                 </button>
-                <span class="text-gray-300">|</span>
-                <button type="button" onclick="deleteSoftware(${idx})" class="text-[11px] text-rose-500 hover:underline">삭제</button>
+                <span class="text-gray-200">|</span>
+                <button type="button" onclick="openEditModal(${idx})" class="text-[11px] font-bold text-indigo-600 hover:underline">
+                  수정
+                </button>
+                <span class="text-gray-200">|</span>
+                <button type="button" onclick="deleteSoftware(${idx})" class="text-[11px] text-rose-500 hover:underline">
+                  삭제
+                </button>
               </div>
             ` : ''}
           </div>
@@ -379,23 +421,49 @@
       });
     }
 
-    // 관리자 모드에서 원클릭으로 점검중 ↔ 정상 상태 토글
     function toggleStatus(idx) {
       softwareList[idx].status = (softwareList[idx].status === "maintenance") ? "active" : "maintenance";
-      localStorage.setItem("biz_software_list_v3", JSON.stringify(softwareList));
+      localStorage.setItem("biz_software_list_v4", JSON.stringify(softwareList));
       renderSoftware();
     }
 
+    // 신규 등록 모달 열기
     function openAdminModal() {
       document.getElementById("adminModal").classList.remove("hidden");
       if (isAdminUnlocked) {
         document.getElementById("adminAuthBox").classList.add("hidden");
         document.getElementById("adminUploadBox").classList.remove("hidden");
+        
+        // 신규 등록 모드로 폼 초기화
+        document.getElementById("uploadForm").reset();
+        document.getElementById("editIndex").value = "-1";
+        document.getElementById("modalTitle").textContent = "신규 소프트웨어 등록";
+        document.getElementById("btnSubmitSW").textContent = "등록하기";
       } else {
         document.getElementById("adminAuthBox").classList.remove("hidden");
         document.getElementById("adminUploadBox").classList.add("hidden");
         document.getElementById("adminPasswordInput").value = "";
       }
+    }
+
+    // 기존 등록 자료 수정 모달 열기
+    function openEditModal(idx) {
+      const sw = softwareList[idx];
+      document.getElementById("adminModal").classList.remove("hidden");
+      document.getElementById("adminAuthBox").classList.add("hidden");
+      document.getElementById("adminUploadBox").classList.remove("hidden");
+
+      // 기존 데이터 불러오기
+      document.getElementById("editIndex").value = idx;
+      document.getElementById("swTitle").value = sw.title;
+      document.getElementById("swCategory").value = sw.category;
+      document.getElementById("swVersion").value = sw.version;
+      document.getElementById("swDesc").value = sw.desc;
+      document.getElementById("swDirectUrl").value = sw.url.startsWith("blob:") ? "" : sw.url;
+      document.getElementById("swFileInput").value = "";
+
+      document.getElementById("modalTitle").textContent = `자료 수정: ${sw.title}`;
+      document.getElementById("btnSubmitSW").textContent = "수정 완료";
     }
 
     function closeAdminModal() {
@@ -409,14 +477,23 @@
         document.getElementById("btnAdminText").textContent = "관리자 모드 On";
         document.getElementById("adminAuthBox").classList.add("hidden");
         document.getElementById("adminUploadBox").classList.remove("hidden");
+        
+        // 신규 등록 모드로 리셋
+        document.getElementById("uploadForm").reset();
+        document.getElementById("editIndex").value = "-1";
+        document.getElementById("modalTitle").textContent = "신규 소프트웨어 등록";
+        document.getElementById("btnSubmitSW").textContent = "등록하기";
+        
         renderSoftware();
       } else {
         alert("관리자 비밀번호가 일치하지 않습니다.");
       }
     }
 
+    // 등록 및 수정 공용 처리 핸들러
     async function handleUploadSoftware(e) {
       e.preventDefault();
+      const editIdx = parseInt(document.getElementById("editIndex").value);
       const title = document.getElementById("swTitle").value.trim();
       const category = document.getElementById("swCategory").value;
       const version = document.getElementById("swVersion").value.trim();
@@ -426,29 +503,43 @@
 
       let finalDownloadUrl = directUrl;
 
+      // 새 파일이 선택된 경우
       if (fileInput.files.length > 0) {
         finalDownloadUrl = URL.createObjectURL(fileInput.files[0]);
+      } else if (editIdx >= 0 && !finalDownloadUrl) {
+        // 수정 시 다운로드 주소를 비워두었다면 기존 URL 유지
+        finalDownloadUrl = softwareList[editIdx].url;
       }
 
       if (!finalDownloadUrl) {
-        alert("업로드할 파일을 첨부하거나 다운로드 링크를 입력해주세요.");
+        alert("다운로드 링크 주소를 입력하거나 새 파일을 첨부해주세요.");
         return;
       }
 
-      const newSW = {
-        id: "sw_" + Date.now(),
-        title,
-        category,
-        version,
-        desc,
-        url: finalDownloadUrl,
-        status: "active"
-      };
+      if (editIdx >= 0) {
+        // 기존 자료 수정
+        softwareList[editIdx].title = title;
+        softwareList[editIdx].category = category;
+        softwareList[editIdx].version = version;
+        softwareList[editIdx].desc = desc;
+        softwareList[editIdx].url = finalDownloadUrl;
+        alert("소프트웨어 정보가 성공적으로 수정되었습니다.");
+      } else {
+        // 신규 자료 등록
+        const newSW = {
+          id: "sw_" + Date.now(),
+          title,
+          category,
+          version,
+          desc,
+          url: finalDownloadUrl,
+          status: "active"
+        };
+        softwareList.unshift(newSW);
+        alert("신규 소프트웨어가 성공적으로 등록되었습니다.");
+      }
 
-      softwareList.unshift(newSW);
-      localStorage.setItem("biz_software_list_v3", JSON.stringify(softwareList));
-
-      alert("신규 소프트웨어가 성공적으로 등록되었습니다.");
+      localStorage.setItem("biz_software_list_v4", JSON.stringify(softwareList));
       document.getElementById("uploadForm").reset();
       closeAdminModal();
       renderSoftware();
@@ -457,7 +548,7 @@
     function deleteSoftware(idx) {
       if (!confirm("해당 소프트웨어를 자료실에서 삭제하시겠습니까?")) return;
       softwareList.splice(idx, 1);
-      localStorage.setItem("biz_software_list_v3", JSON.stringify(softwareList));
+      localStorage.setItem("biz_software_list_v4", JSON.stringify(softwareList));
       renderSoftware();
     }
 
