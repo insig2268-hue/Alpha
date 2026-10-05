@@ -28,6 +28,8 @@
   <meta property="og:url" content="https://biz-tools.kr/payroll/index.html">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ExcelJS 완벽 서식 지원 엑셀 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
        crossorigin="anonymous"></script>
@@ -80,12 +82,21 @@
         </div>
         <h1 class="text-lg font-bold text-gray-900 tracking-tight">알바 급여대장 & 근무기록부 작성기</h1>
       </div>
-      <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-        </svg>
-        <span>A4 급여대장 인쇄하기 (가로)</span>
-      </button>
+      <!-- 헤더 우측 액션 버튼 그룹 -->
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="exportToExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span>엑셀 다운로드 (.xlsx)</span>
+        </button>
+        <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 가로 급여대장 인쇄하기</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -295,7 +306,7 @@
       document.getElementById('inPayDate').value = now.toISOString().split('T')[0];
 
       // 이전 서식에서 저장된 상호 연동
-      const cached = localStorage.getItem('biz_receipt_info') || localStorage.getItem('biz_contract_info');
+      const cached = localStorage.getItem('biz_receipt_info') || localStorage.getItem('biz_contract_info') || localStorage.getItem('biz_order_info');
       if (cached) {
         try {
           const info = JSON.parse(cached);
@@ -316,10 +327,10 @@
         row.className = 'bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs space-y-2';
         row.innerHTML = `
           <div class="flex items-center gap-2">
-            <input type="text" value="${w.name}" placeholder="근무자 이름" class="flex-1 px-2 py-1 border rounded bg-white text-xs font-bold" oninput="workers[${idx}].name = this.value; updatePayroll();">
-            <select class="px-2 py-1 border rounded bg-white text-[11px]" onchange="workers[${idx}].deductType = this.value; updatePayroll();">
+            <input type="text" value="${w.name}" placeholder="근무자 이름" class="flex-1 px-2 py-1 border rounded bg-white text-xs font-bold outline-none" oninput="workers[${idx}].name = this.value; updatePayroll();">
+            <select class="px-2 py-1 border rounded bg-white text-[11px] font-semibold" onchange="workers[${idx}].deductType = this.value; updatePayroll();">
               <option value="none" ${w.deductType === 'none' ? 'selected' : ''}>공제 없음</option>
-              <option value="freelance" ${w.deductType === 'freelance' ? 'selected' : ''}>3.3% 원천징수</option>
+              <option value="freelance" ${w.deductType === 'freelance' ? 'selected' : ''}>3.3% 사업소득</option>
               <option value="employment" ${w.deductType === 'employment' ? 'selected' : ''}>고용보험 0.9%</option>
               <option value="insurance" ${w.deductType === 'insurance' ? 'selected' : ''}>4대보험 간이 9.5%</option>
             </select>
@@ -328,15 +339,15 @@
           <div class="grid grid-cols-3 gap-2 text-[11px]">
             <div>
               <span class="text-gray-500 block text-[10px]">시급(원)</span>
-              <input type="number" min="10320" step="100" value="${w.wage}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].wage = Number(this.value)||0; updatePayroll();">
+              <input type="number" min="10320" step="100" value="${w.wage}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="workers[${idx}].wage = Number(this.value)||0; updatePayroll();">
             </div>
             <div>
               <span class="text-gray-500 block text-[10px]">주당 소정시간(h)</span>
-              <input type="number" min="1" step="0.5" value="${w.weeklyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].weeklyHours = Number(this.value)||0; updatePayroll();">
+              <input type="number" min="1" step="0.5" value="${w.weeklyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="workers[${idx}].weeklyHours = Number(this.value)||0; updatePayroll();">
             </div>
             <div>
               <span class="text-blue-600 block text-[10px]">월 실근무(h)</span>
-              <input type="number" min="0" step="0.5" value="${w.monthlyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].monthlyHours = Number(this.value)||0; updatePayroll();">
+              <input type="number" min="0" step="0.5" value="${w.monthlyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="workers[${idx}].monthlyHours = Number(this.value)||0; updatePayroll();">
             </div>
           </div>
         `;
@@ -456,6 +467,324 @@
       document.getElementById('footGross').textContent = totGross.toLocaleString();
       document.getElementById('footDeduct').textContent = totDeduct.toLocaleString();
       document.getElementById('footNet').textContent = totNet.toLocaleString();
+    }
+
+    // 웹 서식과 100% 일치하는 급여대장 ExcelJS 엑셀 변환 함수
+    async function exportToExcel() {
+      const ymVal = document.getElementById('inYearMonth').value || '2026-10';
+      const [y, m] = ymVal.split('-');
+      const formattedTitle = `${y}년 ${parseInt(m, 10)}월 아르바이트 급여대장`;
+      const bizName = document.getElementById('inBizName').value.trim() || '사업장 상호';
+      const manager = document.getElementById('inManagerName').value.trim() || '관리자';
+      const payDate = document.getElementById('inPayDate').value || '-';
+
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('급여대장', { views: [{ showGridLines: true }] });
+
+      // 11개 컬럼 너비 설정 (A ~ K)
+      ws.columns = [
+        { width: 6 },   // A: No
+        { width: 14 },  // B: 성명
+        { width: 12 },  // C: 적용시급
+        { width: 12 },  // D: 월근무(h)
+        { width: 14 },  // E: 기본급
+        { width: 12 },  // F: 주휴(h)
+        { width: 14 },  // G: 주휴수당
+        { width: 15 },  // H: 총지급액
+        { width: 13 },  // I: 공제액
+        { width: 16 },  // J: 실지급액
+        { width: 10 }   // K: 영수인
+      ];
+
+      const fontDefault = { name: '맑은 고딕', size: 9 };
+      const fontBold = { name: '맑은 고딕', size: 9, bold: true };
+      const fillGray = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+      const fillBlue = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEFF6FF' } };
+      const fillGreen = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFECFDF5' } };
+      const borderThin = {
+        top: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        left: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        bottom: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        right: { style: 'thin', color: { argb: 'FF9CA3AF' } }
+      };
+
+      // 1. 타이틀 & 결재란 (1~2행)
+      ws.mergeCells('A1:G2');
+      const titleCell = ws.getCell('A1');
+      titleCell.value = formattedTitle;
+      titleCell.font = { name: '맑은 고딕', size: 16, bold: true, color: { argb: 'FF111827' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      // 결재란 I1:K2
+      ws.getCell('I1').value = '작성';
+      ws.getCell('I1').font = fontBold;
+      ws.getCell('I1').fill = fillGray;
+      ws.getCell('I1').alignment = { horizontal: 'center' };
+
+      ws.getCell('J1').value = '검토';
+      ws.getCell('J1').font = fontBold;
+      ws.getCell('J1').fill = fillGray;
+      ws.getCell('J1').alignment = { horizontal: 'center' };
+
+      ws.getCell('K1').value = '승인';
+      ws.getCell('K1').font = fontBold;
+      ws.getCell('K1').fill = fillGray;
+      ws.getCell('K1').alignment = { horizontal: 'center' };
+
+      ws.getCell('I2').value = manager + ' (인)';
+      ws.getCell('I2').font = fontDefault;
+      ws.getCell('I2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      for (let r = 1; r <= 2; r++) {
+        for (let c = 9; c <= 11; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
+        }
+      }
+
+      // 2. 사업장 및 지급일자 (3행)
+      ws.mergeCells('A3:G3');
+      ws.getCell('A3').value = `사업장 : ${bizName}   |   지급일자 : ${payDate}`;
+      ws.getCell('A3').font = fontDefault;
+      ws.getCell('A3').alignment = { vertical: 'middle' };
+
+      // 3. 합계 연산
+      let totHours = 0, totBase = 0, totHoliHours = 0, totHoliPay = 0, totGross = 0, totDeduct = 0, totNet = 0;
+      workers.forEach(w => {
+        let weeklyHoliH = 0;
+        if (w.weeklyHours >= 15) {
+          weeklyHoliH = w.weeklyHours >= 40 ? 8 : (w.weeklyHours / 40) * 8;
+        }
+        const monthlyHoliH = Math.round(weeklyHoliH * 4.3452 * 10) / 10;
+        const basePay = Math.round(w.monthlyHours * w.wage);
+        const holiPay = Math.round(monthlyHoliH * w.wage);
+        const grossPay = basePay + holiPay;
+
+        let deduct = 0;
+        if (w.deductType === 'freelance') {
+          deduct = Math.floor(grossPay * 0.033 / 10) * 10;
+        } else if (w.deductType === 'employment') {
+          deduct = Math.floor(grossPay * 0.009 / 10) * 10;
+        } else if (w.deductType === 'insurance') {
+          deduct = Math.floor(grossPay * 0.095 / 10) * 10;
+        }
+
+        const netPay = grossPay - deduct;
+        totHours += w.monthlyHours;
+        totBase += basePay;
+        totHoliHours += monthlyHoliH;
+        totHoliPay += holiPay;
+        totGross += grossPay;
+        totDeduct += deduct;
+        totNet += netPay;
+      });
+
+      // 4. 요약 카운터 바 (5행)
+      ws.mergeCells('A5:C5');
+      ws.getCell('A5').value = `총 인원: ${workers.length}명`;
+      ws.getCell('A5').font = fontBold;
+      ws.getCell('A5').fill = fillGray;
+      ws.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.mergeCells('D5:F5');
+      ws.getCell('D5').value = `총 지급액: ${totGross.toLocaleString()}원`;
+      ws.getCell('D5').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF1D4ED8' } };
+      ws.getCell('D5').fill = fillGray;
+      ws.getCell('D5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.mergeCells('G5:H5');
+      ws.getCell('G5').value = `총 공제액: -${totDeduct.toLocaleString()}원`;
+      ws.getCell('G5').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FFE11D48' } };
+      ws.getCell('G5').fill = fillGray;
+      ws.getCell('G5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.mergeCells('I5:K5');
+      ws.getCell('I5').value = `실지급 총액: ${totNet.toLocaleString()}원`;
+      ws.getCell('I5').font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+      ws.getCell('I5').fill = fillGray;
+      ws.getCell('I5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      for (let c = 1; c <= 11; c++) ws.getRow(5).getCell(c).border = borderThin;
+
+      // 5. 급여대장 테이블 헤더 (7행)
+      const headers = ['No', '성명', '적용시급', '월근무(h)', '기본급', '주휴(h)', '주휴수당', '총지급액', '공제액', '실지급액', '영수인'];
+      const hRow = ws.getRow(7);
+      headers.forEach((h, idx) => {
+        const cell = hRow.getCell(idx + 1);
+        cell.value = h;
+        cell.font = fontBold;
+        cell.fill = fillGray;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = borderThin;
+      });
+
+      // 6. 데이터 행 (8행~)
+      let startRow = 8;
+      const maxRows = Math.max(workers.length, 6);
+
+      for (let i = 0; i < maxRows; i++) {
+        const rowNum = startRow + i;
+        const row = ws.getRow(rowNum);
+
+        if (i < workers.length) {
+          const w = workers[i];
+
+          let weeklyHoliH = 0;
+          if (w.weeklyHours >= 15) {
+            weeklyHoliH = w.weeklyHours >= 40 ? 8 : (w.weeklyHours / 40) * 8;
+          }
+          const monthlyHoliH = Math.round(weeklyHoliH * 4.3452 * 10) / 10;
+          const basePay = Math.round(w.monthlyHours * w.wage);
+          const holiPay = Math.round(monthlyHoliH * w.wage);
+          const grossPay = basePay + holiPay;
+
+          let deduct = 0;
+          if (w.deductType === 'freelance') {
+            deduct = Math.floor(grossPay * 0.033 / 10) * 10;
+          } else if (w.deductType === 'employment') {
+            deduct = Math.floor(grossPay * 0.009 / 10) * 10;
+          } else if (w.deductType === 'insurance') {
+            deduct = Math.floor(grossPay * 0.095 / 10) * 10;
+          }
+
+          const netPay = grossPay - deduct;
+
+          row.getCell(1).value = i + 1;
+          row.getCell(1).alignment = { horizontal: 'center' };
+
+          row.getCell(2).value = w.name;
+          row.getCell(2).font = fontBold;
+          row.getCell(2).alignment = { horizontal: 'center' };
+
+          row.getCell(3).value = w.wage;
+          row.getCell(3).numFmt = '#,##0';
+          row.getCell(3).alignment = { horizontal: 'right' };
+
+          row.getCell(4).value = w.monthlyHours;
+          row.getCell(4).numFmt = '#,##0.0';
+          row.getCell(4).alignment = { horizontal: 'right' };
+
+          row.getCell(5).value = basePay;
+          row.getCell(5).numFmt = '#,##0';
+          row.getCell(5).alignment = { horizontal: 'right' };
+
+          row.getCell(6).value = monthlyHoliH > 0 ? monthlyHoliH : '-';
+          if (monthlyHoliH > 0) row.getCell(6).numFmt = '#,##0.0';
+          row.getCell(6).alignment = { horizontal: 'right' };
+
+          row.getCell(7).value = holiPay > 0 ? holiPay : '-';
+          if (holiPay > 0) row.getCell(7).numFmt = '#,##0';
+          row.getCell(7).alignment = { horizontal: 'right' };
+
+          row.getCell(8).value = grossPay;
+          row.getCell(8).numFmt = '#,##0';
+          row.getCell(8).font = fontBold;
+          row.getCell(8).fill = fillBlue;
+          row.getCell(8).alignment = { horizontal: 'right' };
+
+          row.getCell(9).value = deduct;
+          row.getCell(9).numFmt = '#,##0';
+          row.getCell(9).font = { name: '맑은 고딕', size: 9, color: { argb: 'FFE11D48' } };
+          row.getCell(9).alignment = { horizontal: 'right' };
+
+          row.getCell(10).value = netPay;
+          row.getCell(10).numFmt = '#,##0';
+          row.getCell(10).font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF111827' } };
+          row.getCell(10).fill = fillGreen;
+          row.getCell(10).alignment = { horizontal: 'right' };
+
+          row.getCell(11).value = '(인)';
+          row.getCell(11).font = { name: '맑은 고딕', size: 8, color: { argb: 'FF9CA3AF' } };
+          row.getCell(11).alignment = { horizontal: 'center' };
+        } else {
+          row.getCell(1).value = '';
+          row.getCell(8).fill = fillBlue;
+          row.getCell(10).fill = fillGreen;
+        }
+
+        for (let c = 1; c <= 11; c++) {
+          if (!row.getCell(c).font) row.getCell(c).font = fontDefault;
+          row.getCell(c).border = borderThin;
+        }
+      }
+
+      // 7. 합계 행
+      const totRowNum = startRow + maxRows;
+      ws.mergeCells(`A${totRowNum}:C${totRowNum}`);
+      const totLabel = ws.getCell(`A${totRowNum}`);
+      totLabel.value = '합    계';
+      totLabel.font = fontBold;
+      totLabel.fill = fillGray;
+      totLabel.alignment = { horizontal: 'center' };
+
+      const cHours = ws.getCell(`D${totRowNum}`);
+      cHours.value = totHours;
+      cHours.numFmt = '#,##0.0';
+      cHours.font = fontBold;
+      cHours.alignment = { horizontal: 'right' };
+
+      const cBase = ws.getCell(`E${totRowNum}`);
+      cBase.value = totBase;
+      cBase.numFmt = '#,##0';
+      cBase.font = fontBold;
+      cBase.alignment = { horizontal: 'right' };
+
+      const cHoliH = ws.getCell(`F${totRowNum}`);
+      cHoliH.value = Math.round(totHoliHours * 10) / 10;
+      cHoliH.numFmt = '#,##0.0';
+      cHoliH.font = fontBold;
+      cHoliH.alignment = { horizontal: 'right' };
+
+      const cHoliPay = ws.getCell(`G${totRowNum}`);
+      cHoliPay.value = totHoliPay;
+      cHoliPay.numFmt = '#,##0';
+      cHoliPay.font = fontBold;
+      cHoliPay.alignment = { horizontal: 'right' };
+
+      const cGross = ws.getCell(`H${totRowNum}`);
+      cGross.value = totGross;
+      cGross.numFmt = '#,##0';
+      cGross.font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF1D4ED8' } };
+      cGross.fill = fillBlue;
+      cGross.alignment = { horizontal: 'right' };
+
+      const cDeduct = ws.getCell(`I${totRowNum}`);
+      cDeduct.value = totDeduct;
+      cDeduct.numFmt = '#,##0';
+      cDeduct.font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FFE11D48' } };
+      cDeduct.alignment = { horizontal: 'right' };
+
+      const cNet = ws.getCell(`J${totRowNum}`);
+      cNet.value = totNet;
+      cNet.numFmt = '#,##0';
+      cNet.font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+      cNet.fill = fillGreen;
+      cNet.alignment = { horizontal: 'right' };
+
+      const cSign = ws.getCell(`K${totRowNum}`);
+      cSign.value = '-';
+      cSign.alignment = { horizontal: 'center' };
+
+      for (let c = 1; c <= 11; c++) {
+        ws.getRow(totRowNum).getCell(c).border = borderThin;
+        if (c !== 8 && c !== 10) ws.getRow(totRowNum).getCell(c).fill = fillGray;
+      }
+
+      // 8. 하단 법정 고지 문구
+      const bottomRow = totRowNum + 2;
+      ws.mergeCells(`A${bottomRow}:K${bottomRow}`);
+      ws.getCell(`A${bottomRow}`).value = '* 근로기준법 제55조: 주 15시간 이상 개근 시 유급 주휴수당 의무 반영 (2026년 법정 최저시급 10,320원 준수) | BizTools 급여관리 시스템';
+      ws.getCell(`A${bottomRow}`).font = { name: '맑은 고딕', size: 8, color: { argb: 'FF6B7280' } };
+      ws.getCell(`A${bottomRow}`).alignment = { horizontal: 'left', vertical: 'middle' };
+
+      // 9. 다운로드 실행
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `알바급여대장_${bizName}_${ymVal}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   </script>
 </body>
