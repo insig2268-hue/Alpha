@@ -24,10 +24,12 @@
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="BizTools">
   <meta property="og:title" content="무료 일일 상품 재고 수불부 작성 및 A4 인쇄기 | BizTools">
-  <meta property="og:description" content="기초재고, 입출고, 폐기 입력 시 기말재고 자동 계산, 실사 마감용 A4 서식 인쇄">
+  <meta property="og:description" content="기초재고, 입출고, 폐기 입력 시 기말재고 자동 계산, 실사 마감용 A4 서식 인쇄 및 엑셀 다운로드">
   <meta property="og:url" content="https://biz-tools.kr/inventory/index.html">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ExcelJS 완벽 서식 지원 엑셀 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
        crossorigin="anonymous"></script>
@@ -80,12 +82,21 @@
         </div>
         <h1 class="text-lg font-bold text-gray-900 tracking-tight">일일 상품 재고 수불부</h1>
       </div>
-      <button type="button" onclick="window.print()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-        </svg>
-        <span>A4 수불부 인쇄하기</span>
-      </button>
+      <!-- 헤더 액션 버튼 -->
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="exportToExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span>엑셀 다운로드 (.xlsx)</span>
+        </button>
+        <button type="button" onclick="window.print()" class="px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 수불부 인쇄하기</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -312,26 +323,26 @@
         row.className = 'bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs space-y-2';
         row.innerHTML = `
           <div class="flex items-center gap-2">
-            <input type="text" value="${item.name}" placeholder="품목명" class="flex-1 px-2 py-1 border rounded bg-white text-xs font-bold" oninput="items[${idx}].name = this.value; updateSheet();">
-            <input type="text" value="${item.spec}" placeholder="단위" class="w-14 px-1.5 py-1 border rounded bg-white text-xs text-center" oninput="items[${idx}].spec = this.value; updateSheet();">
+            <input type="text" value="${item.name}" placeholder="품목명" class="flex-1 px-2 py-1 border rounded bg-white text-xs font-bold outline-none" oninput="items[${idx}].name = this.value; updateSheet();">
+            <input type="text" value="${item.spec}" placeholder="단위" class="w-14 px-1.5 py-1 border rounded bg-white text-xs text-center outline-none" oninput="items[${idx}].spec = this.value; updateSheet();">
             <button type="button" onclick="removeItemRow(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-1 text-sm">×</button>
           </div>
           <div class="grid grid-cols-4 gap-1.5 text-[11px]">
             <div>
               <span class="text-gray-500 block text-[10px]">기초재고</span>
-              <input type="number" min="0" value="${item.begin}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="items[${idx}].begin = Number(this.value)||0; updateSheet();">
+              <input type="number" min="0" value="${item.begin}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].begin = Number(this.value)||0; updateSheet();">
             </div>
             <div>
               <span class="text-blue-600 block text-[10px]">당일입고</span>
-              <input type="number" min="0" value="${item.inQty}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="items[${idx}].inQty = Number(this.value)||0; updateSheet();">
+              <input type="number" min="0" value="${item.inQty}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].inQty = Number(this.value)||0; updateSheet();">
             </div>
             <div>
               <span class="text-emerald-600 block text-[10px]">당일출고</span>
-              <input type="number" min="0" value="${item.outQty}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="items[${idx}].outQty = Number(this.value)||0; updateSheet();">
+              <input type="number" min="0" value="${item.outQty}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].outQty = Number(this.value)||0; updateSheet();">
             </div>
             <div>
               <span class="text-rose-600 block text-[10px]">폐기/로스</span>
-              <input type="number" min="0" value="${item.loss}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="items[${idx}].loss = Number(this.value)||0; updateSheet();">
+              <input type="number" min="0" value="${item.loss}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].loss = Number(this.value)||0; updateSheet();">
             </div>
           </div>
         `;
@@ -421,6 +432,261 @@
       document.getElementById('footOut').textContent = '-' + totOut.toLocaleString();
       document.getElementById('footLoss').textContent = '-' + totLoss.toLocaleString();
       document.getElementById('footFinal').textContent = totFinal.toLocaleString();
+    }
+
+    // 웹 서식과 100% 일치하는 재고수불부 ExcelJS 엑셀 변환 함수
+    async function exportToExcel() {
+      const dateVal = document.getElementById('inDate').value || new Date().toISOString().split('T')[0];
+      const dept = document.getElementById('inDeptName').value.trim() || '식자재 유통사업부';
+      const manager = document.getElementById('inManagerName').value.trim() || '관리자';
+
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('재고수불부', { views: [{ showGridLines: true }] });
+
+      ws.columns = [
+        { width: 7 },   // A: No
+        { width: 26 },  // B: 품목명
+        { width: 12 },  // C: 규격/단위
+        { width: 12 },  // D: 기초재고
+        { width: 12 },  // E: 당일입고
+        { width: 12 },  // F: 출고(판매)
+        { width: 12 },  // G: 폐기/로스
+        { width: 14 }   // H: 기말재고
+      ];
+
+      const fontDefault = { name: '맑은 고딕', size: 9 };
+      const fontBold = { name: '맑은 고딕', size: 9, bold: true };
+      const fillGray = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+      const borderThin = {
+        top: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        left: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        bottom: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        right: { style: 'thin', color: { argb: 'FF9CA3AF' } }
+      };
+
+      // 1. 타이틀 & 결재란 (1~2행)
+      ws.mergeCells('A1:E2');
+      const titleCell = ws.getCell('A1');
+      titleCell.value = '일일 상품 재고 수불부';
+      titleCell.font = { name: '맑은 고딕', size: 16, bold: true, color: { argb: 'FF111827' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      // 결재란 F1:H2
+      ws.getCell('F1').value = '담당';
+      ws.getCell('F1').font = fontBold;
+      ws.getCell('F1').fill = fillGray;
+      ws.getCell('F1').alignment = { horizontal: 'center' };
+
+      ws.getCell('G1').value = '팀장';
+      ws.getCell('G1').font = fontBold;
+      ws.getCell('G1').fill = fillGray;
+      ws.getCell('G1').alignment = { horizontal: 'center' };
+
+      ws.getCell('H1').value = '대표';
+      ws.getCell('H1').font = fontBold;
+      ws.getCell('H1').fill = fillGray;
+      ws.getCell('H1').alignment = { horizontal: 'center' };
+
+      ws.getCell('F2').value = manager + ' (인)';
+      ws.getCell('F2').font = fontDefault;
+      ws.getCell('F2').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      for (let r = 1; r <= 2; r++) {
+        for (let c = 6; c <= 8; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
+        }
+      }
+
+      // 2. 기준일자 및 부서 정보 (3행)
+      ws.mergeCells('A3:E3');
+      ws.getCell('A3').value = `기준일자 : ${dateVal}   |   관리부서 : ${dept}`;
+      ws.getCell('A3').font = fontDefault;
+      ws.getCell('A3').alignment = { vertical: 'middle' };
+
+      // 3. 수불 수량 집계
+      let totBegin = 0, totIn = 0, totOut = 0, totLoss = 0, totFinal = 0;
+      items.forEach(it => {
+        const finalQty = it.begin + it.inQty - it.outQty - it.loss;
+        totBegin += it.begin;
+        totIn += it.inQty;
+        totOut += it.outQty;
+        totLoss += it.loss;
+        totFinal += finalQty;
+      });
+
+      // 4. 요약 카운터 바 (5행)
+      ws.mergeCells('A5:B5');
+      ws.getCell('A5').value = `기초재고계: ${totBegin.toLocaleString()}`;
+      ws.getCell('A5').font = fontBold;
+      ws.getCell('A5').fill = fillGray;
+      ws.getCell('A5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.mergeCells('C5:D5');
+      ws.getCell('C5').value = `당일입고계: +${totIn.toLocaleString()}`;
+      ws.getCell('C5').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF1D4ED8' } };
+      ws.getCell('C5').fill = fillGray;
+      ws.getCell('C5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.mergeCells('E5:F5');
+      ws.getCell('E5').value = `출고(판매)계: -${totOut.toLocaleString()}`;
+      ws.getCell('E5').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF059669' } };
+      ws.getCell('E5').fill = fillGray;
+      ws.getCell('E5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.getCell('G5').value = `폐기: -${totLoss.toLocaleString()}`;
+      ws.getCell('G5').font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FFE11D48' } };
+      ws.getCell('G5').fill = fillGray;
+      ws.getCell('G5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      ws.getCell('H5').value = `기말계: ${totFinal.toLocaleString()}`;
+      ws.getCell('H5').font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+      ws.getCell('H5').fill = fillGray;
+      ws.getCell('H5').alignment = { horizontal: 'center', vertical: 'middle' };
+
+      for (let c = 1; c <= 8; c++) ws.getRow(5).getCell(c).border = borderThin;
+
+      // 5. 품목 테이블 헤더 (7행)
+      const headers = ['No', '품 목 명', '규격/단위', '기초재고', '당일입고', '출고(판매)', '폐기/로스', '기말재고'];
+      const hRow = ws.getRow(7);
+      headers.forEach((h, idx) => {
+        const cell = hRow.getCell(idx + 1);
+        cell.value = h;
+        cell.font = fontBold;
+        cell.fill = fillGray;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = borderThin;
+      });
+
+      // 6. 데이터 행 (8행~)
+      let startRow = 8;
+      const maxRows = Math.max(items.length, 6);
+
+      for (let i = 0; i < maxRows; i++) {
+        const rowNum = startRow + i;
+        const row = ws.getRow(rowNum);
+
+        if (i < items.length) {
+          const it = items[i];
+          const finalQty = it.begin + it.inQty - it.outQty - it.loss;
+
+          row.getCell(1).value = i + 1;
+          row.getCell(1).alignment = { horizontal: 'center' };
+
+          row.getCell(2).value = it.name;
+          row.getCell(2).alignment = { horizontal: 'left', indent: 1 };
+
+          row.getCell(3).value = it.spec || '-';
+          row.getCell(3).alignment = { horizontal: 'center' };
+
+          row.getCell(4).value = it.begin;
+          row.getCell(4).numFmt = '#,##0';
+          row.getCell(4).alignment = { horizontal: 'right' };
+
+          row.getCell(5).value = it.inQty;
+          row.getCell(5).numFmt = '#,##0';
+          row.getCell(5).font = { name: '맑은 고딕', size: 9, color: { argb: 'FF1D4ED8' } };
+          row.getCell(5).alignment = { horizontal: 'right' };
+
+          row.getCell(6).value = it.outQty;
+          row.getCell(6).numFmt = '#,##0';
+          row.getCell(6).font = { name: '맑은 고딕', size: 9, color: { argb: 'FF059669' } };
+          row.getCell(6).alignment = { horizontal: 'right' };
+
+          row.getCell(7).value = it.loss;
+          row.getCell(7).numFmt = '#,##0';
+          row.getCell(7).font = { name: '맑은 고딕', size: 9, color: { argb: 'FFE11D48' } };
+          row.getCell(7).alignment = { horizontal: 'right' };
+
+          row.getCell(8).value = finalQty;
+          row.getCell(8).numFmt = '#,##0';
+          row.getCell(8).font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: finalQty < 0 ? 'FFE11D48' : 'FF111827' } };
+          row.getCell(8).fill = fillGray;
+          row.getCell(8).alignment = { horizontal: 'right' };
+        } else {
+          row.getCell(1).value = '';
+          row.getCell(8).fill = fillGray;
+        }
+
+        for (let c = 1; c <= 8; c++) {
+          if (!row.getCell(c).font) row.getCell(c).font = fontDefault;
+          row.getCell(c).border = borderThin;
+        }
+      }
+
+      // 7. 합계 행
+      const totRowNum = startRow + maxRows;
+      ws.mergeCells(`A${totRowNum}:C${totRowNum}`);
+      const totLabel = ws.getCell(`A${totRowNum}`);
+      totLabel.value = '합    계';
+      totLabel.font = fontBold;
+      totLabel.fill = fillGray;
+      totLabel.alignment = { horizontal: 'center' };
+
+      const cBegin = ws.getCell(`D${totRowNum}`);
+      cBegin.value = totBegin;
+      cBegin.numFmt = '#,##0';
+      cBegin.font = fontBold;
+      cBegin.alignment = { horizontal: 'right' };
+
+      const cIn = ws.getCell(`E${totRowNum}`);
+      cIn.value = totIn;
+      cIn.numFmt = '#,##0';
+      cIn.font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF1D4ED8' } };
+      cIn.alignment = { horizontal: 'right' };
+
+      const cOut = ws.getCell(`F${totRowNum}`);
+      cOut.value = totOut;
+      cOut.numFmt = '#,##0';
+      cOut.font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FF059669' } };
+      cOut.alignment = { horizontal: 'right' };
+
+      const cLoss = ws.getCell(`G${totRowNum}`);
+      cLoss.value = totLoss;
+      cLoss.numFmt = '#,##0';
+      cLoss.font = { name: '맑은 고딕', size: 9, bold: true, color: { argb: 'FFE11D48' } };
+      cLoss.alignment = { horizontal: 'right' };
+
+      const cFinal = ws.getCell(`H${totRowNum}`);
+      cFinal.value = totFinal;
+      cFinal.numFmt = '#,##0';
+      cFinal.font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+      cFinal.alignment = { horizontal: 'right' };
+
+      for (let c = 1; c <= 8; c++) {
+        ws.getRow(totRowNum).getCell(c).border = borderThin;
+        ws.getRow(totRowNum).getCell(c).fill = fillGray;
+      }
+
+      // 8. 하단 비고 및 검수란
+      const bottomRow = totRowNum + 2;
+      ws.mergeCells(`A${bottomRow}:E${bottomRow}`);
+      ws.getCell(`A${bottomRow}`).value = '[비고 및 관리원칙] 1. 기말재고 = 기초재고 + 당일입고 - 당일출고 - 폐기(반품/로스)';
+      ws.getCell(`A${bottomRow}`).font = fontDefault;
+
+      ws.mergeCells(`A${bottomRow+1}:E${bottomRow+1}`);
+      ws.getCell(`A${bottomRow+1}`).value = '                      2. 전산재고와 실사재고 차이 발생 시 폐기/감모 란에 사유 명기할 것.';
+      ws.getCell(`A${bottomRow+1}`).font = fontDefault;
+
+      ws.mergeCells(`F${bottomRow}:H${bottomRow+1}`);
+      const inspectCell = ws.getCell(`F${bottomRow}`);
+      inspectCell.value = `마감 검수자 : ${manager} (인)`;
+      inspectCell.font = fontBold;
+      inspectCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      for (let r = bottomRow; r <= bottomRow + 1; r++) {
+        for (let c = 6; c <= 8; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
+        }
+      }
+
+      // 9. 다운로드 실행
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `재고수불부_${dept}_${dateVal}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   </script>
 </body>
