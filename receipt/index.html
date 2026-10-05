@@ -28,6 +28,8 @@
   <meta property="og:url" content="https://biz-tools.kr/receipt/index.html">
 
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- ExcelJS 완벽 서식 지원 엑셀 라이브러리 -->
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
        crossorigin="anonymous"></script>
@@ -83,12 +85,21 @@
         </div>
         <h1 class="text-lg font-bold text-gray-900 tracking-tight">간이영수증 웹 작성 & A4 인쇄기</h1>
       </div>
-      <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-        </svg>
-        <span>지금 인쇄하기 (A4)</span>
-      </button>
+      <!-- 헤더 우측 액션 버튼 그룹 -->
+      <div class="flex items-center gap-2">
+        <button type="button" onclick="exportToExcel()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <span>엑셀 다운로드 (.xlsx)</span>
+        </button>
+        <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>지금 인쇄하기 (A4)</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -352,7 +363,7 @@
       document.getElementById('inDate').value = today;
 
       // 사업자 정보 캐시 불러오기
-      const cachedBiz = localStorage.getItem('biz_receipt_info');
+      const cachedBiz = localStorage.getItem('biz_receipt_info') || localStorage.getItem('biz_order_info') || localStorage.getItem('biz_invoice_info');
       if (cachedBiz) {
         try {
           const info = JSON.parse(cachedBiz);
@@ -377,9 +388,9 @@
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2 text-xs bg-gray-50 p-2 rounded-lg border border-gray-200';
         row.innerHTML = `
-          <input type="text" value="${item.name}" placeholder="품목명" class="flex-1 px-2 py-1 border rounded bg-white" oninput="items[${idx}].name = this.value; updateReceipt();">
-          <input type="number" value="${item.qty}" min="1" placeholder="수량" class="w-12 px-1.5 py-1 border rounded bg-white text-right" oninput="items[${idx}].qty = Number(this.value) || 0; updateReceipt();">
-          <input type="number" value="${item.price}" min="0" step="100" placeholder="단가" class="w-20 px-1.5 py-1 border rounded bg-white text-right" oninput="items[${idx}].price = Number(this.value) || 0; updateReceipt();">
+          <input type="text" value="${item.name}" placeholder="품목명" class="flex-1 px-2.5 py-1 border rounded bg-white text-xs font-bold outline-none" oninput="items[${idx}].name = this.value; updateReceipt();">
+          <input type="number" value="${item.qty}" min="1" placeholder="수량" class="w-14 px-1.5 py-1 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].qty = Number(this.value) || 0; updateReceipt();">
+          <input type="number" value="${item.price}" min="0" step="100" placeholder="단가" class="w-24 px-1.5 py-1 border rounded bg-white text-right font-mono outline-none" oninput="items[${idx}].price = Number(this.value) || 0; updateReceipt();">
           <button type="button" onclick="removeItemRow(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-1 text-sm">×</button>
         `;
         list.appendChild(row);
@@ -455,7 +466,7 @@
           total += lineTotal;
           tr.innerHTML = `
             <td class="border border-gray-800">${dateShort}</td>
-            <td class="border border-gray-800 text-left pl-2">${item.name || '-'}</td>
+            <td class="border border-gray-800 text-left pl-2 font-semibold">${item.name || '-'}</td>
             <td class="border border-gray-800 font-mono">${item.qty ? item.qty.toLocaleString() : ''}</td>
             <td class="border border-gray-800 text-right pr-2 font-mono">${item.price ? item.price.toLocaleString() : ''}</td>
             <td class="border border-gray-800 text-right pr-2 font-mono font-bold">${lineTotal ? lineTotal.toLocaleString() : ''}</td>
@@ -476,6 +487,209 @@
       document.getElementById('outTotalAmount').textContent = total.toLocaleString();
       document.getElementById('outFootTotal').textContent = total.toLocaleString();
       document.getElementById('outKoreanAmount').textContent = numToKorean(total);
+    }
+
+    // 웹 서식과 100% 일치하는 간이영수증 ExcelJS 엑셀 변환 함수
+    async function exportToExcel() {
+      const bizNum = document.getElementById('inBizNum').value.trim() || '123-45-67890';
+      const bizName = document.getElementById('inBizName').value.trim() || '상호명';
+      const ceoName = document.getElementById('inCeoName').value.trim() || '대표자';
+      const bizAddr = document.getElementById('inBizAddr').value.trim() || '사업장 주소';
+      const bizType = document.getElementById('inBizType').value.trim() || '도소매 / 식품유통';
+      const typeParts = bizType.split('/');
+      const type1 = typeParts[0] ? typeParts[0].trim() : '-';
+      const type2 = typeParts[1] ? typeParts[1].trim() : (typeParts[0] || '-');
+      const dateVal = document.getElementById('inDate').value || new Date().toISOString().split('T')[0];
+      const customer = document.getElementById('inCustomer').value.trim() || '귀하';
+      const receiptNo = document.getElementById('outReceiptNo').textContent;
+      const koreanAmount = document.getElementById('outKoreanAmount').textContent;
+
+      let total = 0;
+      items.forEach(it => { total += it.qty * it.price; });
+
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet('간이영수증', { views: [{ showGridLines: true }] });
+
+      ws.columns = [
+        { width: 10 },  // A: 월/일
+        { width: 28 },  // B: 품목 / 규격
+        { width: 10 },  // C: 수량
+        { width: 14 },  // D: 단가
+        { width: 16 }   // E: 금액
+      ];
+
+      const fontDefault = { name: '맑은 고딕', size: 9 };
+      const fontBold = { name: '맑은 고딕', size: 9, bold: true };
+      const fillGray = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF3F4F6' } };
+      const borderThin = {
+        top: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        left: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        bottom: { style: 'thin', color: { argb: 'FF9CA3AF' } },
+        right: { style: 'thin', color: { argb: 'FF9CA3AF' } }
+      };
+
+      // 1. 타이틀 & 발행번호/일자 (1~2행)
+      ws.mergeCells('A1:C2');
+      const titleCell = ws.getCell('A1');
+      titleCell.value = '영  수  증  (공급받는자 보관용)';
+      titleCell.font = { name: '맑은 고딕', size: 15, bold: true, color: { argb: 'FF111827' } };
+      titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+
+      ws.getCell('D1').value = 'No.';
+      ws.getCell('D1').font = fontDefault;
+      ws.getCell('E1').value = receiptNo;
+      ws.getCell('E1').font = fontBold;
+
+      ws.getCell('D2').value = '작성일자:';
+      ws.getCell('D2').font = fontDefault;
+      ws.getCell('E2').value = dateVal;
+      ws.getCell('E2').font = fontBold;
+
+      // 2. 공급받는 자 (A4:B7) & 공급자 (C4:E7)
+      ws.mergeCells('A4:B7');
+      const custCell = ws.getCell('A4');
+      custCell.value = `${customer}\n\n아래와 같이 영수(청구)함`;
+      custCell.font = { name: '맑은 고딕', size: 10, bold: true };
+      custCell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+
+      for (let r = 4; r <= 7; r++) {
+        for (let c = 1; c <= 2; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
+        }
+      }
+
+      // 공급자 테이블
+      ws.getCell('C4').value = '등록번호';
+      ws.getCell('C4').fill = fillGray;
+      ws.getCell('C4').font = fontBold;
+      ws.mergeCells('D4:E4');
+      ws.getCell('D4').value = bizNum;
+      ws.getCell('D4').font = fontBold;
+
+      ws.getCell('C5').value = '상호(명)';
+      ws.getCell('C5').fill = fillGray;
+      ws.getCell('C5').font = fontBold;
+      ws.getCell('D5').value = bizName;
+      ws.getCell('D5').font = fontBold;
+      ws.getCell('E5').value = `${ceoName} (인)`;
+      ws.getCell('E5').font = fontBold;
+
+      ws.getCell('C6').value = '사업장';
+      ws.getCell('C6').fill = fillGray;
+      ws.getCell('C6').font = fontBold;
+      ws.mergeCells('D6:E6');
+      ws.getCell('D6').value = bizAddr;
+      ws.getCell('D6').font = fontDefault;
+
+      ws.getCell('C7').value = '업태/종목';
+      ws.getCell('C7').fill = fillGray;
+      ws.getCell('C7').font = fontBold;
+      ws.mergeCells('D7:E7');
+      ws.getCell('D7').value = `${type1} / ${type2}`;
+      ws.getCell('D7').font = fontDefault;
+
+      for (let r = 4; r <= 7; r++) {
+        for (let c = 3; c <= 5; c++) {
+          ws.getRow(r).getCell(c).border = borderThin;
+        }
+      }
+
+      // 3. 합계금액 배너 (9행)
+      ws.mergeCells('A9:C9');
+      ws.getCell('A9').value = `합계금액 (일금 ${koreanAmount})`;
+      ws.getCell('A9').font = fontBold;
+      ws.getCell('A9').fill = fillGray;
+      ws.getCell('A9').alignment = { vertical: 'middle', indent: 1 };
+
+      ws.mergeCells('D9:E9');
+      ws.getCell('D9').value = `₩ ${total.toLocaleString()}`;
+      ws.getCell('D9').font = { name: '맑은 고딕', size: 11, bold: true, color: { argb: 'FF111827' } };
+      ws.getCell('D9').fill = fillGray;
+      ws.getCell('D9').alignment = { vertical: 'middle', horizontal: 'right' };
+
+      for (let c = 1; c <= 5; c++) ws.getRow(9).getCell(c).border = borderThin;
+
+      // 4. 품목 명세 헤더 (11행)
+      const headers = ['월 / 일', '품 목 / 규 격', '수량', '단가', '금액'];
+      const hRow = ws.getRow(11);
+      headers.forEach((h, idx) => {
+        const cell = hRow.getCell(idx + 1);
+        cell.value = h;
+        cell.font = fontBold;
+        cell.fill = fillGray;
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+        cell.border = borderThin;
+      });
+
+      // 5. 품목 데이터 행 (12행~17행, 6줄)
+      const dateShort = dateVal ? dateVal.slice(5).replace('-', ' / ') : '-';
+      for (let i = 0; i < 6; i++) {
+        const row = ws.getRow(12 + i);
+        if (i < items.length) {
+          const it = items[i];
+          const lineTotal = it.qty * it.price;
+
+          row.getCell(1).value = dateShort;
+          row.getCell(1).alignment = { horizontal: 'center' };
+
+          row.getCell(2).value = it.name;
+          row.getCell(2).font = fontBold;
+          row.getCell(2).alignment = { horizontal: 'left', indent: 1 };
+
+          row.getCell(3).value = it.qty;
+          row.getCell(3).numFmt = '#,##0';
+          row.getCell(3).alignment = { horizontal: 'right' };
+
+          row.getCell(4).value = it.price;
+          row.getCell(4).numFmt = '#,##0';
+          row.getCell(4).alignment = { horizontal: 'right' };
+
+          row.getCell(5).value = lineTotal;
+          row.getCell(5).numFmt = '#,##0';
+          row.getCell(5).font = fontBold;
+          row.getCell(5).alignment = { horizontal: 'right' };
+        } else {
+          row.getCell(1).value = '';
+        }
+
+        for (let c = 1; c <= 5; c++) {
+          if (!row.getCell(c).font) row.getCell(c).font = fontDefault;
+          row.getCell(c).border = borderThin;
+        }
+      }
+
+      // 6. 총합계 행 (18행)
+      ws.mergeCells('A18:D18');
+      const footLabel = ws.getCell('A18');
+      footLabel.value = '총    합    계';
+      footLabel.font = fontBold;
+      footLabel.fill = fillGray;
+      footLabel.alignment = { horizontal: 'center', vertical: 'middle' };
+
+      const footTotalCell = ws.getCell('E18');
+      footTotalCell.value = total;
+      footTotalCell.numFmt = '#,##0';
+      footTotalCell.font = { name: '맑은 고딕', size: 10, bold: true, color: { argb: 'FF111827' } };
+      footTotalCell.fill = fillGray;
+      footTotalCell.alignment = { horizontal: 'right', vertical: 'middle' };
+
+      for (let c = 1; c <= 5; c++) ws.getRow(18).getCell(c).border = borderThin;
+
+      // 7. 하단 안내문 (20행)
+      ws.mergeCells('A20:E20');
+      ws.getCell('A20').value = '* 소득세법 제160조의2에 따른 건당 3만원 이하 정규 영수증 | BizTools 간이영수증 발급기';
+      ws.getCell('A20').font = { name: '맑은 고딕', size: 8, color: { argb: 'FF6B7280' } };
+      ws.getCell('A20').alignment = { horizontal: 'left', vertical: 'middle' };
+
+      // 8. 다운로드 실행
+      const buffer = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `간이영수증_${customer}_${dateVal}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
   </script>
 </body>
