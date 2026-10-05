@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>업무용 필수 소프트웨어 자료실 | BizTools</title>
+  <meta name="description" content="실무 PC 세팅에 필수적인 검증된 업무용 무료 유틸리티, 파일 압축, 화면 캡처, 초고속 검색 프로그램 다운로드 자료실.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/software/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Firebase SDK (무료 DB 및 파일 스토리지) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 메인 포털
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center text-white font-bold text-sm">
+          자료
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">업무용 소프트웨어 자료실</h1>
+      </div>
+      <!-- 관리자 모드 버튼 -->
+      <div>
+        <button type="button" onclick="openAdminModal()" class="px-3.5 py-1.5 bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 active:scale-95">
+          <svg class="w-3.5 h-3.5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+          <span id="btnAdminText">관리자 파일 등록</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-10">
+
+    <!-- 상단 안내 배너 -->
+    <div class="bg-gradient-to-r from-purple-900 to-indigo-900 text-white rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+      <div class="max-w-2xl relative z-10 space-y-2">
+        <span class="px-2.5 py-1 text-[11px] font-bold rounded-full bg-purple-800 text-purple-200 border border-purple-700">
+          소상공인·유통·사무 실무 필수 도구
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black tracking-tight">
+          바이러스 없는 검증된 업무용 유틸리티
+        </h2>
+        <p class="text-xs sm:text-sm text-purple-200 leading-relaxed">
+          PC 포맷 및 신규 사무 PC 세팅 시 반드시 설치해야 할 필수 소프트웨어 모음입니다. 필요한 프로그램 요청이나 오류 사항은 하단 댓글에 남겨주세요.
+        </p>
+      </div>
+    </div>
+
+    <!-- 1. 소프트웨어 자료 목록 (카드 그리드) -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-base font-bold text-gray-900 flex items-center gap-2">
+          <span>등록된 유틸리티 목록</span>
+          <span id="softwareCount" class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold">0개</span>
+        </h3>
+      </div>
+
+      <div id="softwareGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- 자바스크립트로 자료 카드 렌더링 -->
+      </div>
+    </section>
+
+    <!-- 2. 방문자 실시간 댓글 / 질의응답 -->
+    <section class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-6">
+      <div class="flex items-center justify-between border-b border-gray-100 pb-4">
+        <div>
+          <h3 class="text-base font-bold text-gray-900">사용자 댓글 & 프로그램 요청</h3>
+          <p class="text-xs text-gray-500 mt-0.5">필요한 유틸리티나 다운로드 문의를 자유롭게 남겨주세요.</p>
+        </div>
+        <span id="commentCount" class="text-xs font-bold text-gray-500">0개의 댓글</span>
+      </div>
+
+      <!-- 댓글 작성 폼 -->
+      <form id="commentForm" onsubmit="addComment(event)" class="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+          <input type="text" id="comAuthor" placeholder="작성자(닉네임)" required class="px-3 py-1.5 text-xs border rounded-lg bg-white outline-none focus:ring-1 focus:ring-purple-500 font-bold">
+          <input type="password" id="comPass" placeholder="삭제비밀번호" required class="px-3 py-1.5 text-xs border rounded-lg bg-white outline-none focus:ring-1 focus:ring-purple-500">
+        </div>
+        <div>
+          <textarea id="comContent" rows="3" placeholder="댓글 또는 필요한 소프트웨어를 작성해주세요 (비방/광고글은 즉시 삭제됩니다)" required class="w-full p-3 text-xs border rounded-lg bg-white outline-none focus:ring-1 focus:ring-purple-500 resize-none"></textarea>
+        </div>
+        <div class="flex justify-end">
+          <button type="submit" class="px-5 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition shadow active:scale-95">
+            댓글 등록하기
+          </button>
+        </div>
+      </form>
+
+      <!-- 댓글 목록 -->
+      <div id="commentList" class="space-y-3 divide-y divide-gray-100">
+        <!-- 자바스크립트로 댓글 목록 렌더링 -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 관리자 전용 업로드 모달창 -->
+  <div id="adminModal" class="hidden fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-gray-200 space-y-4">
+      
+      <!-- 1단계: 비밀번호 잠금 화면 -->
+      <div id="adminAuthBox" class="space-y-4">
+        <div class="flex items-center justify-between border-b pb-3">
+          <h3 class="text-sm font-bold text-gray-900">관리자 인증</h3>
+          <button type="button" onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">×</button>
+        </div>
+        <p class="text-xs text-gray-500">파일 업로드는 관리자만 가능합니다. 설정된 관리자 비밀번호를 입력해주세요.</p>
+        <div class="space-y-2">
+          <input type="password" id="adminPasswordInput" placeholder="관리자 비밀번호 입력" class="w-full px-3 py-2 text-xs border rounded-xl outline-none focus:ring-1 focus:ring-purple-600">
+          <button type="button" onclick="checkAdminPassword()" class="w-full py-2.5 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-xl transition">
+            인증하기
+          </button>
+        </div>
+      </div>
+
+      <!-- 2단계: 실제 파일 업로드/등록 폼 (인증 성공 시 표시) -->
+      <div id="adminUploadBox" class="hidden space-y-4">
+        <div class="flex items-center justify-between border-b pb-3">
+          <h3 class="text-sm font-bold text-gray-900">신규 소프트웨어 등록</h3>
+          <button type="button" onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600 font-bold text-lg">×</button>
+        </div>
+        
+        <form id="uploadForm" onsubmit="handleUploadSoftware(event)" class="space-y-3">
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">소프트웨어 명칭</label>
+            <input type="text" id="swTitle" placeholder="예: 반디집 (Bandizip)" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500 font-bold">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">카테고리</label>
+              <select id="swCategory" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none bg-white font-semibold">
+                <option value="압축/뷰어">압축 / 뷰어</option>
+                <option value="화면캡처">화면 캡처 / 그래픽</option>
+                <option value="업무유틸">업무 유틸리티</option>
+                <option value="문서오피스">문서 / 오피스</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-1">버전 또는 용량</label>
+              <input type="text" id="swVersion" placeholder="예: v7.32 (8.4MB)" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-gray-600 mb-1">간단 설명</label>
+            <input type="text" id="swDesc" placeholder="프로그램 주요 용도 및 장점" required class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
+          </div>
+          
+          <!-- 직접 파일 업로드 or 외부 다운로드 URL 선택 -->
+          <div class="space-y-2 pt-2 border-t border-gray-100">
+            <label class="block text-[11px] font-bold text-gray-700">파일 등록 방식</label>
+            <div class="space-y-2">
+              <input type="file" id="swFileInput" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100">
+              <span class="text-[10px] text-gray-400 block text-center">- 또는 다운로드 링크 직접 입력 -</span>
+              <input type="url" id="swDirectUrl" placeholder="https://... (대용량/공식 설치 링크)" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-purple-500">
+            </div>
+          </div>
+
+          <div class="pt-2 flex gap-2">
+            <button type="submit" id="btnSubmitSW" class="flex-1 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition shadow">
+              자료실에 등록하기
+            </button>
+            <button type="button" onclick="closeAdminModal()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 text-xs font-bold rounded-xl transition">
+              취소
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 푸터 -->
+  <footer class="bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 무료 공개 라이선스 소프트웨어만을 선별하여 안내합니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../index.html" class="hover:text-white transition">전체 도구 목록</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    // ==========================================
+    // 1. 관리자 전용 비밀번호 설정 (원하는 비밀번호로 변경)
+    // ==========================================
+    const ADMIN_SECRET_KEY = "1234"; // ← 여기에 사용할 관리자 비밀번호를 지정하세요.
+
+    // ==========================================
+    // 2. Firebase 환경설정 (선택 사항)
+    // Firebase 콘솔 생성 후 발급된 키를 넣으면 전 세계 유저와 실시간 DB/파일 공유가 활성화됩니다.
+    // 미입력 시 브라우저 로컬 DB(localStorage)로 자동 구동됩니다.
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
+    };
+
+    let isFirebaseReady = false;
+    let db = null;
+    let storage = null;
+
+    if (firebaseConfig.apiKey) {
+      try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        storage = firebase.storage();
+        isFirebaseReady = true;
+      } catch (e) {
+        console.warn("Firebase 초기화 실패, 로컬 모드로 전환:", e);
+      }
+    }
+
+    // 기본 추천 소프트웨어 초기 데이터
+    const defaultSoftwareList = [
+      {
+        id: "sw_1",
+        title: "반디집 (Bandizip)",
+        category: "압축/뷰어",
+        version: "v7.32 (Standard 무료)",
+        desc: "상업적 무료 지원, 압축 해제 속도가 가장 빠르고 외산 분할압축까지 완벽 지원하는 필수 압축기.",
+        url: "https://kr.bandisoft.com/bandizip/"
+      },
+      {
+        id: "sw_2",
+        title: "픽픽 (PicPick)",
+        category: "화면캡처",
+        version: "v7.2 (개인/기업 상업용 무료)",
+        desc: "화면 캡처, 이미지 편집, 색상 추출, 눈금자 기능이 통합된 최고 성능의 업무용 캡처 도구.",
+        url: "https://picpick.app/ko/"
+      },
+      {
+        id: "sw_3",
+        title: "Everything (초고속 파일검색)",
+        category: "업무유틸",
+        version: "v1.4 (초경량 3MB)",
+        desc: "PC 하드디스크와 외장하드 수십만 개 파일을 0.1초 만에 찾아내는 윈도우 필수 유틸리티.",
+        url: "https://www.voidtools.com/ko-kr/"
+      },
+      {
+        id: "sw_4",
+        title: "PDF24 Creator",
+        category: "문서오피스",
+        version: "v11.15 (100% 무료 무제한)",
+        desc: "PDF 병합, 페이지 분할, 압축, 변환, 서명 기능을 오프라인에서 워터마크 없이 무료 제공.",
+        url: "https://ko.pdf24.org/"
+      }
+    ];
+
+    let softwareList = [];
+    let commentList = [];
+    let isAdminUnlocked = false;
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadSoftware();
+      loadComments();
+    });
+
+    // --- 소프트웨어 데이터 불러오기 ---
+    function loadSoftware() {
+      const cached = localStorage.getItem("biz_software_list");
+      if (cached) {
+        softwareList = JSON.parse(cached);
+      } else {
+        softwareList = [...defaultSoftwareList];
+        localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+      }
+      renderSoftware();
+    }
+
+    function renderSoftware() {
+      const grid = document.getElementById("softwareGrid");
+      document.getElementById("softwareCount").textContent = `${softwareList.length}개`;
+      grid.innerHTML = "";
+
+      softwareList.forEach((sw, idx) => {
+        const card = document.createElement("div");
+        card.className = "bg-white p-5 rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="px-2 py-0.5 text-[10px] font-bold rounded-md bg-purple-50 text-purple-700 border border-purple-100">
+                ${sw.category}
+              </span>
+              <span class="text-[11px] font-mono text-gray-400">${sw.version}</span>
+            </div>
+            <h4 class="text-sm font-bold text-gray-900 mb-1.5">${sw.title}</h4>
+            <p class="text-xs text-gray-500 leading-relaxed mb-4">${sw.desc}</p>
+          </div>
+          <div class="pt-3 border-t border-gray-100 flex items-center justify-between">
+            <a href="${sw.url}" target="_blank" download class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 active:scale-95">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              <span>다운로드</span>
+            </a>
+            ${isAdminUnlocked ? `<button type="button" onclick="deleteSoftware(${idx})" class="text-[11px] text-rose-500 hover:underline">삭제</button>` : ''}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // --- 관리자 인증 및 업로드 처리 ---
+    function openAdminModal() {
+      document.getElementById("adminModal").classList.remove("hidden");
+      if (isAdminUnlocked) {
+        document.getElementById("adminAuthBox").classList.add("hidden");
+        document.getElementById("adminUploadBox").classList.remove("hidden");
+      } else {
+        document.getElementById("adminAuthBox").classList.remove("hidden");
+        document.getElementById("adminUploadBox").classList.add("hidden");
+        document.getElementById("adminPasswordInput").value = "";
+      }
+    }
+
+    function closeAdminModal() {
+      document.getElementById("adminModal").classList.add("hidden");
+    }
+
+    function checkAdminPassword() {
+      const inputPass = document.getElementById("adminPasswordInput").value.trim();
+      if (inputPass === ADMIN_SECRET_KEY) {
+        isAdminUnlocked = true;
+        document.getElementById("btnAdminText").textContent = "관리자 모드 On";
+        document.getElementById("adminAuthBox").classList.add("hidden");
+        document.getElementById("adminUploadBox").classList.remove("hidden");
+        renderSoftware();
+      } else {
+        alert("관리자 비밀번호가 일치하지 않습니다.");
+      }
+    }
+
+    async function handleUploadSoftware(e) {
+      e.preventDefault();
+      const title = document.getElementById("swTitle").value.trim();
+      const category = document.getElementById("swCategory").value;
+      const version = document.getElementById("swVersion").value.trim();
+      const desc = document.getElementById("swDesc").value.trim();
+      const directUrl = document.getElementById("swDirectUrl").value.trim();
+      const fileInput = document.getElementById("swFileInput");
+
+      let finalDownloadUrl = directUrl;
+
+      // 파일이 첨부된 경우 (Firebase 연동 또는 Object URL 생성)
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (isFirebaseReady && storage) {
+          document.getElementById("btnSubmitSW").textContent = "업로드 중...";
+          document.getElementById("btnSubmitSW").disabled = true;
+          try {
+            const storageRef = storage.ref(`software_files/${Date.now()}_${file.name}`);
+            const snapshot = await storageRef.put(file);
+            finalDownloadUrl = await snapshot.ref.getDownloadURL();
+          } catch (err) {
+            alert("스토리지 업로드 실패: " + err.message);
+            document.getElementById("btnSubmitSW").textContent = "자료실에 등록하기";
+            document.getElementById("btnSubmitSW").disabled = false;
+            return;
+          }
+        } else {
+          // 로컬 브라우저 다운로드 링크 생성
+          finalDownloadUrl = URL.createObjectURL(file);
+        }
+      }
+
+      if (!finalDownloadUrl) {
+        alert("업로드할 파일을 첨부하거나 공식 다운로드 링크를 입력해주세요.");
+        return;
+      }
+
+      const newSW = {
+        id: "sw_" + Date.now(),
+        title,
+        category,
+        version,
+        desc,
+        url: finalDownloadUrl
+      };
+
+      softwareList.unshift(newSW);
+      localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+
+      alert("신규 소프트웨어가 성공적으로 등록되었습니다.");
+      document.getElementById("uploadForm").reset();
+      closeAdminModal();
+      renderSoftware();
+    }
+
+    function deleteSoftware(idx) {
+      if (!confirm("해당 소프트웨어를 자료실에서 삭제하시겠습니까?")) return;
+      softwareList.splice(idx, 1);
+      localStorage.setItem("biz_software_list", JSON.stringify(softwareList));
+      renderSoftware();
+    }
+
+    // --- 방문자 댓글 시스템 ---
+    function loadComments() {
+      const cached = localStorage.getItem("biz_software_comments");
+      if (cached) {
+        commentList = JSON.parse(cached);
+      } else {
+        commentList = [
+          {
+            id: 1,
+            author: "김과장",
+            content: "Everything 프로그램 진짜 신세계네요. 검색이 바로바로 됩니다.",
+            date: "2026-10-05 14:20",
+            pass: "1234"
+          }
+        ];
+      }
+      renderComments();
+    }
+
+    function renderComments() {
+      const container = document.getElementById("commentList");
+      document.getElementById("commentCount").textContent = `${commentList.length}개의 댓글`;
+      container.innerHTML = "";
+
+      if (commentList.length === 0) {
+        container.innerHTML = `<p class="text-xs text-gray-400 py-4 text-center">등록된 댓글이 없습니다. 첫 번째 의견을 남겨보세요.</p>`;
+        return;
+      }
+
+      commentList.forEach((com, idx) => {
+        const item = document.createElement("div");
+        item.className = "pt-3 text-xs space-y-1";
+        item.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-gray-900">${com.author}</span>
+              <span class="text-[10px] text-gray-400 font-mono">${com.date}</span>
+            </div>
+            <button type="button" onclick="deleteComment(${idx})" class="text-[10px] text-gray-400 hover:text-rose-500">삭제</button>
+          </div>
+          <p class="text-gray-700 leading-relaxed">${com.content}</p>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function addComment(e) {
+      e.preventDefault();
+      const author = document.getElementById("comAuthor").value.trim();
+      const pass = document.getElementById("comPass").value.trim();
+      const content = document.getElementById("comContent").value.trim();
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+      const newCom = {
+        id: Date.now(),
+        author,
+        pass,
+        content,
+        date: dateStr
+      };
+
+      commentList.unshift(newCom);
+      localStorage.setItem("biz_software_comments", JSON.stringify(commentList));
+
+      document.getElementById("comContent").value = "";
+      renderComments();
+    }
+
+    function deleteComment(idx) {
+      const target = commentList[idx];
+      const inputPass = prompt("댓글 작성 시 입력한 비밀번호를 입력해주세요:");
+      if (!inputPass) return;
+
+      if (inputPass === target.pass || inputPass === ADMIN_SECRET_KEY) {
+        commentList.splice(idx, 1);
+        localStorage.setItem("biz_software_comments", JSON.stringify(commentList));
+        renderComments();
+      } else {
+        alert("비밀번호가 일치하지 않습니다.");
+      }
+    }
+  </script>
+</body>
+</html>
