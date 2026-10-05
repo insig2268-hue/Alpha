@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 알바 급여대장 & 근무기록부 웹 작성 및 A4 인쇄기 | BizTools</title>
+  <meta name="description" content="2026 최저임금 10,320원 반영. 주 15시간 이상 주휴수당 및 3.3%·고용보험 공제액 자동 연산. 파트타임 알바 급여대장 A4 무료 즉시 인쇄.">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VX0NK93J6K"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-VX0NK93J6K');
+  </script>
+
+  <!-- 파비콘 및 표준 URL -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%234F46E5'/><text x='50%' y='55%' dominant-baseline='middle' text-anchor='middle' fill='white' font-size='60' font-weight='bold' font-family='sans-serif'>B</text></svg>">
+  <link rel="canonical" href="https://biz-tools.kr/payroll/index.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="BizTools">
+  <meta property="og:title" content="2026 알바 급여대장 & 근무기록부 작성기 | BizTools">
+  <meta property="og:description" content="2026 최저시급 및 주휴수당 자동 산출, 알바 급여대장 1초 작성 및 A4 출력">
+  <meta property="og:url" content="https://biz-tools.kr/payroll/index.html">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4362642309355324"
+       crossorigin="anonymous"></script>
+
+  <style>
+    @media print {
+      body {
+        background-color: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-wrapper {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .payroll-paper {
+        border: 2px solid #111827 !important;
+        box-shadow: none !important;
+        padding: 8mm 8mm !important;
+        width: 100% !important;
+        page-break-inside: avoid;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 8mm 8mm;
+      }
+    }
+    .pay-table th, .pay-table td {
+      border: 1px solid #4b5563;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- 헤더 (인쇄 시 숨김) -->
+  <header class="no-print bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../templates/index.html" class="text-xs font-semibold text-gray-500 hover:text-indigo-600 transition flex items-center gap-1">
+          ← 서식 자료실
+        </a>
+        <span class="text-gray-300">|</span>
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">
+          급여
+        </div>
+        <h1 class="text-lg font-bold text-gray-900 tracking-tight">알바 급여대장 & 근무기록부 작성기</h1>
+      </div>
+      <button type="button" onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition shadow flex items-center gap-1.5 active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+        </svg>
+        <span>A4 급여대장 인쇄하기 (가로)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 레이아웃 -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full space-y-6">
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 좌측 입력 패널 (인쇄 시 숨김) -->
+      <section class="no-print lg:col-span-5 bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-5">
+        <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+          <h2 class="text-sm font-bold text-gray-900">급여 정산 정보 입력</h2>
+          <span class="text-[11px] text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded">2026 최저 10,320원 적용</span>
+        </div>
+
+        <!-- 사업장 및 정산월 -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">1. 사업장 및 지급일</h3>
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">사업장 상호</label>
+              <input type="text" id="inBizName" placeholder="상호명" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-indigo-500" oninput="updatePayroll()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">귀속 연월</label>
+              <input type="month" id="inYearMonth" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-indigo-500" onchange="updatePayroll()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">급여 지급일</label>
+              <input type="date" id="inPayDate" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-indigo-500" onchange="updatePayroll()">
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-gray-600 mb-0.5">작성 담당자</label>
+              <input type="text" id="inManagerName" placeholder="담당자 성명" value="관리자" class="w-full px-2.5 py-1.5 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-indigo-500" oninput="updatePayroll()">
+            </div>
+          </div>
+        </div>
+
+        <!-- 근무자 목록 입력 -->
+        <div class="space-y-2.5 pt-3 border-t border-gray-100">
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">2. 근무자별 근무·시급 입력</h3>
+            <button type="button" onclick="addWorkerRow()" class="text-[11px] font-bold text-indigo-600 hover:underline">+ 근무자 추가</button>
+          </div>
+          
+          <div id="workerList" class="space-y-3 max-h-80 overflow-y-auto pr-1">
+            <!-- 행 항목 동적 삽입 -->
+          </div>
+        </div>
+
+        <button type="button" onclick="window.print()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm transition shadow flex items-center justify-center gap-2 active:scale-98">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>A4 가로 급여대장 인쇄하기</span>
+        </button>
+      </section>
+
+      <!-- 우측 A4 인쇄 프리뷰 -->
+      <section class="lg:col-span-7 flex flex-col items-center print-wrapper w-full">
+        <div class="no-print w-full flex items-center justify-between mb-2 text-xs text-gray-500 px-1">
+          <span>A4 가로 인쇄 미리보기</span>
+          <span class="text-indigo-600 font-semibold">서명 및 결재란 지원</span>
+        </div>
+
+        <!-- 실제 A4 출력 용지 (가로형) -->
+        <div class="payroll-paper w-full bg-white p-5 sm:p-6 rounded-xl shadow-md border-2 border-gray-900 text-gray-900 font-serif leading-tight">
+          
+          <!-- 상단 헤더 & 결재란 -->
+          <div class="flex items-start justify-between border-b-2 border-gray-900 pb-2 mb-2">
+            <div class="space-y-1">
+              <h1 class="text-xl sm:text-2xl font-black tracking-widest text-gray-900" id="outTitle">2026년 10월 아르바이트 급여대장</h1>
+              <div class="text-[10px] font-sans text-gray-600">
+                사업장 : <span id="outBizName" class="font-bold text-gray-900">비즈스토어</span> | 지급일자 : <span id="outPayDate">2026년 10월 10일</span>
+              </div>
+            </div>
+
+            <!-- 결재란 -->
+            <table class="pay-table border-collapse text-[9.5px] font-sans text-center">
+              <tr>
+                <th rowspan="2" class="w-4 bg-gray-100 p-0.5 font-bold">결<br>재</th>
+                <th class="w-12 bg-gray-50 p-0.5 text-gray-600">작성</th>
+                <th class="w-12 bg-gray-50 p-0.5 text-gray-600">검토</th>
+                <th class="w-12 bg-gray-50 p-0.5 text-gray-600">승인</th>
+              </tr>
+              <tr class="h-8">
+                <td class="p-0.5"><span id="outSignManager" class="text-[9px] text-gray-500">관리자</span></td>
+                <td class="p-0.5"></td>
+                <td class="p-0.5"></td>
+              </tr>
+            </table>
+          </div>
+
+          <!-- 상단 합계 요약 바 -->
+          <div class="grid grid-cols-4 gap-2 text-center text-xs font-sans py-2 mb-2 border-b border-gray-300 bg-gray-50 rounded">
+            <div>
+              <span class="text-[10px] text-gray-500 block">총 인원</span>
+              <strong id="sumCount" class="font-mono text-sm text-gray-800">0명</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-gray-500 block">총 지급액 (기본+주휴)</span>
+              <strong id="sumGross" class="font-mono text-sm text-blue-600">0원</strong>
+            </div>
+            <div>
+              <span class="text-[10px] text-gray-500 block">총 공제액</span>
+              <strong id="sumDeduct" class="font-mono text-sm text-rose-600">-0원</strong>
+            </div>
+            <div class="border-l border-gray-300 pl-1">
+              <span class="text-[10px] text-gray-500 block">실지급 총액 (통장입금액)</span>
+              <strong id="sumNet" class="font-mono text-sm text-gray-900 font-black">0원</strong>
+            </div>
+          </div>
+
+          <!-- 급여대장 테이블 -->
+          <table class="pay-table w-full text-center border-collapse text-[10px] mt-1">
+            <thead>
+              <tr class="bg-gray-100 font-bold">
+                <th class="w-6 py-1">No</th>
+                <th class="w-14 py-1">성명</th>
+                <th class="w-14 py-1">적용시급</th>
+                <th class="w-12 py-1">월근무(h)</th>
+                <th class="w-16 py-1">기본급</th>
+                <th class="w-12 py-1">주휴(h)</th>
+                <th class="w-16 py-1">주휴수당</th>
+                <th class="w-16 py-1 bg-blue-50">총지급액</th>
+                <th class="w-16 py-1 text-rose-700">공제액</th>
+                <th class="w-20 py-1 bg-emerald-50">실지급액</th>
+                <th class="w-12 py-1">영수인</th>
+              </tr>
+            </thead>
+            <tbody id="outTableBody" class="font-sans">
+              <!-- 자바스크립트로 렌더링 -->
+            </tbody>
+            <tfoot class="font-sans font-bold bg-gray-50 text-[10px]">
+              <tr>
+                <td colspan="3" class="py-1 text-center font-serif">합 계</td>
+                <td class="font-mono text-right pr-1" id="footHours">0</td>
+                <td class="font-mono text-right pr-1" id="footBase">0</td>
+                <td class="font-mono text-right pr-1" id="footHoliHours">0</td>
+                <td class="font-mono text-right pr-1" id="footHoliPay">0</td>
+                <td class="font-mono text-right pr-1 bg-blue-100 font-black" id="footGross">0</td>
+                <td class="font-mono text-right pr-1 text-rose-700" id="footDeduct">0</td>
+                <td class="font-mono text-right pr-1 bg-emerald-100 font-black text-gray-900" id="footNet">0</td>
+                <td>-</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- 하단 법정 고지 문구 -->
+          <div class="mt-3 pt-2 border-t border-gray-300 flex justify-between text-[9px] text-gray-500 font-sans">
+            <span>* 근로기준법 제55조: 주 15시간 이상 개근 시 유급 주휴수당 의무 반영 (2026년 법정 최저시급 10,320원 준수)</span>
+            <span>BizTools 알바 급여관리 시스템</span>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 가이드 (인쇄 시 숨김) -->
+    <section class="no-print bg-white rounded-2xl p-7 border border-gray-200 shadow-sm space-y-4">
+      <h3 class="text-base font-bold text-gray-900">알바 급여 계산 및 주휴수당·공제 실무 핵심</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs sm:text-sm text-gray-600 leading-relaxed">
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">1. 주 15시간 이상 주휴시간 산정법</h4>
+          <p>
+            주 15시간 이상 근무하는 단시간 근로자의 주당 주휴시간은 <code>(주당 근무시간 ÷ 40) × 8시간</code>으로 산정됩니다. 1개월(평균 4.345주) 근무 시 해당 주휴시간에 시급을 곱한 주휴수당이 기본급에 의무 가산됩니다.
+          </p>
+        </div>
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-gray-900">2. 공제 방식(3.3% vs 고용보험) 적용 기준</h4>
+          <p>
+            • <strong>3.3% 사업소득세:</strong> 프리랜서 계약 형태 시 공제 (원천징수 영수증 교부)<br>
+            • <strong>고용보험(0.9%):</strong> 월 60시간 이상 근무하는 알바 근로자 의무 적용<br>
+            • <strong>4대보험 간이(약 9.5%):</strong> 주 15시간(월 60시간) 이상 상시 근로자로 4대보험 전면 가입 시 근로자 부담분
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 푸터 (인쇄 시 숨김) -->
+  <footer class="no-print bg-gray-900 text-gray-400 py-10 border-t border-gray-800 mt-12 text-xs">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>© 2026 BizTools. 본 급여대장 인쇄 도구는 사용자 편의를 위한 무료 계산 서식입니다.</p>
+      <div class="flex items-center gap-4">
+        <a href="../templates/index.html" class="hover:text-white transition">업무서식 자료실</a>
+        <a href="../wage/index.html" class="hover:text-white transition">주휴수당 계산기</a>
+        <a href="../insurance/index.html" class="hover:text-white transition">4대보험 계산기</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 로직 스크립트 -->
+  <script>
+    let workers = [
+      { name: '김민준', wage: 10320, weeklyHours: 20, monthlyHours: 87, deductType: 'freelance' },
+      { name: '이서연', wage: 10500, weeklyHours: 14, monthlyHours: 56, deductType: 'none' },
+      { name: '박도윤', wage: 10320, weeklyHours: 40, monthlyHours: 174, deductType: 'insurance' }
+    ];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const now = new Date();
+      const ym = now.toISOString().slice(0, 7);
+      document.getElementById('inYearMonth').value = ym;
+      document.getElementById('inPayDate').value = now.toISOString().split('T')[0];
+
+      // 이전 서식에서 저장된 상호 연동
+      const cached = localStorage.getItem('biz_receipt_info') || localStorage.getItem('biz_contract_info');
+      if (cached) {
+        try {
+          const info = JSON.parse(cached);
+          if (info.name) document.getElementById('inBizName').value = info.name;
+        } catch(e) {}
+      }
+
+      renderWorkerInputs();
+      updatePayroll();
+    });
+
+    function renderWorkerInputs() {
+      const list = document.getElementById('workerList');
+      list.innerHTML = '';
+
+      workers.forEach((w, idx) => {
+        const row = document.createElement('div');
+        row.className = 'bg-gray-50 p-2.5 rounded-xl border border-gray-200 text-xs space-y-2';
+        row.innerHTML = `
+          <div class="flex items-center gap-2">
+            <input type="text" value="${w.name}" placeholder="근무자 이름" class="flex-1 px-2 py-1 border rounded bg-white text-xs font-bold" oninput="workers[${idx}].name = this.value; updatePayroll();">
+            <select class="px-2 py-1 border rounded bg-white text-[11px]" onchange="workers[${idx}].deductType = this.value; updatePayroll();">
+              <option value="none" ${w.deductType === 'none' ? 'selected' : ''}>공제 없음</option>
+              <option value="freelance" ${w.deductType === 'freelance' ? 'selected' : ''}>3.3% 원천징수</option>
+              <option value="employment" ${w.deductType === 'employment' ? 'selected' : ''}>고용보험 0.9%</option>
+              <option value="insurance" ${w.deductType === 'insurance' ? 'selected' : ''}>4대보험 간이 9.5%</option>
+            </select>
+            <button type="button" onclick="removeWorkerRow(${idx})" class="text-rose-500 hover:text-rose-700 font-bold px-1 text-sm">×</button>
+          </div>
+          <div class="grid grid-cols-3 gap-2 text-[11px]">
+            <div>
+              <span class="text-gray-500 block text-[10px]">시급(원)</span>
+              <input type="number" min="10320" step="100" value="${w.wage}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].wage = Number(this.value)||0; updatePayroll();">
+            </div>
+            <div>
+              <span class="text-gray-500 block text-[10px]">주당 소정시간(h)</span>
+              <input type="number" min="1" step="0.5" value="${w.weeklyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].weeklyHours = Number(this.value)||0; updatePayroll();">
+            </div>
+            <div>
+              <span class="text-blue-600 block text-[10px]">월 실근무(h)</span>
+              <input type="number" min="0" step="0.5" value="${w.monthlyHours}" class="w-full px-1.5 py-0.5 border rounded bg-white text-right font-mono" oninput="workers[${idx}].monthlyHours = Number(this.value)||0; updatePayroll();">
+            </div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function addWorkerRow() {
+      if (workers.length >= 8) {
+        alert('A4 단일 페이지 출력 유지를 위해 최대 8명까지 작성을 권장합니다.');
+        return;
+      }
+      workers.push({ name: '', wage: 10320, weeklyHours: 20, monthlyHours: 80, deductType: 'freelance' });
+      renderWorkerInputs();
+      updatePayroll();
+    }
+
+    function removeWorkerRow(idx) {
+      if (workers.length <= 1) {
+        alert('최소 1명의 근무자는 유지되어야 합니다.');
+        return;
+      }
+      workers.splice(idx, 1);
+      renderWorkerInputs();
+      updatePayroll();
+    }
+
+    function updatePayroll() {
+      const bizName = document.getElementById('inBizName').value.trim() || '사업장 상호';
+      const manager = document.getElementById('inManagerName').value.trim() || '관리자';
+      const ymVal = document.getElementById('inYearMonth').value;
+      const payDate = document.getElementById('inPayDate').value;
+
+      document.getElementById('outBizName').textContent = bizName;
+      document.getElementById('outSignManager').textContent = manager;
+
+      if (ymVal) {
+        const [y, m] = ymVal.split('-');
+        document.getElementById('outTitle').textContent = `${y}년 ${parseInt(m, 10)}월 아르바이트 급여대장`;
+      }
+      if (payDate) {
+        const [py, pm, pd] = payDate.split('-');
+        document.getElementById('outPayDate').textContent = `${py}년 ${pm}월 ${pd}일`;
+      }
+
+      let totHours = 0, totBase = 0, totHoliHours = 0, totHoliPay = 0, totGross = 0, totDeduct = 0, totNet = 0;
+      const tbody = document.getElementById('outTableBody');
+      tbody.innerHTML = '';
+
+      for (let i = 0; i < 8; i++) {
+        const tr = document.createElement('tr');
+        tr.className = 'h-6';
+        if (i < workers.length) {
+          const w = workers[i];
+
+          // 주 15시간 이상 주휴시간 계산
+          let weeklyHoliH = 0;
+          if (w.weeklyHours >= 15) {
+            weeklyHoliH = w.weeklyHours >= 40 ? 8 : (w.weeklyHours / 40) * 8;
+          }
+          // 월 환산 주휴시간 (4.345주 적용)
+          const monthlyHoliH = Math.round(weeklyHoliH * 4.3452 * 10) / 10;
+
+          const basePay = Math.round(w.monthlyHours * w.wage);
+          const holiPay = Math.round(monthlyHoliH * w.wage);
+          const grossPay = basePay + holiPay;
+
+          let deduct = 0;
+          if (w.deductType === 'freelance') {
+            deduct = Math.floor(grossPay * 0.033 / 10) * 10;
+          } else if (w.deductType === 'employment') {
+            deduct = Math.floor(grossPay * 0.009 / 10) * 10;
+          } else if (w.deductType === 'insurance') {
+            deduct = Math.floor(grossPay * 0.095 / 10) * 10;
+          }
+
+          const netPay = grossPay - deduct;
+
+          totHours += w.monthlyHours;
+          totBase += basePay;
+          totHoliHours += monthlyHoliH;
+          totHoliPay += holiPay;
+          totGross += grossPay;
+          totDeduct += deduct;
+          totNet += netPay;
+
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td class="font-bold text-gray-900">${w.name || '-'}</td>
+            <td class="font-mono text-right pr-1">${w.wage.toLocaleString()}</td>
+            <td class="font-mono text-right pr-1">${w.monthlyHours}</td>
+            <td class="font-mono text-right pr-1">${basePay.toLocaleString()}</td>
+            <td class="font-mono text-right pr-1">${monthlyHoliH > 0 ? monthlyHoliH : '-'}</td>
+            <td class="font-mono text-right pr-1">${holiPay > 0 ? holiPay.toLocaleString() : '-'}</td>
+            <td class="font-mono text-right pr-1 font-bold bg-blue-50">${grossPay.toLocaleString()}</td>
+            <td class="font-mono text-right pr-1 text-rose-600">${deduct > 0 ? '-' + deduct.toLocaleString() : '0'}</td>
+            <td class="font-mono text-right pr-1 font-black bg-emerald-50 text-gray-900">${netPay.toLocaleString()}</td>
+            <td class="text-[9px] text-gray-400">(인)</td>
+          `;
+        } else {
+          tr.innerHTML = `<td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>`;
+        }
+        tbody.appendChild(tr);
+      }
+
+      // 상단 요약 바
+      document.getElementById('sumCount').textContent = workers.length + '명';
+      document.getElementById('sumGross').textContent = totGross.toLocaleString() + '원';
+      document.getElementById('sumDeduct').textContent = '-' + totDeduct.toLocaleString() + '원';
+      document.getElementById('sumNet').textContent = totNet.toLocaleString() + '원';
+
+      // 테이블 합계 행
+      document.getElementById('footHours').textContent = totHours.toLocaleString();
+      document.getElementById('footBase').textContent = totBase.toLocaleString();
+      document.getElementById('footHoliHours').textContent = (Math.round(totHoliHours * 10) / 10).toLocaleString();
+      document.getElementById('footHoliPay').textContent = totHoliPay.toLocaleString();
+      document.getElementById('footGross').textContent = totGross.toLocaleString();
+      document.getElementById('footDeduct').textContent = totDeduct.toLocaleString();
+      document.getElementById('footNet').textContent = totNet.toLocaleString();
+    }
+  </script>
+</body>
+</html>
